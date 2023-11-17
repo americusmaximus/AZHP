@@ -19,6 +19,7 @@ The original game was compiled by Watcom C/C++ compiler, it contains the followi
 Examination of the game files, indicates that three calling conventions were used.
 1. The game was compiled with Watcom compiler, and uses watcom calling convention internally and stdcall to call renderer and sound modules.
 2. The sound module was compiled with Watcom compiler, `eacsnd.dll`, uses watcom calling concention internally and exports methods with stdcall convention.
+3. The original DirectX 5 renderers were also compiled with Watcom compiler with watcom calling convention internally and stdcall for callbacks to the game itself.
 
 ### Compatibility, Code Style & Standards
 In order to be able to run the code not only in the modern operating systems, but also in legacy environments, such as Windows XP, the code base has to abstain from usage of modern C++ language features.
@@ -34,6 +35,14 @@ The original game requires the sound system to be present, no graceful error han
 
 One more thing regarding the callbacks, some are required to be called during the `Serve` call, without it the game goes into endless loop when player attempts to start a race.
 
+### Renderer Modules
+#### DirectX 5
+THe original game shipped with two DirectX 5 renderers with slightly different design and capabilities. I added all of them as well as the patched version from the modern patch for completeness. Unfortunately DirectX 5 is so far away in hte past that I was not able to make this renderer work without with tweaks here in there, and it will require major changes in the game itself so that 16-bit rendering is not used. On my test environments I ran into an error where SetDisplayMode fails to set resolution with in 16-bit mode, this error leads to renderer not creating surfaces, which leads to inability to create a Direct3D device from which one cannot recover gracefuly. Having said all this, it is great that other renderers are available that do work. Here is the outline of DirectX 5 renderers:
+
+1. DirectX 5 3DS is a renderer based on the orignal unversioned file `d3da.dll` that came with the original game in 1998 and was located in `3dSetup` folder. Even though it was capable to render the game it was not intended to do so.
+2. DirectX 5 A is a renderer based on the orignal file `d3da.dll` version: 1998.08.10.1148 (6552.8.16.4424) that came with the original game in 1999.
+3. DirectX 5 M is a a renderer based on the DirectX 5 renderer `dx5a.dll` from the modern patch. Since the patch is a binarry patch to the `DirectX 5 A`, I untangled it as well, for completeness.
+
 ### Other Similar Projects
 #### Successors
 1. [AutoZone High Stakes](https://github.com/americusmaximus/AZHS)
@@ -47,4 +56,5 @@ One more thing regarding the callbacks, some are required to be called during th
 1. This is not a complete game. Please purchase software you like!
 2. The source code in this repository is mostly produced by reverse engineering the original binaries. There are a couple of exceptions for reverse engineering under DMCA -- documentation, interoperability, fair use. See goals section for the interoperability and fair use cases. The documentation is needed to support those. Also please see an article about [software preservation](https://en.wikipedia.org/wiki/Digital_preservation).
 3. Need For Speed, Need For Speed: High Stakes, DirectX, OpenGL, Vulkan, and others are trademarks of their respective owners.
+
 
