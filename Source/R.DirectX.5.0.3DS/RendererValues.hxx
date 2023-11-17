@@ -22,23 +22,34 @@ SOFTWARE.
 
 #pragma once
 
-#include "Basic.hxx"
+#include "Renderer.hxx"
 
-#define MAX_LOGGER_MESSAGE_BUFFER_SIZE 1024
+#define DEFAULT_RENDERER_DEVICE_INDEX 0
+#define INVALID_RENDERER_DEVICE_INDEX (-1)
 
-namespace Logger
+#define INVALID_RENDERER_DEVICE_STATE (-1)
+
+namespace RendererModuleValues
 {
-    struct LoggerContainer
-    {
-        BOOL IsActive; // 0x005521a8
-        char Message[MAX_LOGGER_MESSAGE_BUFFER_SIZE]; // 0x0056e010
+    extern s32 RendererDeviceIndex; // 0x6000fe3c
+    extern s32 RendererDeviceState; // 0x6000fe40
 
-        BOOL IsDebugMessageActive; // 0x005643fc
-        BOOL IsDebugStopActive; // 0x0055e8c0
-    };
+    extern u32 RendererFogColor; // 0x6000fe50
 
-    extern LoggerContainer LoggerState;
+    extern f32 RendererDepthBias; // 0x6000fe58
 
-    void Error(const char* format, ...);
-    void Message(const char* format, ...);
+    extern s32 RendererDeviceType; // 0x6000fe68
+
+    extern s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x6000fd88
+
+    extern s32 UnknownArray06[6]; // 0x6000fdb4 // TODO
+
+    extern u32 UnknownFormatValues[MAX_OTHER_USABLE_TEXTURE_FORMAT_COUNT]; // 0x6000fee4
+
+    extern u8 RendererFogAlphas[MAX_FOG_ALPHA_COUNT]; // 0x60011760
+
+    extern Renderer::RendererTexture* CurrentRendererTexture; // 0x60011870
+
+    extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x60011010
+    extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT]; // 0x60011090
 }

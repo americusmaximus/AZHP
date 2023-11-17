@@ -20,25 +20,41 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma once
+#include "RendererValues.hxx"
 
-#include "Basic.hxx"
+using namespace Renderer;
+using namespace RendererModule;
 
-#define MAX_LOGGER_MESSAGE_BUFFER_SIZE 1024
-
-namespace Logger
+namespace RendererModuleValues
 {
-    struct LoggerContainer
+    s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
+    s32 RendererDeviceState = INVALID_RENDERER_DEVICE_STATE;
+
+    u32 RendererFogColor = DEFAULT_FOG_COLOR;
+
+    f32 RendererDepthBias;
+
+    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_ACCELERATED;
+
+    RendererTexture* CurrentRendererTexture;
+
+    u8 RendererFogAlphas[MAX_FOG_ALPHA_COUNT];
+
+    RendererModuleDescriptor ModuleDescriptor;
+    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];
+
+    s32 UnknownArray06[6] =
     {
-        BOOL IsActive; // 0x005521a8
-        char Message[MAX_LOGGER_MESSAGE_BUFFER_SIZE]; // 0x0056e010
+        0, 0, 0, 0, 5, -1
+    }; // TODO
 
-        BOOL IsDebugMessageActive; // 0x005643fc
-        BOOL IsDebugStopActive; // 0x0055e8c0
-    };
+    u32 UnknownFormatValues[MAX_OTHER_USABLE_TEXTURE_FORMAT_COUNT] =
+    {
+        0, 1, 1, 2, 2, 3, 4, 2, 1, 2, 2, 0
+    }; // TODO
 
-    extern LoggerContainer LoggerState;
-
-    void Error(const char* format, ...);
-    void Message(const char* format, ...);
+    s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
+    {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, -1
+    }; // TODO
 }

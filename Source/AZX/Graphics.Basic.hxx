@@ -24,21 +24,20 @@ SOFTWARE.
 
 #include "Basic.hxx"
 
-#define MAX_LOGGER_MESSAGE_BUFFER_SIZE 1024
+#define GRAPHICS_BITS_PER_PIXEL_8 8
+#define GRAPHICS_BITS_PER_PIXEL_16 16
+#define GRAPHICS_BITS_PER_PIXEL_24 24
+#define GRAPHICS_BITS_PER_PIXEL_32 32
 
-namespace Logger
-{
-    struct LoggerContainer
-    {
-        BOOL IsActive; // 0x005521a8
-        char Message[MAX_LOGGER_MESSAGE_BUFFER_SIZE]; // 0x0056e010
+#define GRAPHICS_RESOLUTION_480 480
+#define GRAPHICS_RESOLUTION_512 512
+#define GRAPHICS_RESOLUTION_600 600
+#define GRAPHICS_RESOLUTION_640 640
+#define GRAPHICS_RESOLUTION_768 768
+#define GRAPHICS_RESOLUTION_800 800
+#define GRAPHICS_RESOLUTION_1024 1024
+#define GRAPHICS_RESOLUTION_1200 1200
+#define GRAPHICS_RESOLUTION_1280 1280
+#define GRAPHICS_RESOLUTION_1600 1600
 
-        BOOL IsDebugMessageActive; // 0x005643fc
-        BOOL IsDebugStopActive; // 0x0055e8c0
-    };
-
-    extern LoggerContainer LoggerState;
-
-    void Error(const char* format, ...);
-    void Message(const char* format, ...);
-}
+#define GRAPCHICS_COLOR_WHITE 0xFFFFFFFF

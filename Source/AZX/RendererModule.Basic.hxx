@@ -1,0 +1,227 @@
+/*
+Copyright (c) 2023 Americus Maximus
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+#pragma once
+
+#include "Basic.hxx"
+#include "Native.Basic.hxx"
+
+#define RENDERER_MODULE_FAILURE FALSE
+#define RENDERER_MODULE_SUCCESS TRUE
+
+#define RENDERER_MODULE_DX5_ACCELERATION_AVAILABLE 80
+
+#define RENDERER_MODULE_INITIALIZE_DEVICE_SUCCESS 1400
+
+#define RENDERER_MODULE_VERSION_104 104
+
+#define RENDERER_MODULE_SIGNATURE_D3D5 0x44334435 /* D3D5 */
+
+#define RENDERER_MODULE_MESSAGE_SEVERITY_ERROR 0
+#define RENDERER_MODULE_MESSAGE_SEVERITY_WARNING 1
+#define RENDERER_MODULE_MESSAGE_SEVERITY_MESSAGE 2
+
+#define MAX_RENDERER_MODULE_DEVICE_NAME_LENGTH 32
+
+#define RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY 0
+#define RENDERER_MODULE_TEXTURE_LOCATION_LOCAL_VIDEO_MEMORY 1
+#define RENDERER_MODULE_TEXTURE_LOCATION_NON_LOCAL_VIDEO_MEMORY 2
+
+#define RENDERER_MODULE_CULL_NONE 0
+#define RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE 1
+#define RENDERER_MODULE_CULL_CLOCK_WISE 2
+
+#define RENDERER_MODULE_DEPTH_DISABLE 0
+#define RENDERER_MODULE_DEPTH_ENABLE 1
+
+#define RENDERER_MODULE_TEXTURE_FILTER_POINT 0
+#define RENDERER_MODULE_TEXTURE_FILTER_LENEAR 1
+
+#define RENDERER_MODULE_TEXTURE_ADDRESS_CLAMP 0
+#define RENDERER_MODULE_TEXTURE_ADDRESS_WRAP 1
+
+#define RENDERER_MODULE_FOG_COLOR_MASK 0X00FFFFFF
+
+#define RENDERER_MODULE_FOG_INACTIVE 0
+#define RENDERER_MODULE_FOG_ACTIVE 1
+#define RENDERER_MODULE_FOG_ACTIVE_LINEAR 2
+#define RENDERER_MODULE_FOG_ACTIVE_EXP 4
+#define RENDERER_MODULE_FOG_ACTIVE_EXP2 8
+
+#define RENDERER_MODULE_BLEND_SOURCE_ALPHA_INVERSE_SOURCE_ALPHA 0
+#define RENDERER_MODULE_BLEND_SOURCE_ALPHA_ONE 1
+#define RENDERER_MODULE_BLEND_ZERO_INVERSE_SOURCE_ALPHA 2
+
+#define RENDERER_MODULE_DEVICE_TYPE_INVALID (-1)
+#define RENDERER_MODULE_DEVICE_TYPE_RAMP 0
+#define RENDERER_MODULE_DEVICE_TYPE_RGB 1
+#define RENDERER_MODULE_DEVICE_TYPE_MMX 2
+#define RENDERER_MODULE_DEVICE_TYPE_ACCELERATED 3
+
+#define RENDERER_MODULE_STATE_NONE 0
+#define RENDERER_MODULE_STATE_SELECT_TEXTURE 1
+#define RENDERER_MODULE_STATE_SELECT_CULL_STATE 2
+#define RENDERER_MODULE_STATE_SELECT_MATERIAL 3 /* BACKGROUND COLOR */
+#define RENDERER_MODULE_STATE_SELECT_DEPTH_STATE 4
+#define RENDERER_MODULE_STATE_SELECT_DITHER_STATE 5
+#define RENDERER_MODULE_STATE_SELECT_SHADE_STATE 6
+#define RENDERER_MODULE_STATE_SELECT_TEXTURE_FILTER_STATE 7
+#define RENDERER_MODULE_STATE_SELECT_MIP_MAP_LOD_BIAS_STATE 8
+#define RENDERER_MODULE_STATE_SELECT_ANTI_ALIAS_STATE 9
+#define RENDERER_MODULE_STATE_SELECT_ALPHA_BLEND_STATE 10 /* TRANSPARENCY */
+#define RENDERER_MODULE_STATE_SELECT_TEXTURE_MIP_FILTER_STATE 11
+#define RENDERER_MODULE_STATE_SELECT_CHROMATIC_COLOR 12
+#define RENDERER_MODULE_STATE_SELECT_TEXTURE_ADDRESS_STATE 13 /* TEXTURE CLAMP */
+#define RENDERER_MODULE_STATE_SELECT_FOG_DENSITY 14
+#define RENDERER_MODULE_STATE_SELECT_FOG_COLOR 15
+#define RENDERER_MODULE_STATE_SELECT_LINE_WIDTH 16
+#define RENDERER_MODULE_STATE_SELECT_FLAT_FANS_STATE 17
+#define RENDERER_MODULE_STATE_SELECT_WINDOW_MODE_STATE 18
+#define RENDERER_MODULE_STATE_SELECT_LAMBDAS 19
+#define RENDERER_MODULE_STATE_20 20
+#define RENDERER_MODULE_STATE_SELECT_FOG_STATE 21
+#define RENDERER_MODULE_STATE_SELECT_FOG_START 22
+#define RENDERER_MODULE_STATE_SELECT_FOG_END 23
+#define RENDERER_MODULE_STATE_SELECT_VERSION 31
+#define RENDERER_MODULE_STATE_SELECT_DEPTH_BIAS_STATE_ALTERNATIVE 102
+#define RENDERER_MODULE_STATE_103 103
+#define RENDERER_MODULE_STATE_SELECT_BLEND_STATE 104
+#define RENDERER_MODULE_STATE_SELECT_FOG_ALPHAS 105
+#define RENDERER_MODULE_STATE_SELECT_DEVICE_TYPE 400
+#define RENDERER_MODULE_STATE_401 401
+#define RENDERER_MODULE_STATE_402 402
+#define RENDERER_MODULE_STATE_ACQUIRE_DEVICE_CAPABILITIES 403
+
+#define RENDERER_MODULE_CAPS_NONE 0
+#define RENDERER_MODULE_CAPS_LINE_WIDTH 0x1
+#define RENDERER_MODULE_CAPS_TEXTURE_SQUARE 0x2
+#define RENDERER_MODULE_CAPS_TEXTURE_WIDTH_POW2 0x4
+#define RENDERER_MODULE_CAPS_TEXTURE_HEIGHT_POW2 0x8
+
+#define RENDERER_MODULE_DEVICE_TYPE_ENVIRONEMNT_PROPERTY_NAME "THRASH_D3DDEVICETYPE"
+#define RENDERER_MODULE_DISPLAY_ENVIRONEMNT_PROPERTY_NAME "THRASH_DISPLAY"
+
+#define RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_DEVICE 0x464
+#define RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES 0x465
+#define RENDERER_MODULE_WINDOW_MESSAGE_RELEASE_DEVICE 0x468
+
+typedef const u32(STDCALLAPI* RENDERERMODULEEXECUTECALLBACK)(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result); // TODO
+
+typedef const HWND(STDCALLAPI* RENDERERMODULEACQUIREWINDOWLAMBDA)(void);
+typedef const void(STDCALLAPI* RENDERERMODULEEXECUTELAMBDA)(const u32 message, const RENDERERMODULEEXECUTECALLBACK lambda);
+typedef const void(STDCALLAPI* RENDERERMODULELOCKWINDOWLAMBDA)(const BOOL state);
+typedef const void(STDCALLAPI* RENDERERMODULELOGLAMBDA)(const u32 severity, const char* message);
+typedef const void(STDCALLAPI* RENDERERMODULESELECTINSTANCELAMBDA)(const void*);
+
+namespace RendererModule
+{
+    struct RendererModuleWindowLock
+    {
+        void* Data;
+        u32 Stride;
+        s32 Format;
+        u32 Width;
+        u32 Height;
+    };
+
+    struct RendererModuleDescriptorDeviceCapabilities
+    {
+        u32 Width;
+        u32 Height;
+        u32 Bits;
+        u32 Format;
+
+        u32 Unk02; // TODO
+        u32 Unk03; // TODO
+        u32 Unk04; // TODO
+        u32 Unk05; // TODO
+        u32 Unk06; // TODO
+        u32 Unk07; // TODO
+    };
+
+    struct RendererModuleDeviceCapabilities
+    {
+        BOOL IsAccelerated;
+        u32 DepthBits;
+        u32 RenderBits;
+
+        s32 Unk03; // TODO
+        s32 Unk04; // TODO
+        s32 Unk05; // TODO
+
+        BOOL IsPerspectiveTextures;
+        BOOL IsAlphaFlatBlending;
+        BOOL IsAlphaProperBlending;
+        BOOL IsAlphaTextures;
+        BOOL IsModulateBlending;
+        BOOL IsSourceAlphaBlending;
+        BOOL IsColorBlending;
+        BOOL IsSpecularBlending;
+    };
+
+    struct RendererModuleLambdaContainer
+    {
+        void* L1; // TODO
+        RENDERERMODULEACQUIREWINDOWLAMBDA AcquireWindow;
+        RENDERERMODULEEXECUTELAMBDA Execute;
+        void* L4; // TODO
+        RENDERERMODULESELECTINSTANCELAMBDA SelectInstance;
+        RENDERERMODULELOCKWINDOWLAMBDA LockWindow;
+        RENDERERMODULELOGLAMBDA Log;
+        void* L8; // TODO
+    };
+
+    struct RendererModuleDescriptor
+    {
+        u32 Signature;
+        s32 Unk1; // TODO
+        u32 Version;
+        u32 Caps;
+        u32 MinimumTextureWidth;
+        u32 MaximumTextureWidth;
+        u32 MultipleTextureWidth;
+        u32 MinimumTextureHeight;
+        u32 MaximumTextureHeight;
+        u32 MultipleTextureHeight;
+        u32 ClipAlign;
+
+        s32 Unk4; // TODO
+
+        s32* TextureFormatStates; // TODO
+
+        s32 Unk5; // TODO
+        s32* Unk6; // TODO
+
+        struct
+        {
+            u32 Count;
+            RendererModuleDescriptorDeviceCapabilities* Capabilities;
+        } Capabilities;
+
+        u32 MaximumSimultaneousTextures;
+        s32 Unk7; // TODO
+        char Name[MAX_RENDERER_MODULE_DEVICE_NAME_LENGTH];
+        u32 SubType;
+        u32 VideoMemorySize;
+        u32 TotalMemorySize;
+    };
+}

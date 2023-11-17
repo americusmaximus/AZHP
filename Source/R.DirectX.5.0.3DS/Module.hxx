@@ -22,23 +22,14 @@ SOFTWARE.
 
 #pragma once
 
-#include "Basic.hxx"
+#include "Renderer.hxx"
 
-#define MAX_LOGGER_MESSAGE_BUFFER_SIZE 1024
+#define RENDERER_MODULE_NAME "DX5 3rash"
 
-namespace Logger
-{
-    struct LoggerContainer
-    {
-        BOOL IsActive; // 0x005521a8
-        char Message[MAX_LOGGER_MESSAGE_BUFFER_SIZE]; // 0x0056e010
+#ifdef _WIN64
+#define RENDERER_MODULE_TITLE_NAME "DirectX 5.0 (x64)"
+#else
+#define RENDERER_MODULE_TITLE_NAME "DirectX 5.0 (x32)"
+#endif
 
-        BOOL IsDebugMessageActive; // 0x005643fc
-        BOOL IsDebugStopActive; // 0x0055e8c0
-    };
-
-    extern LoggerContainer LoggerState;
-
-    void Error(const char* format, ...);
-    void Message(const char* format, ...);
-}
+#define RENDERER_MODULE_AUTHOR "Americus Maximus"

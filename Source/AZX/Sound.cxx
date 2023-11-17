@@ -53,7 +53,7 @@ namespace Sound
         {
             const HWND hwnd = AcquireWindow();
 
-            if (hwnd == NULL) { Message("audiofocushandler - MAIN WINDOW HANDLE IS INVALID.\n"); }
+            if (hwnd == NULL) { Error("audiofocushandler - MAIN WINDOW HANDLE IS INVALID.\n"); }
 
             (*SoundModuleState._Start)(*SoundState._Options, hwnd);
         }
@@ -81,7 +81,7 @@ namespace Sound
 
         const HWND hwnd = AcquireWindow();
 
-        if (hwnd == NULL) { Message("SNDcaps - MAIN WINDOW HANDLE IS INVALID.\n"); }
+        if (hwnd == NULL) { Error("SNDcaps - MAIN WINDOW HANDLE IS INVALID.\n"); }
 
         u32 caps = (*SoundModuleState._AcquireCapabilities)(hwnd);
 

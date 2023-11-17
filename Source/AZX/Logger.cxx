@@ -38,7 +38,8 @@ namespace Logger
 {
     LoggerContainer LoggerState;
 
-    void Message(const char* format, ...)
+    // 0x00401010
+    void Error(const char* format, ...)
     {
         if (LoggerState.IsActive) { return; }
 
@@ -76,4 +77,9 @@ namespace Logger
         LoggerState.IsActive = FALSE;
     }
 
+    // 0x004df6c0
+    void Message(const char* format, ...)
+    {
+        // TODO NOT IMPLEMENTED
+    }
 }

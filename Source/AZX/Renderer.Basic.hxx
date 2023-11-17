@@ -24,21 +24,26 @@ SOFTWARE.
 
 #include "Basic.hxx"
 
-#define MAX_LOGGER_MESSAGE_BUFFER_SIZE 1024
+#define RENDERER_PIXEL_FORMAT_NONE 0
+#define RENDERER_PIXEL_FORMAT_16_BIT_555 3
+#define RENDERER_PIXEL_FORMAT_16_BIT_565 4
+#define RENDERER_PIXEL_FORMAT_24_BIT 5
+#define RENDERER_PIXEL_FORMAT_32_BIT 6
+#define RENDERER_PIXEL_FORMAT_16_BIT_444 7
+#define RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1 12
 
-namespace Logger
+namespace Renderer
 {
-    struct LoggerContainer
+    struct RendererTexture;
+
+    struct RVX;
+
+    struct RTLVX
     {
-        BOOL IsActive; // 0x005521a8
-        char Message[MAX_LOGGER_MESSAGE_BUFFER_SIZE]; // 0x0056e010
-
-        BOOL IsDebugMessageActive; // 0x005643fc
-        BOOL IsDebugStopActive; // 0x0055e8c0
+        f32x3 XYZ;
+        f32 RHW;
+        u32 Color;
+        u32 Specular;
+        f32x2 UV;
     };
-
-    extern LoggerContainer LoggerState;
-
-    void Error(const char* format, ...);
-    void Message(const char* format, ...);
 }

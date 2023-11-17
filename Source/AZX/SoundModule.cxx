@@ -47,7 +47,7 @@ namespace SoundModule
     {
         // TODO NOT IMPLEMENTED FUN_004f7d70(&DAT_00566f72);
 
-        Message(message);
+        Error(message);
     }
 
     // 0x004e1a0c
@@ -66,7 +66,7 @@ namespace SoundModule
 
         if (*SoundModuleState.Module._Handle == NULL)
         {
-            Message("iSNDloaddll - COULDN'T LOAD/FIND EACSND.DLL. THIS SHOULD BE IN THE SAME DIRECTORY AS THE GAME.\n");
+            Error("iSNDloaddll - COULDN'T LOAD/FIND EACSND.DLL. THIS SHOULD BE IN THE SAME DIRECTORY AS THE GAME.\n");
 
             return SOUND_MODULE_FAILURE;
         }
@@ -76,7 +76,7 @@ namespace SoundModule
 
             if (version == NULL)
             {
-                Message("iSNDloaddll - COULDN'T FIND iSNDdllversion.\n");
+                Error("iSNDloaddll - COULDN'T FIND iSNDdllversion.\n");
 
                 return SOUND_MODULE_FAILURE;
             }
@@ -86,7 +86,7 @@ namespace SoundModule
 
                 if (ver != SOUND_MODULE_VERSION)
                 {
-                    Message("iSNDloaddll - EACSND.DLL VERSION MISMATCH. REQUIRED %i.%i, FOUND %i.%i.\n",
+                    Error("iSNDloaddll - EACSND.DLL VERSION MISMATCH. REQUIRED %i.%i, FOUND %i.%i.\n",
                         SOUND_MODULE_VERSION_MAJOR, SOUND_MODULE_VERSION_MINOR,
                         ACQUIRE_SOUND_MODULE_VERSION_MAJOR(ver), ACQUIRE_SOUND_MODULE_VERSION_MINOR(ver));
 
@@ -100,7 +100,7 @@ namespace SoundModule
 
             if (lambdas == NULL)
             {
-                Message("iSNDloaddll - COULDN'T FIND setfunctions.\n");
+                Error("iSNDloaddll - COULDN'T FIND setfunctions.\n");
 
                 return SOUND_MODULE_FAILURE;
             }
@@ -139,7 +139,7 @@ namespace SoundModule
             || *SoundModuleState._VolumeBuffer == NULL || *SoundModuleState._RateBuffer == NULL
             || *SoundModuleState._StopBuffer == NULL)
         {
-            Message("iSNDloaddll - COULDN'T FIND NEEDED FUNCTION.\n");
+            Error("iSNDloaddll - COULDN'T FIND NEEDED FUNCTION.\n");
 
             return SOUND_MODULE_FAILURE;
         }
