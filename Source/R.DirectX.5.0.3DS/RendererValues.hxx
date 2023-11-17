@@ -40,6 +40,8 @@ namespace RendererModuleValues
 
     extern s32 RendererDeviceType; // 0x6000fe68
 
+    extern u32 MaximumRendererVertexCount; // 0x6000fea4
+
     extern s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x6000fd88
 
     extern s32 UnknownArray06[6]; // 0x6000fdb4 // TODO

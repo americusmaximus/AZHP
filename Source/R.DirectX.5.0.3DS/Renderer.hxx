@@ -56,6 +56,8 @@ SOFTWARE.
 #define D3DRENDERSTATE_FOGEND (D3DRENDERSTATETYPE)37
 #define D3DRENDERSTATE_FOGDENSITY (D3DRENDERSTATETYPE)38
 
+#define MAX_RENDERER_VERTEX_COUNT 253
+
 #define DEPTH_BIT_MASK_32_BIT 0x100
 #define DEPTH_BIT_MASK_24_BIT 0x200
 #define DEPTH_BIT_MASK_16_BIT 0x400
@@ -65,14 +67,14 @@ SOFTWARE.
 #define INVALID_TEXTURE_FORMAT_INDEX (-1)
 
 #define MAX_TEXTURE_FORMAT_COUNT 128 /* ORIGINAL: 12 */
-#define MAX_USABLE_TEXTURE_FORMAT_COUNT 10
+#define MAX_USABLE_TEXTURE_FORMAT_COUNT 11
 #define MAX_OTHER_USABLE_TEXTURE_FORMAT_COUNT 12
 
 #define MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 32 */
 
 #define MAX_RENDERER_DEVICE_COUNT 16 /* ORIGINAL: 10 */
 
-#define MAX_DEVICE_NAME_LENGTH 32 /* ORIGINAL: 20 */
+#define MAX_DEVICE_NAME_LENGTH 32
 
 #define MAX_ACTIVE_SURFACE_COUNT 8
 
@@ -246,7 +248,7 @@ namespace RendererModule
             {
                 u32 Count; // 0x6000feb0
 
-                void* Vertexes; // 0x60011a68 // TODO
+                Renderer::RTLVX Vertexes[MAX_RENDERER_VERTEX_COUNT]; // 0x60011a68
             } Vertexes;
         } Data;
 
@@ -287,39 +289,45 @@ namespace RendererModule
     void Message(const char* format, ...);
     BOOL Error(const char* format, ...);
 
+    BOOL AcquireRendererDeviceState(void);
+    BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context);
+    BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
+    BOOL InitializeRendererTextureDetails(Renderer::RendererTexture* tex);
+    BOOL RenderLines(Renderer::RTLVX* vertexes, const u32 count);
+    BOOL RenderPoints(Renderer::RTLVX* vertexes, const u32 count);
+    BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
+    BOOL SelectRendererTexture(Renderer::RendererTexture* tex);
+    BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette);
+    HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC desc, LPVOID context);
+    HRESULT CALLBACK EnumerateRendererDeviceTextureFormats(LPDDSURFACEDESC desc, LPVOID context);
+    Renderer::RendererTexture* InitializeRendererTexture(void);
+    s32 AcquireRendererDeviceTextureFormatIndex(const u32 palette, const u32 alpha, const u32 red, const u32 green, const u32 blue);
+    u32 AcquirePixelFormat(const DDPIXELFORMAT* format);
     u32 AcquireRendererDeviceCount(void);
-    void SelectRendererDevice(void);
-    u32 EndRendererScene(void);
-    u32 RendererRenderScene(void);
+    u32 AttemptRenderScene(void);
     u32 BeginRendererScene(void);
     u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1);
-    BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context);
+    u32 EndRendererScene(void);
     u32 InitializeRendererDevice(void);
-    u32 STDCALLAPI InitializeRendererDeviceExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result);
-    HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC desc, LPVOID context);
-    u32 AcquirePixelFormat(const DDPIXELFORMAT* format);
-    u32 STDCALLAPI ReleaseRendererDeviceExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result);
-    void ReleaseRendererDeviceSurfaces(void);
-    u32 STDCALLAPI InitializeRendererDeviceSurfacesExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result);
     u32 InitializeRendererDeviceAcceleration(void);
-    void InitializeConcreteRendererDevice(void);
-    void ReleaseRendererDevice(void);
-    BOOL AcquireRendererDeviceState(void);
-    BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
+    u32 ReleaseRendererWindow(void);
+    u32 RendererRenderScene(void);
+    u32 STDCALLAPI InitializeRendererDeviceExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result);
+    u32 STDCALLAPI InitializeRendererDeviceSurfacesExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result);
+    u32 STDCALLAPI ReleaseRendererDeviceExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result);
+    u32 ToggleRenderer(void);
     void AcquireRendererDeviceTextureFormats(void);
-    HRESULT CALLBACK EnumerateRendererDeviceTextureFormats(LPDDSURFACEDESC desc, LPVOID context);
-    s32 AcquireRendererDeviceTextureFormatIndex(const u32 palette, const u32 alpha, const u32 red, const u32 green, const u32 blue);
+    void InitializeConcreteRendererDevice(void);
     void InitializeRendererState(void);
     void InitializeViewPort(void);
-    u32 ReleaseRendererWindow(void);
-    u32 ToggleRenderer(void);
-    BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
-    void SelectRendererMaterial(const f32 r, const f32 g, const f32 b);
-    u32 AttemptRenderScene(void);
-    void SelectRendererDeviceType(const u32 type);
-    Renderer::RendererTexture* InitializeRendererTexture(void);
-    BOOL InitializeRendererTextureDetails(Renderer::RendererTexture* tex);
+    void ReleaseRendererDevice(void);
+    void ReleaseRendererDeviceSurfaces(void);
     void ReleaseRendererTexture(Renderer::RendererTexture* tex);
-    BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette);
-    BOOL SelectRendererTexture(Renderer::RendererTexture* tex);
+    void RenderQuad(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c, Renderer::RTLVX* d);
+    void RenderQuadMesh(Renderer::RTLVX* vertexes, const u32* indexes, const u32 count);
+    void RenderTriangle(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void RenderTriangleMesh(Renderer::RTLVX* vertexes, const u32* indexes, const u32 count);
+    void SelectRendererDevice(void);
+    void SelectRendererDeviceType(const u32 type);
+    void SelectRendererMaterial(const f32 r, const f32 g, const f32 b);
 }

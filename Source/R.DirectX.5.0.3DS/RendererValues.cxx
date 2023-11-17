@@ -36,6 +36,8 @@ namespace RendererModuleValues
 
     s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_ACCELERATED;
 
+    u32 MaximumRendererVertexCount = MAX_RENDERER_VERTEX_COUNT;
+
     RendererTexture* CurrentRendererTexture;
 
     u8 RendererFogAlphas[MAX_FOG_ALPHA_COUNT];
@@ -55,6 +57,6 @@ namespace RendererModuleValues
 
     s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
     {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, -1
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1
     }; // TODO
 }
