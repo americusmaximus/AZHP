@@ -43,8 +43,8 @@ THe original game shipped with two DirectX 5 renderers with slightly different d
 2. DirectX 5 A is a renderer based on the orignal file `d3da.dll` version: 1998.08.10.1148 (6552.8.16.4424) that came with the original game in 1999.
 3. DirectX 5 M is a a renderer based on the DirectX 5 renderer `dx5a.dll` from the modern patch. Since the patch is a binarry patch to the `DirectX 5 A`, I untangled it as well, for completeness.
 
-### Other Similar Projects
-#### Successors
+## Other Similar Projects
+### Successors
 1. [AutoZone High Stakes](https://github.com/americusmaximus/AZHS)
 2. [AutoZone Motor City Online](https://github.com/americusmaximus/AZMCO)
 
