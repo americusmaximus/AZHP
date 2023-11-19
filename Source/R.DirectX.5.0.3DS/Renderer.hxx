@@ -263,7 +263,7 @@ namespace RendererModule
                 u32 Count; // 0x6000fee0
 
                 TextureFormat Formats[MAX_TEXTURE_FORMAT_COUNT]; // 0x60019960
-                s32 Indexes[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60019f90
+                s32 Indexes[MAX_OTHER_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60019f90
             } Formats;
         } Textures;
 

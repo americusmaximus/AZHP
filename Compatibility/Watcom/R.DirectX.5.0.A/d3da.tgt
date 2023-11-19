@@ -183,8 +183,8 @@ WVList
 0
 45
 MItem
-44
-..\..\..\Source\R.DirectX.5.0.3DS\Module.cxx
+42
+..\..\..\Source\R.DirectX.5.0.A\Module.cxx
 46
 WString
 6
@@ -201,8 +201,8 @@ WVList
 0
 49
 MItem
-46
-..\..\..\Source\R.DirectX.5.0.3DS\Renderer.cxx
+44
+..\..\..\Source\R.DirectX.5.0.A\Renderer.cxx
 50
 WString
 6
@@ -219,8 +219,8 @@ WVList
 0
 53
 MItem
-52
-..\..\..\Source\R.DirectX.5.0.3DS\RendererValues.cxx
+50
+..\..\..\Source\R.DirectX.5.0.A\RendererValues.cxx
 54
 WString
 6
@@ -255,8 +255,8 @@ WVList
 0
 61
 MItem
-44
-..\..\..\Source\R.DirectX.5.0.3DS\Module.hxx
+42
+..\..\..\Source\R.DirectX.5.0.A\Module.hxx
 62
 WString
 3
@@ -273,8 +273,8 @@ WVList
 0
 65
 MItem
-46
-..\..\..\Source\R.DirectX.5.0.3DS\Renderer.hxx
+44
+..\..\..\Source\R.DirectX.5.0.A\Renderer.hxx
 66
 WString
 3
@@ -291,8 +291,8 @@ WVList
 0
 69
 MItem
-52
-..\..\..\Source\R.DirectX.5.0.3DS\RendererValues.hxx
+50
+..\..\..\Source\R.DirectX.5.0.A\RendererValues.hxx
 70
 WString
 3
