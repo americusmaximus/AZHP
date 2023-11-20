@@ -290,6 +290,7 @@ namespace RendererModule
     BOOL Error(const char* format, ...);
 
     BOOL AcquireRendererDeviceState(void);
+    BOOL BeginRendererScene(void);
     BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
     BOOL InitializeRendererTextureDetails(Renderer::RendererTexture* tex);
@@ -305,7 +306,6 @@ namespace RendererModule
     u32 AcquirePixelFormat(const DDPIXELFORMAT* format);
     u32 AcquireRendererDeviceCount(void);
     u32 AttemptRenderScene(void);
-    u32 BeginRendererScene(void);
     u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1);
     u32 EndRendererScene(void);
     u32 InitializeRendererDevice(void);
