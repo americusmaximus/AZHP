@@ -466,7 +466,6 @@ namespace RendererModule
             {
             case RENDERER_MODULE_TEXTURE_ADDRESS_CLAMP: { SelectRendererState(D3DRENDERSTATE_TEXTUREADDRESS, D3DTADDRESS_CLAMP); break; }
             case RENDERER_MODULE_TEXTURE_ADDRESS_WRAP: { SelectRendererState(D3DRENDERSTATE_TEXTUREADDRESS, D3DTADDRESS_WRAP); break; }
-            default: { return RENDERER_MODULE_FAILURE; }
             }
 
             return RENDERER_MODULE_SUCCESS;
