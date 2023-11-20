@@ -566,18 +566,17 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_FOG_ALPHAS:
         {
-            for (u32 x = 0; x < (MAX_FOG_ALPHA_COUNT - 4); x = x + 4)
+            const u32* vs = (u32*)value;
+
+            for (u32 x = 0, xx = 0; x < (MAX_FOG_ALPHA_COUNT - 4); x = x + 4, xx++)
             {
-                RendererFogAlphas[x] = -(u8)(u32)value - 1;
-
-                RendererFogAlphas[x + 1] = -(u8)roundf(((u32)value + (((u32)value + 1) - (u32)value) * 0.25f)) - 1;
-
-                RendererFogAlphas[x + 2] = -(u8)roundf(((u32)value + (((u32)value + 1) - (u32)value) * 0.50f)) - 1;
-
-                RendererFogAlphas[x + 3] = -(u8)roundf(((u32)value + (((u32)value + 1) - (u32)value) * 0.75f)) - 1;
+                RendererFogAlphas[x + 0] = 0xff - (u8)vs[xx];
+                RendererFogAlphas[x + 1] = 0xff - (u8)roundf(vs[xx] + (vs[xx + 1] - vs[xx]) * 0.25f);
+                RendererFogAlphas[x + 2] = 0xff - (u8)roundf(vs[xx] + (vs[xx + 1] - vs[xx]) * 0.50f);
+                RendererFogAlphas[x + 3] = 0xff - (u8)roundf(vs[xx] + (vs[xx + 1] - vs[xx]) * 0.75f);
             }
 
-            RendererFogAlphas[MAX_FOG_ALPHA_COUNT - 4] = -(u8)((u32)value + 63) - 1;
+            RendererFogAlphas[MAX_FOG_ALPHA_COUNT - 4] = 0xff - (u8)(vs[63]);
             RendererFogAlphas[MAX_FOG_ALPHA_COUNT - 3] = RendererFogAlphas[MAX_FOG_ALPHA_COUNT - 4];
             RendererFogAlphas[MAX_FOG_ALPHA_COUNT - 2] = RendererFogAlphas[MAX_FOG_ALPHA_COUNT - 4];
             RendererFogAlphas[MAX_FOG_ALPHA_COUNT - 1] = RendererFogAlphas[MAX_FOG_ALPHA_COUNT - 4];
