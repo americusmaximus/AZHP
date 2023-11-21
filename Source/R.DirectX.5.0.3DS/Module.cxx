@@ -265,11 +265,12 @@ namespace RendererModule
 
             POINT point;
             ZeroMemory(&point, sizeof(POINT));
+
             ClientToScreen(State.Window.HWND, &point);
 
             OffsetRect(&rect, point.x, point.y);
 
-            if (State.DX.Surfaces.Window == State.DX.Surfaces.Active[1]) // TODO
+            if (State.Lock.Surface == State.DX.Surfaces.Active[1]) // TODO
             {
                 desc.lpSurface = (void*)((addr)desc.lpSurface + (addr)(rect.left * 2 + desc.lPitch * rect.top));
             }
