@@ -1765,4 +1765,240 @@ namespace RendererModule
         return State.DX.Device->DrawPrimitive(D3DPT_LINESTRIP, D3DVT_TLVERTEX,
             vertexes, count, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
     }
+
+    // 0x60004de4
+    BOOL RenderPoints(RTLVX* vertexes, const u32 count)
+    {
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        return State.DX.Device->DrawPrimitive(D3DPT_POINTLIST, D3DVT_TLVERTEX,
+            vertexes, count, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
+    }
+
+    // 0x60004980
+    void RenderQuad(RTLVX* a, RTLVX* b, RTLVX* c, RTLVX* d)
+    {
+        if (MaximumRendererVertexCount - 4 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+        RTLVX* verts = (RTLVX*)State.Data.Vertexes.Vertexes;
+
+        // A
+        {
+            RTLVX* vertex = &verts[State.Data.Vertexes.Count + 0];
+
+            vertex->XYZ.X = a->XYZ.X;
+            vertex->XYZ.Y = a->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + a->XYZ.Z;
+
+            vertex->RHW = a->RHW;
+
+            vertex->Color = a->Color;
+            vertex->Specular = ((u32)RendererFogAlphas[(u32)(a->XYZ.Z * 255.0)]) << 24;
+
+            vertex->UV.X = a->UV.X;
+            vertex->UV.Y = a->UV.Y;
+        }
+
+        // B
+        {
+            RTLVX* vertex = &verts[State.Data.Vertexes.Count + 1];
+
+            vertex->XYZ.X = b->XYZ.X;
+            vertex->XYZ.Y = b->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + b->XYZ.Z;
+
+            vertex->RHW = b->RHW;
+
+            vertex->Color = b->Color;
+            vertex->Specular = ((u32)RendererFogAlphas[(u32)(b->XYZ.Z * 255.0)]) << 24;
+
+            vertex->UV.X = b->UV.X;
+            vertex->UV.Y = b->UV.Y;
+        }
+
+        // C
+        {
+            RTLVX* vertex = &verts[State.Data.Vertexes.Count + 2];
+
+            vertex->XYZ.X = c->XYZ.X;
+            vertex->XYZ.Y = c->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + c->XYZ.Z;
+
+            vertex->RHW = c->RHW;
+
+            vertex->Color = c->Color;
+            vertex->Specular = ((u32)RendererFogAlphas[(u32)(c->XYZ.Z * 255.0)]) << 24;
+
+            vertex->UV.X = c->UV.X;
+            vertex->UV.Y = c->UV.Y;
+        }
+
+        // D
+        {
+            RTLVX* vertex = &verts[State.Data.Vertexes.Count + 3];
+
+            vertex->XYZ.X = d->XYZ.X;
+            vertex->XYZ.Y = d->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + d->XYZ.Z;
+
+            vertex->RHW = d->RHW;
+
+            vertex->Color = d->Color;
+            vertex->Specular = ((u32)RendererFogAlphas[(u32)(d->XYZ.Z * 255.0)]) << 24;
+
+            vertex->UV.X = d->UV.X;
+            vertex->UV.Y = d->UV.Y;
+        }
+
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 0] = State.Data.Vertexes.Count + 0;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 1] = State.Data.Vertexes.Count + 1;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 2] = State.Data.Vertexes.Count + 2;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 3] = State.Data.Vertexes.Count + 0;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 4] = State.Data.Vertexes.Count + 2;
+        State.Data.Indexes.Indexes[State.Data.Indexes.Count + 5] = State.Data.Vertexes.Count + 3;
+
+        State.Data.Indexes.Count = State.Data.Indexes.Count + 6;
+        State.Data.Vertexes.Count = State.Data.Vertexes.Count + 4;
+    }
+
+    // 0x6000470c
+    void RenderQuadMesh(RTLVX* vertexes, const u32* indexes, const u32 count)
+    {
+        RTLVX* verts = (RTLVX*)State.Data.Vertexes.Vertexes;
+
+        for (u32 x = 0; x < count; x++)
+        {
+            if (MaximumRendererVertexCount - 4 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+            RTLVX* a = &vertexes[indexes[x * 4 + 0]];
+            RTLVX* b = &vertexes[indexes[x * 4 + 1]];
+            RTLVX* c = &vertexes[indexes[x * 4 + 2]];
+            RTLVX* d = &vertexes[indexes[x * 4 + 3]];
+
+            RenderQuad(a, b, c, d);
+        }
+    }
+
+    // 0x6000435c
+    void RenderTriangle(RTLVX* a, RTLVX* b, RTLVX* c)
+    {
+        if (MaximumRendererVertexCount - 3 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+        RTLVX* verts = (RTLVX*)State.Data.Vertexes.Vertexes;
+
+        // A
+        {
+            RTLVX* vertex = &verts[State.Data.Vertexes.Count + 0];
+
+            vertex->XYZ.X = a->XYZ.X;
+            vertex->XYZ.Y = a->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + a->XYZ.Z;
+
+            vertex->RHW = a->RHW;
+
+            vertex->Color = a->Color;
+            vertex->Specular = ((u32)RendererFogAlphas[(u32)(a->XYZ.X * 255.0)]) << 24;
+
+            vertex->UV.X = a->UV.X;
+            vertex->UV.Y = a->UV.Y;
+
+            State.Data.Indexes.Indexes[State.Data.Indexes.Count + 0] = State.Data.Vertexes.Count + 0;
+        }
+
+        // B
+        {
+            RTLVX* vertex = &verts[State.Data.Vertexes.Count + 1];
+
+            vertex->XYZ.X = b->XYZ.X;
+            vertex->XYZ.Y = b->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + b->XYZ.Z;
+
+            vertex->RHW = b->RHW;
+
+            vertex->Color = b->Color;
+            vertex->Specular = ((u32)RendererFogAlphas[(u32)(b->XYZ.X * 255.0)]) << 24;
+
+            vertex->UV.X = b->UV.X;
+            vertex->UV.Y = b->UV.Y;
+
+            State.Data.Indexes.Indexes[State.Data.Indexes.Count + 1] = State.Data.Vertexes.Count + 1;
+        }
+
+        // C
+        {
+            RTLVX* vertex = &verts[State.Data.Vertexes.Count + 2];
+
+            vertex->XYZ.X = c->XYZ.X;
+            vertex->XYZ.Y = c->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + c->XYZ.Z;
+
+            vertex->RHW = c->RHW;
+
+            vertex->Color = c->Color;
+            vertex->Specular = ((u32)RendererFogAlphas[(u32)(c->XYZ.X * 255.0)]) << 24;
+
+            vertex->UV.X = c->UV.X;
+            vertex->UV.Y = c->UV.Y;
+
+            State.Data.Indexes.Indexes[State.Data.Indexes.Count + 2] = State.Data.Vertexes.Count + 2;
+        }
+
+        State.Data.Indexes.Count = State.Data.Indexes.Count + 3;
+        State.Data.Vertexes.Count = State.Data.Vertexes.Count + 3;
+    }
+
+    // 0x60004bdc
+    BOOL RenderTriangleFan(RTLVX* vertexes, const u32 vertexCount, const u32 indexCount, const u16* indexes)
+    {
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        return State.DX.Device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DVT_TLVERTEX,
+            vertexes, vertexCount, (WORD*)indexes, indexCount, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
+    }
+
+    // 0x60004504
+    void RenderTriangleMesh(RTLVX* vertexes, const u32* indexes, const u32 count)
+    {
+        for (u32 x = 0; x < count; x++)
+        {
+            if (MaximumRendererVertexCount - 3 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+            RTLVX* a = &vertexes[indexes[x * 3 + 0]];
+            RTLVX* b = &vertexes[indexes[x * 3 + 1]];
+            RTLVX* c = &vertexes[indexes[x * 3 + 2]];
+
+            RenderTriangle(a, b, c);
+        }
+    }
+
+    // 0x60004b90
+    BOOL RenderTriangleStrip(RTLVX* vertexes, const u32 count)
+    {
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        for (u32 x = 0; x < count; x++)
+        {
+            vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)(vertexes[x].XYZ.Z * 255.0f)]) << 24;
+
+            vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
+        }
+
+        return State.DX.Device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DVT_TLVERTEX,
+            vertexes, count, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
+    }
 }

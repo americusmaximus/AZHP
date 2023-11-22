@@ -40,6 +40,8 @@ namespace RendererModuleValues
 
     RendererTexture* CurrentRendererTexture;
 
+    u32 MaximumRendererVertexCount = DEFAULT_RENDERER_VERTEX_COUNT;
+
     RendererModuleDescriptor ModuleDescriptor;
     RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];
 

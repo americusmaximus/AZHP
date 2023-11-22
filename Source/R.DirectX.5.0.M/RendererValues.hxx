@@ -47,6 +47,8 @@ namespace RendererModuleValues
 
     extern Renderer::RendererTexture* CurrentRendererTexture; // 0x60012a00
 
+    extern u32 MaximumRendererVertexCount; // 0x60010f5c
+
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x60012010
     extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT]; // 0x60019e00
 }

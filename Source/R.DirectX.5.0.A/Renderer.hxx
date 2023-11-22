@@ -51,7 +51,9 @@ SOFTWARE.
 #define D3DRENDERSTATE_FOGEND (D3DRENDERSTATETYPE)37
 #define D3DRENDERSTATE_FOGDENSITY (D3DRENDERSTATETYPE)38
 
+#define DEFAULT_RENDERER_VERTEX_COUNT 253
 #define MAX_RENDERER_VERTEX_COUNT 253
+#define MAX_RENDERER_SMALL_INDEX_COUNT 104
 #define MAX_RENDERER_INDEX_COUNT 8096
 
 #define DEPTH_BIT_MASK_32_BIT 0x100
@@ -244,6 +246,8 @@ namespace RendererModule
                 u32 Count; // 0x60010f6c
 
                 u16 Indexes[MAX_RENDERER_INDEX_COUNT]; // 0x60014b90
+
+                u16 Small[MAX_RENDERER_SMALL_INDEX_COUNT]; // 0x600125b0
             } Indexes;
 
             struct
@@ -295,6 +299,9 @@ namespace RendererModule
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
     BOOL InitializeRendererTextureDetails(Renderer::RendererTexture* tex);
     BOOL RenderLines(Renderer::RTLVX* vertexes, const u32 count);
+    BOOL RenderPoints(Renderer::RTLVX* vertexes, const u32 count);
+    BOOL RenderTriangleFan(Renderer::RTLVX* vertexes, const u32 vertexCount, const u32 indexCount, const u16* indexes);
+    BOOL RenderTriangleStrip(Renderer::RTLVX* vertexes, const u32 count);
     BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
     BOOL SelectRendererTexture(Renderer::RendererTexture* tex);
     BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette);
@@ -325,6 +332,10 @@ namespace RendererModule
     void ReleaseRendererDevice(void);
     void ReleaseRendererDeviceSurfaces(void);
     void ReleaseRendererTexture(Renderer::RendererTexture* tex);
+    void RenderQuad(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c, Renderer::RTLVX* d);
+    void RenderQuadMesh(Renderer::RTLVX* vertexes, const u32* indexes, const u32 count);
+    void RenderTriangle(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void RenderTriangleMesh(Renderer::RTLVX* vertexes, const u32* indexes, const u32 count);
     void RestoreRendererSurfaces(void);
     void RestoreRendererTextures(void);
     void SelectRendererDevice(void);

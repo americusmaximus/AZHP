@@ -102,6 +102,10 @@ PostBuild_Cmds=..\Watcom\Debug\Watcom.exe Debug\DX5A.dll
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\..\Source\R.DirectX.5.0.A\Main.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\Source\R.DirectX.5.0.A\Module.cxx
 # End Source File
 # Begin Source File

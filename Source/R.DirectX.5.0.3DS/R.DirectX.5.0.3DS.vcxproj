@@ -32,6 +32,7 @@
     <ResourceCompile Include="App.Resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Main.cxx" />
     <ClCompile Include="Module.cxx" />
     <ClCompile Include="Renderer.cxx" />
     <ClCompile Include="RendererValues.cxx" />

@@ -108,63 +108,74 @@ namespace RendererModule
     // a.k.a. THRASH_drawpoint
     DLLAPI void STDCALLAPI DrawPoint(RVX* vertex)
     {
-        // TODO NOT IMPLEMENTED
+        RenderPoints((RTLVX*)vertex, 1);
     }
 
     // 0x60001578
     // a.k.a. THRASH_drawpointmesh
     DLLAPI void STDCALLAPI DrawPointMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { RenderPoints((RTLVX*)&vs[indexes[x]], 1); }
     }
 
     // 0x600015b0
     // a.k.a. THRASH_drawpointstrip
     DLLAPI void STDCALLAPI DrawPointStrip(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { RenderPoints((RTLVX*)&vs[x], 1); }
     }
 
     // 0x6000146c
     // a.k.a. THRASH_drawquad
     DLLAPI void STDCALLAPI DrawQuad(RVX* a, RVX* b, RVX* c, RVX* d)
     {
-        // TODO NOT IMPLEMENTED
+        RenderQuad((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
     }
 
     // 0x60001488
     // a.k.a. THRASH_drawquadmesh
     DLLAPI void STDCALLAPI DrawQuadMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        RenderQuadMesh((RTLVX*)vertexes, indexes, count);
     }
 
     // 0x600013d0
     // a.k.a. THRASH_drawtri
     DLLAPI void STDCALLAPI DrawTriangle(RVX* a, RVX* b, RVX* c)
     {
-        // TODO NOT IMPLEMENTED
+        RenderTriangle((RTLVX*)a, (RTLVX*)b, (RTLVX*)c);
     }
 
     // 0x60001414
     // a.k.a. THRASH_drawtrifan
     DLLAPI void STDCALLAPI DrawTriangleFan(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        for (u32 x = 0; x < count; x++)
+        {
+            State.Data.Indexes.Small[x * 3 + 0] = 0;
+            State.Data.Indexes.Small[x * 3 + 1] = x + 0;
+            State.Data.Indexes.Small[x * 3 + 2] = x + 1;
+        }
+
+        RenderTriangleFan((RTLVX*)vertexes, count + 2, count, State.Data.Indexes.Small);
     }
 
     // 0x600013e8
     // a.k.a. THRASH_drawtrimesh
     DLLAPI void STDCALLAPI DrawTriangleMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        RenderTriangleMesh((RTLVX*)vertexes, indexes, count);
     }
 
     // 0x60001400
     // a.k.a. THRASH_drawtristrip
     DLLAPI void STDCALLAPI DrawTriangleStrip(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        RenderTriangleStrip((RTLVX*)vertexes, count + 2);
     }
 
     // 0x6000113c
