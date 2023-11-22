@@ -22,9 +22,24 @@ SOFTWARE.
 
 #include "RendererValues.hxx"
 
-using namespace Renderer;
+using namespace RendererModule;
 
 namespace RendererModuleValues
 {
+    s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
 
+    u32 RendererVersion = RENDERER_MODULE_VERSION_105;
+
+    RendererModuleDescriptor ModuleDescriptor;
+    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];
+
+    s32 UnknownArray06[6] =
+    {
+        0, 0, 0, 0, 5, -1
+    }; // TODO
+
+    s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
+    {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1
+    }; // TODO
 }

@@ -22,8 +22,11 @@ SOFTWARE.
 
 #include "Graphics.Basic.hxx"
 #include "Module.hxx"
+#include "Renderer.hxx"
+#include "RendererValues.hxx"
 
 using namespace Renderer;
+using namespace RendererModuleValues;
 
 namespace RendererModule
 {
@@ -31,9 +34,33 @@ namespace RendererModule
     // a.k.a. THRASH_about
     DLLAPI RendererModuleDescriptor* STDCALLAPI AcquireDescriptor(void)
     {
-        // TODO NOT IMPLEMENTED
+        ModuleDescriptor.Version = RendererVersion;
+        ModuleDescriptor.MaximumTextureWidth = 256;
+        ModuleDescriptor.MaximumTextureHeight = 256;
+        ModuleDescriptor.DXV = RENDERER_MODULE_VERSION_DX6; // ORIGINAL: 4
+        ModuleDescriptor.Unk5 = 4; // TODO
+        ModuleDescriptor.Caps = (State.DX.Active.IsSoft & 1) << 4
+            | (RENDERER_MODULE_CAPS_WINDOWED | RENDERER_MODULE_CAPS_TEXTURE_HEIGHT_POW2 | RENDERER_MODULE_CAPS_TEXTURE_WIDTH_POW2 | RENDERER_MODULE_CAPS_TEXTURE_SQUARE | RENDERER_MODULE_CAPS_LINE_WIDTH);
+        ModuleDescriptor.Author = RENDERER_MODULE_AUTHOR;
+        ModuleDescriptor.Signature = RENDERER_MODULE_SIGNATURE_D3D6;
+        ModuleDescriptor.Unk1 = 0x80; // TOOD
+        ModuleDescriptor.MinimumTextureWidth = 8;
+        ModuleDescriptor.MultipleTextureWidth = 1;
+        ModuleDescriptor.MinimumTextureHeight = 8;
+        ModuleDescriptor.MultipleTextureHeight = 1;
+        ModuleDescriptor.ClipAlign = 0;
+        ModuleDescriptor.Unk4 = 0xc; // TODO
+        ModuleDescriptor.TextureFormatStates = RendererTextureFormatStates;
 
-        return NULL;
+        ModuleDescriptor.Unk6 = UnknownArray06;
+
+        ModuleDescriptor.Capabilities.Capabilities = ModuleDescriptorDeviceCapabilities;
+
+        strcpy(ModuleDescriptor.Name, RENDERER_MODULE_NAME);
+
+        SelectRendererDevice();
+
+        return &ModuleDescriptor;
     }
 
     // 0x60001150
@@ -180,9 +207,9 @@ namespace RendererModule
     // a.k.a. THRASH_init
     DLLAPI u32 STDCALLAPI Init(void)
     {
-        // TODO NOT IMPLEMENTED
+        AcquireRendererDeviceCount();
 
-        return RENDERER_MODULE_FAILURE;
+        return State.Devices.Count;
     }
 
     // 0x60002ea0
@@ -298,7 +325,7 @@ namespace RendererModule
     // a.k.a. THRASH_sync
     DLLAPI u32 STDCALLAPI SyncGameWindow(const u32)
     {
-        // TODO NOT IMPLEMENTED
+        UnlockGameWindow(LockGameWindow());
 
         return RENDERER_MODULE_FAILURE;
     }

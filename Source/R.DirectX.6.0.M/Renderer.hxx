@@ -47,6 +47,14 @@ SOFTWARE.
 #define DDSDM_NONE 0
 #define D3DCOLOR_NONE 0
 
+#define MAX_RENDERER_DEVICE_COUNT 16 /* ORIGINAL: 10 */
+
+#define MAX_DEVICE_NAME_LENGTH 32
+
+#define MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 100 */
+
+#define MAX_USABLE_TEXTURE_FORMAT_COUNT 14
+
 namespace Renderer
 {
 }
@@ -55,10 +63,42 @@ namespace RendererModule
 {
     struct RendererModuleState
     {
+        struct
+        {
+            struct
+            {
+                BOOL IsSoft; // 0x60015074
+            } Active;
+        } DX;
 
+        struct
+        {
+            GUID* Identifier; // 0x600149bc
+        } Device;
+
+        struct
+        {
+            u32 Count; // 0x600149c0
+
+            GUID* Indexes[MAX_RENDERER_DEVICE_COUNT]; // 0x60014768
+            GUID Identifiers[MAX_RENDERER_DEVICE_COUNT]; // 0x60014790
+            char Names[MAX_RENDERER_DEVICE_COUNT][MAX_DEVICE_NAME_LENGTH]; // 0x60014830
+        } Devices;
+
+        struct
+        {
+            RendererModuleLambdaContainer Lambdas; // 0x6003bcc0
+        } Lambdas;
+
+        struct
+        {
+            HWND HWND; // 0x6003bce0
+        } Window;
     };
 
     extern RendererModuleState State;
 
-
+    void SelectRendererDevice(void);
+    u32 AcquireRendererDeviceCount(void);
+    BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context);
 }

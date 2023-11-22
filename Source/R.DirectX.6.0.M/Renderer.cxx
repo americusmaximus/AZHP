@@ -21,10 +21,63 @@ SOFTWARE.
 */
 
 #include "Renderer.hxx"
+#include "RendererValues.hxx"
+
+using namespace RendererModuleValues;
 
 namespace RendererModule
 {
     RendererModuleState State;
 
+    // 0x60001830
+    void SelectRendererDevice(void)
+    {
+        if (RendererDeviceIndex < DEFAULT_RENDERER_DEVICE_INDEX
+            && (State.Lambdas.Lambdas.AcquireWindow != NULL || State.Window.HWND != NULL))
+        {
+            const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONEMNT_PROPERTY_NAME);
 
+            SelectDevice(value == NULL ? DEFAULT_RENDERER_DEVICE_INDEX : atoi(value));
+        }
+    }
+
+    // 0x60001800
+    u32 AcquireRendererDeviceCount(void)
+    {
+        State.Devices.Count = 0;
+        State.Device.Identifier = NULL;
+
+        u32 indx = DEFAULT_RENDERER_DEVICE_INDEX;
+        DirectDrawEnumerateA(EnumerateRendererDevices, &indx);
+
+        return State.Devices.Count;
+    }
+
+    // 0x60001970
+    BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context)
+    {
+        if (uid == NULL)
+        {
+            State.Devices.Indexes[State.Devices.Count] = NULL;
+        }
+        else
+        {
+            State.Devices.Indexes[State.Devices.Count] = &State.Devices.Identifiers[State.Devices.Count];
+            State.Devices.Identifiers[State.Devices.Count] = *uid;
+        }
+
+        if (State.Devices.Count == *(u32*)context)
+        {
+            State.Device.Identifier = State.Devices.Indexes[State.Devices.Count];
+        }
+
+        strncpy(State.Devices.Names[State.Devices.Count], name, MAX_DEVICE_NAME_LENGTH);
+
+        // NOTE: Additional extra check to prevent writes outside of the array bounds.
+        if (MAX_RENDERER_DEVICE_COUNT <= (State.Devices.Count + 1)) { return FALSE; }
+
+        State.Devices.Count = State.Devices.Count + 1;
+
+        return TRUE;
+    }
 }
