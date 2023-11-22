@@ -1677,4 +1677,47 @@ namespace RendererModule
 
         return State.DX.Device->SetRenderState(D3DRENDERSTATE_TEXTUREHANDLE, tex == NULL ? 0 : tex->Handle) == DD_OK;
     }
+
+    // 0x60006468
+    BOOL UpdateRendererTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
+    {
+        if (pixels != NULL)
+        {
+            tex->Descriptor.dwFlags = DDSD_LPSURFACE;
+            tex->Descriptor.lpSurface = (void*)pixels;
+
+            if (tex->Surface1->SetSurfaceDesc(&tex->Descriptor, 0) != DD_OK) { return FALSE; }
+
+            if (State.Scene.IsActive)
+            {
+                AttemptRenderScene();
+
+                State.DX.Device->SetRenderState(D3DRENDERSTATE_FLUSHBATCH, TRUE);
+            }
+
+            tex->Surface1->PageLock(0);
+            tex->Texture2->Load(tex->Texture1);
+            tex->Surface1->PageUnlock(0);
+
+            tex->Texture2->GetHandle(State.DX.Device, &tex->Handle);
+        }
+
+        if (palette == NULL || tex->Unk06 == NULL) { return TRUE; } // TODO
+
+        PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
+
+        for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
+        {
+            entries[x].peRed = (u8)((palette[x] >> 16) & 0xff);
+            entries[x].peGreen = (u8)((palette[x] >> 8) & 0xff);
+            entries[x].peBlue = (u8)((palette[x] >> 0) & 0xff);
+            entries[x].peFlags = 0;
+        }
+
+        if (tex->Palette->SetEntries(0, 0, tex->Colors, entries) != DD_OK) { return FALSE; }
+
+        if (tex->Texture2->PaletteChanged(0, tex->Colors) != DD_OK) { return FALSE; }
+
+        return TRUE;
+    }
 }

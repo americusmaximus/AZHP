@@ -296,6 +296,7 @@ namespace RendererModule
     BOOL InitializeRendererTextureDetails(Renderer::RendererTexture* tex);
     BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
     BOOL SelectRendererTexture(Renderer::RendererTexture* tex);
+    BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette);
     HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC desc, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDeviceTextureFormats(LPDDSURFACEDESC desc, LPVOID context);
     Renderer::RendererTexture* InitializeRendererTexture(void);

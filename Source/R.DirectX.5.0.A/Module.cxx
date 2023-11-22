@@ -846,9 +846,9 @@ namespace RendererModule
     // a.k.a. THRASH_tupdate
     DLLAPI RendererTexture* STDCALLAPI UpdateTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
     {
-        // TODO NOT IMPLEMENTED
+        if (tex == NULL) { return NULL; }
 
-        return RENDERER_MODULE_FAILURE;
+        return UpdateRendererTexture(tex, pixels, palette) ? tex : NULL;
     }
 
     // 0x60001368
