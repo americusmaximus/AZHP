@@ -29,7 +29,16 @@ namespace RendererModuleValues
 {
     s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
 
+    u32 RendererFogColor = DEFAULT_FOG_COLOR;
+    f32 RendererFogDensity = DEFAULT_FOG_DINSITY;
+    f32 RendererDepthBias;
+
     s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_ACCELERATED;
+
+    u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
+    u8 RendererFogExponentialValues[MAX_INPUT_FOG_ALPHA_COUNT];
+
+    RendererTexture* CurrentRendererTexture;
 
     RendererModuleDescriptor ModuleDescriptor;
     RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];
@@ -37,6 +46,11 @@ namespace RendererModuleValues
     s32 UnknownArray06[6] =
     {
         0, 0, 0, 0, 5, -1
+    }; // TODO
+
+    u32 UnknownFormatValues[MAX_OTHER_USABLE_TEXTURE_FORMAT_COUNT] =
+    {
+        0, 1, 1, 2, 2, 3, 4, 2, 1, 2, 2, 0
     }; // TODO
 
     s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT] =

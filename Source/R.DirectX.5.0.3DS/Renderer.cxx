@@ -1319,7 +1319,7 @@ namespace RendererModule
         desc.dwFlags = DDSD_MIPMAPCOUNT | DDSD_PIXELFORMAT | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
         desc.ddsCaps.dwCaps = State.Device.Capabilities.IsAccelerated
             ? DDSCAPS_ALLOCONLOAD | DDSCAPS_MIPMAP | DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY | DDSCAPS_COMPLEX
-            : DDSCAPS_ALLOCONLOAD | DDSCAPS_MIPMAP | DDSCAPS_MIPMAP | DDSCAPS_TEXTURE | DDSCAPS_COMPLEX;
+            : DDSCAPS_ALLOCONLOAD | DDSCAPS_MIPMAP | DDSCAPS_VIDEOMEMORY | DDSCAPS_TEXTURE | DDSCAPS_COMPLEX;
 
         if (State.DX.Active.Instance->CreateSurface(&desc, &surf, NULL) != DD_OK)
         {

@@ -31,11 +31,21 @@ namespace RendererModuleValues
 {
     extern s32 RendererDeviceIndex; // 0x60010ef4
 
+    extern u32 RendererFogColor; // 0x60010f08
+    extern f32 RendererFogDensity; // 0x60010f0c
+    extern f32 RendererDepthBias; // 0x60010f10
+
     extern s32 RendererDeviceType; // 0x60010f20
 
     extern s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60010e44
 
     extern s32 UnknownArray06[6]; // 0x60010e70 // TODO
+
+    extern u32 UnknownFormatValues[MAX_OTHER_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60010f98
+
+    extern u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT]; // 0x600128b0
+
+    extern Renderer::RendererTexture* CurrentRendererTexture; // 0x60012a00
 
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x60012010
     extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT]; // 0x60019e00
