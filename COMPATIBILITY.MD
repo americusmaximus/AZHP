@@ -19,6 +19,7 @@ Watcom C/C++ compiler was used back in the 90s and early 00's by a lot of games,
 
 ### Requirements
 1. [Microsoft Visual C++ 6](https://archive.org/details/en_vs6_ent)
+2. [Microsoft DirectX 6.0 SDK](https://archive.org/details/directx6sdk)
 
 ### Build & Use
 1. Install DirectX 6 SDK.
