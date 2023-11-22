@@ -1532,7 +1532,6 @@ namespace RendererModule
             vertexes, count, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
     }
 
-
     // 0x60004630
     BOOL RenderPoints(RTLVX* vertexes, const u32 count)
     {

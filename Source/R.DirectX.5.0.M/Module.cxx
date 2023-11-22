@@ -78,21 +78,30 @@ namespace RendererModule
     // a.k.a. THRASH_drawline
     DLLAPI void STDCALLAPI DrawLine(RVX* a, RVX* b)
     {
-        // TODO NOT IMPLEMENTED
+        RTLVX vertexes[2];
+
+        CopyMemory(&vertexes[0], a, sizeof(RTLVX));
+        CopyMemory(&vertexes[1], b, sizeof(RTLVX));
+
+        RenderLines(vertexes, 2);
     }
 
     // 0x600014fc
     // a.k.a. THRASH_drawlinemesh
     DLLAPI void STDCALLAPI DrawLineMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawLine((RVX*)&vs[indexes[x * 2 + 0]], (RVX*)&vs[indexes[x * 2 + 1]]); }
     }
 
     // 0x60001538
     // a.k.a. THRASH_drawlinestrip
     DLLAPI void STDCALLAPI DrawLineStrip(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawLine((RVX*)&vs[x + 0], (RVX*)&vs[x + 1]); }
     }
 
     // 0x60001564

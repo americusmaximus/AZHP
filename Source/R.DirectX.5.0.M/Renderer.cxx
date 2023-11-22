@@ -1720,4 +1720,25 @@ namespace RendererModule
 
         return TRUE;
     }
+
+    // 0x60004c80
+    BOOL RenderLines(RTLVX* vertexes, const u32 count)
+    {
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        for (u32 x = 0; x < count; x++)
+        {
+            vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)(vertexes[x].XYZ.Z * 255.0f)]) << 24;
+
+            vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
+        }
+
+        return State.DX.Device->DrawPrimitive(D3DPT_LINESTRIP, D3DVT_TLVERTEX,
+            vertexes, count, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
+    }
 }

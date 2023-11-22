@@ -294,6 +294,7 @@ namespace RendererModule
     BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
     BOOL InitializeRendererTextureDetails(Renderer::RendererTexture* tex);
+    BOOL RenderLines(Renderer::RTLVX* vertexes, const u32 count);
     BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
     BOOL SelectRendererTexture(Renderer::RendererTexture* tex);
     BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette);
