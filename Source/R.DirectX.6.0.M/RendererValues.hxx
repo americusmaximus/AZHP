@@ -31,6 +31,8 @@ namespace RendererModuleValues
 {
     extern s32 RendererDeviceIndex; // 0x60012104
 
+    extern f32 RendererDepthBias; // 0x60014b64
+
     extern s32 RendererDeviceType; // 0x600128c4
     extern u32 RendererVersion; // 0x60012cac
 

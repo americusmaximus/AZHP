@@ -28,6 +28,8 @@ namespace RendererModuleValues
 {
     s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
 
+    f32 RendererDepthBias;
+
     u32 RendererVersion = RENDERER_MODULE_VERSION_105;
     s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_ACCELERATED;
 

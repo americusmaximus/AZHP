@@ -51,6 +51,11 @@ SOFTWARE.
 #define D3DRENDERSTATE_FOGEND (D3DRENDERSTATETYPE)37
 #define D3DRENDERSTATE_FOGDENSITY (D3DRENDERSTATETYPE)38
 
+#define MAX_RENDERER_VERTEX_COUNT 253
+#define MAX_RENDERER_SMALL_INDEX_COUNT 256
+#define MAX_RENDERER_MEDIUM_INDEX_COUNT 8096
+#define MAX_RENDERER_LARGE_INDEX_COUNT 65536
+
 #define MAX_RENDERER_DEVICE_COUNT 16 /* ORIGINAL: 10 */
 
 #define MAX_DEVICE_NAME_LENGTH 32
@@ -150,6 +155,21 @@ namespace RendererModule
 
         struct
         {
+            struct
+            {
+                u32 Count; // 0x6001afc4
+                u16 Medium[MAX_RENDERER_MEDIUM_INDEX_COUNT]; // 0x60017080
+            } Indexes;
+
+            struct
+            {
+                u32 Count; // 0x6001afc0
+                Renderer::RTLVX Vertexes[MAX_RENDERER_VERTEX_COUNT]; // 0x600150e0
+            } Vertexes;
+        } Data;
+
+        struct
+        {
             GUID* Identifier; // 0x600149bc
 
             struct
@@ -192,6 +212,11 @@ namespace RendererModule
 
             RendererModuleLambdaContainer Lambdas; // 0x6003bcc0
         } Lambdas;
+
+        struct
+        {
+            BOOL IsActive; // 0x60014350
+        } Lock;
 
         struct
         {
@@ -245,6 +270,7 @@ namespace RendererModule
     BOOL AcquireRendererDeviceDepthBufferNotEqualComparisonCapabilities(void);
     BOOL AcquireRendererDeviceState(void);
     BOOL AcquireRendererDeviceStripplingCapabilities(void);
+    BOOL BeginRendererScene(void);
     BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context);
     BOOL InitializeRendererDeviceCapabilities(RendererModuleDescriptorDeviceCapabilities* caps);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
@@ -255,9 +281,11 @@ namespace RendererModule
     u32 AcquirePixelFormat(const DDPIXELFORMAT* format);
     u32 AcquireRendererDeviceCount(void);
     u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1);
+    u32 EndRendererScene(void);
     u32 InitializeRendererDevice(void);
     u32 InitializeRendererDeviceAcceleration(void);
     u32 InitializeRendererDeviceLambdas(void);
+    u32 RendererRenderScene(void);
     u32 SelectRendererTransforms(const f32 zNear, const f32 zFar);
     u32 STDCALLAPI InitializeRendererDeviceExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result); // TODO
     u32 STDCALLAPI InitializeRendererDeviceSurfacesExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result); // TODO
@@ -268,6 +296,7 @@ namespace RendererModule
     void InitializeRendererDeviceCapabilities(void);
     void InitializeRendererState(void);
     void InitializeRendererTransforms(void);
+    void InitializeVertexes(Renderer::RTLVX* vertexes, const u32 count);
     void InitializeViewPort(void);
     void ReleaseRendererDevice(void);
     void SelectRendererDevice(void);

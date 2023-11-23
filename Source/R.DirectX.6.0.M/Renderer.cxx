@@ -51,6 +51,16 @@ namespace RendererModule
         if (State.Lambdas.Log != NULL) { State.Lambdas.Log(severity, buffer); }
     }
 
+    // 0x6000e514
+    void InitializeVertexes(Renderer::RTLVX* vertexes, const u32 count)
+    {
+        for (u32 x = 0; x < count; x++)
+        {
+            vertexes[x].XYZ.X = vertexes[x].XYZ.X - 0.5f;
+            vertexes[x].XYZ.Y = vertexes[x].XYZ.Y - 0.5f;
+        }
+    }
+
     // 0x60001830
     void SelectRendererDevice(void)
     {
@@ -86,6 +96,61 @@ namespace RendererModule
         }
 
         return State.DX.ViewPort->Clear(1, &rect, options) == DD_OK;
+    }
+
+    // 0x60006830
+    u32 EndRendererScene(void)
+    {
+        if (State.Data.Vertexes.Count != 0) { RendererRenderScene(); }
+
+        if (State.Scene.IsActive)
+        {
+            State.Scene.IsActive = FALSE;
+
+            RendererDepthBias = 0.0f;
+
+            State.DX.Device->SetRenderState(D3DRENDERSTATE_FLUSHBATCH, TRUE);
+
+            return State.DX.Device->EndScene() == DD_OK;
+        }
+
+        return RENDERER_MODULE_SUCCESS;
+    }
+
+    // 0x600056d0
+    u32 RendererRenderScene(void)
+    {
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        InitializeVertexes(State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count);
+
+        const HRESULT result = State.DX.Device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX,
+            State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count,
+            State.Data.Indexes.Medium, State.Data.Indexes.Count, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP);
+
+        State.Data.Vertexes.Count = 0;
+        State.Data.Indexes.Count = 0;
+
+        return result;
+    }
+
+    // 0x600067d0
+    // a.k.a. startrender
+    BOOL BeginRendererScene(void)
+    {
+        if (State.Lock.IsActive)
+        {
+            LOGERROR("D3D startrender called in while locked\n");
+
+            if (State.Lock.IsActive) { UnlockGameWindow(NULL); }
+        }
+
+        return State.DX.Device->BeginScene() == DD_OK;
     }
 
     // 0x60001800

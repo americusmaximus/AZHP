@@ -195,9 +195,7 @@ namespace RendererModule
     // a.k.a. THRASH_flushwindow
     DLLAPI u32 STDCALLAPI FlushGameWindow(void)
     {
-        // TODO NOT IMPLEMENTED
-
-        return RENDERER_MODULE_FAILURE;
+        return EndRendererScene();
     }
 
     // 0x600011d0
