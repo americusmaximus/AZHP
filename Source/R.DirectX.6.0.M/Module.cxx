@@ -252,36 +252,124 @@ namespace RendererModule
     // a.k.a. THRASH_lockwindow
     DLLAPI RendererModuleWindowLock* STDCALLAPI LockGameWindow(void)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.DX.Surfaces.Window != NULL)
+        {
+            if (State.Lock.IsActive) { LOGERROR("D3D lock called while locked\n"); }
 
-        return NULL;
+            if (State.Scene.IsActive) { EndRendererScene(); }
+
+            if (State.Lambdas.Lambdas.LockWindow != NULL) { State.Lambdas.Lambdas.LockWindow(TRUE); }
+
+            State.Lock.Surface = State.DX.Surfaces.Window;
+
+            DDSURFACEDESC2 desc;
+            ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
+
+            desc.dwSize = sizeof(DDSURFACEDESC2);
+
+            State.DX.Code = State.DX.Surfaces.Window->Lock(NULL, &desc, DDLOCK_WAIT, NULL);
+
+            if (State.DX.Code != DD_OK)
+            {
+                if (State.Lambdas.Lambdas.LockWindow != NULL) { State.Lambdas.Lambdas.LockWindow(FALSE); }
+
+                return NULL;
+            }
+
+            if (State.Settings.IsWindowMode)
+            {
+                GetClientRect(State.Window.HWND, &State.Lock.State.Rect);
+
+                POINT point;
+                ZeroMemory(&point, sizeof(POINT));
+
+                ClientToScreen(State.Window.HWND, &point);
+
+                OffsetRect(&State.Lock.State.Rect, point.x, point.y);
+
+                if (State.DX.Surfaces.Window == State.DX.Surfaces.Active[1]) // TODO
+                {
+                    desc.lpSurface = (void*)((addr)desc.lpSurface + (addr)(State.Lock.State.Rect.left * 2 + desc.lPitch * State.Lock.State.Rect.top));
+                }
+            }
+
+            State.Lock.State.Stride = desc.lPitch;
+            State.Lock.State.Height = State.Window.Height;
+            State.Lock.State.Width = State.Window.Width;
+
+            if (State.Lock.Surface == State.DX.Active.Surfaces.Active.Depth)
+            {
+                State.Lock.State.Format = desc.ddpfPixelFormat.dwRGBBitCount; // TODO
+            }
+            else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
+            {
+                State.Lock.State.Format = desc.ddpfPixelFormat.dwGBitMask == 0x7e0 ? 4 : 11; // TODO
+            }
+            else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_32)
+            {
+                State.Lock.State.Format = 5; // TODO
+            }
+
+            State.Lock.IsActive = TRUE;
+
+            State.Lock.State.Data = desc.lpSurface;
+        }
+
+        return &State.Lock.State;
     }
 
     // 0x60001190
     // a.k.a. THRASH_pageflip
     DLLAPI u32 STDCALLAPI ToggleGameWindow(void)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.Scene.IsActive) { EndRendererScene(); }
 
-        return RENDERER_MODULE_FAILURE;
+        if (State.Lock.IsActive) { LOGERROR("D3D pageflip called in while locked\n"); }
+
+        return ToggleRenderer();
     }
 
     // 0x60002f60
     // a.k.a. THRASH_readrect
     DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* data)
     {
-        // TODO NOT IMPLEMENTED
+        RendererModuleWindowLock* state = LockGameWindow();
 
-        return RENDERER_MODULE_FAILURE;
+        if (state == NULL) { return RENDERER_MODULE_FAILURE; }
+
+        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_24_BIT ? 4 : 2;
+        const u32 length = multiplier * width;
+
+        for (u32 xx = 0; xx < height; xx++)
+        {
+            const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
+
+            CopyMemory(&data[xx * length], (void*)((addr)state->Data + address), length);
+        }
+
+        return UnlockGameWindow(state);
     }
 
     // 0x60002750
     // a.k.a. THRASH_restore
     DLLAPI u32 STDCALLAPI RestoreGameWindow(void)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.Lock.IsActive) { UnlockGameWindow(NULL); }
 
-        return RENDERER_MODULE_FAILURE;
+        ReleaseRendererDevice();
+
+        RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
+
+        if (State.Lambdas.Lambdas.AcquireWindow != NULL)
+        {
+            ReleaseRendererWindow();
+
+            return RENDERER_MODULE_SUCCESS;
+        }
+
+        ReleaseRendererDeviceInstance();
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60001880
@@ -409,26 +497,55 @@ namespace RendererModule
     // a.k.a.  _THRASH_unlockwindow
     DLLAPI u32 STDCALLAPI UnlockGameWindow(const RendererModuleWindowLock* state)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.Lock.IsActive && State.Lock.Surface != NULL)
+        {
+            State.Lock.Surface->Unlock(state == NULL ? NULL : (LPRECT)&state->Rect);
 
-        return RENDERER_MODULE_FAILURE;
+            State.Lock.Surface = NULL;
+            State.Lock.IsActive = FALSE;
+
+            if (State.Lambdas.Lambdas.LockWindow != NULL) { State.Lambdas.Lambdas.LockWindow(FALSE); }
+        }
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60001100
     // a.k.a. THRASH_window
     DLLAPI u32 STDCALLAPI SelectGameWindow(const u32 indx)
     {
-        // TODO NOT IMPLEMENTED
+        if (indx == 3) // TODO
+        {
+            State.DX.Surfaces.Window = State.DX.Active.Surfaces.Active.Depth;
 
-        return RENDERER_MODULE_FAILURE;
+            return State.DX.Active.Surfaces.Active.Depth != NULL;
+        }
+
+        State.DX.Surfaces.Window = State.DX.Surfaces.Active[indx];
+
+        if (indx == 0) { State.DX.Surfaces.Window = NULL; } // TODO
+
+        return State.DX.Surfaces.Window != NULL;
     }
 
     // 0x60003000
     // a.k.a. THRASH_writerect
     DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* data)
     {
-        // TODO NOT IMPLEMENTED
+        RendererModuleWindowLock* state = LockGameWindow();
 
-        return RENDERER_MODULE_FAILURE;
+        if (state == NULL) { return RENDERER_MODULE_FAILURE; }
+
+        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_24_BIT ? 4 : 2;
+        const u32 length = multiplier * width;
+
+        for (u32 xx = 0; xx < height; xx++)
+        {
+            const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
+
+            CopyMemory((void*)((addr)state->Data + address), &data[xx * length], length);
+        }
+
+        return UnlockGameWindow(state);
     }
 }

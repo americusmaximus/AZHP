@@ -150,6 +150,8 @@ namespace RendererModule
                 IDirectDrawSurface4* Back; // 0x60014990
 
                 IDirectDrawSurface4* Active[MAX_ACTIVE_SURFACE_COUNT]; // 0x60014994
+
+                IDirectDrawSurface4* Window; // 0x600149b4
             } Surfaces;
         } DX;
 
@@ -216,6 +218,9 @@ namespace RendererModule
         struct
         {
             BOOL IsActive; // 0x60014350
+            IDirectDrawSurface4* Surface; // 0x60014354
+
+            RendererModuleWindowLock State; // 0x60014338
         } Lock;
 
         struct
@@ -267,6 +272,8 @@ namespace RendererModule
 
     extern RendererModuleState State;
 
+    void Message(const u32 severity, const char* format, ...);
+
     BOOL AcquireRendererDeviceDepthBufferNotEqualComparisonCapabilities(void);
     BOOL AcquireRendererDeviceState(void);
     BOOL AcquireRendererDeviceStripplingCapabilities(void);
@@ -285,11 +292,14 @@ namespace RendererModule
     u32 InitializeRendererDevice(void);
     u32 InitializeRendererDeviceAcceleration(void);
     u32 InitializeRendererDeviceLambdas(void);
+    u32 ReleaseRendererDeviceInstance(void);
+    u32 ReleaseRendererWindow(void);
     u32 RendererRenderScene(void);
     u32 SelectRendererTransforms(const f32 zNear, const f32 zFar);
     u32 STDCALLAPI InitializeRendererDeviceExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result); // TODO
     u32 STDCALLAPI InitializeRendererDeviceSurfacesExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result); // TODO
     u32 STDCALLAPI ReleaseRendererDeviceExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result); // TODO
+    u32 ToggleRenderer(void);
     void AcquireRendererDeviceTextureFormats(void);
     void AcquireWindowModeCapabilities(void);
     void InitializeConcreteRendererDevice(void);
@@ -299,5 +309,6 @@ namespace RendererModule
     void InitializeVertexes(Renderer::RTLVX* vertexes, const u32 count);
     void InitializeViewPort(void);
     void ReleaseRendererDevice(void);
+    void ReleaseRendererDeviceSurfaces(void);
     void SelectRendererDevice(void);
 }

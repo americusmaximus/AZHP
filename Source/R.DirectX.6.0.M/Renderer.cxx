@@ -193,6 +193,51 @@ namespace RendererModule
         return TRUE;
     }
 
+    // 0x600069a0
+    // a.k.a. showbackbuffer
+    u32 ToggleRenderer(void)
+    {
+        if (!State.Settings.IsWindowMode)
+        {
+            const HRESULT result = State.DX.Active.Surfaces.Main->Flip(NULL, DDFLIP_WAIT);
+
+            if (result == DDERR_SURFACELOST) { return RENDERER_MODULE_FAILURE; }
+
+            if (result != DD_OK)
+            {
+                LOGERROR("D3D Flipping complex display surface failed err %8x\n", result);
+
+                return RENDERER_MODULE_FAILURE;
+            }
+        }
+        else
+        {
+            POINT point;
+            ZeroMemory(&point, sizeof(POINT));
+
+            ClientToScreen(State.Window.HWND, &point);
+
+            RECT r1, r2;
+
+            SetRect(&r1, point.x, point.y, State.Window.Width + point.x, State.Window.Height + point.y);
+            SetRect(&r2, 0, 0, State.Window.Width, State.Window.Height);
+
+            const HRESULT result = State.DX.Active.Surfaces.Active.Main->Blt(&r1,
+                State.DX.Active.Surfaces.Active.Back, &r2, DDBLT_WAIT, NULL);
+
+            if (result == DDERR_SURFACELOST) { return RENDERER_MODULE_FAILURE; }
+
+            if (result != DD_OK)
+            {
+                LOGERROR("D3D showbackbuffer - error %8x\n", result);
+
+                return RENDERER_MODULE_FAILURE;
+            }
+        }
+
+        return RENDERER_MODULE_SUCCESS;
+    }
+
     // 0x60004490
     BOOL AcquireRendererDeviceState(void)
     {
@@ -263,6 +308,36 @@ namespace RendererModule
             State.DX.Clipper->Release();
             State.DX.Clipper = NULL;
         }
+    }
+
+    // 0x60002650
+    u32 ReleaseRendererWindow(void)
+    {
+        if (State.DX.Instance != NULL)
+        {
+            SetForegroundWindow(State.Window.HWND);
+            PostMessageA(State.Window.HWND, RENDERER_MODULE_WINDOW_MESSAGE_RELEASE_DEVICE, 0, 0);
+            WaitForSingleObject(State.Mutex, INFINITE);
+            CloseHandle(State.Mutex);
+
+            State.Mutex = NULL;
+            State.Window.HWND = NULL;
+
+            return State.DX.Code;
+        }
+
+        return RENDERER_MODULE_FAILURE;
+    }
+
+    // 0x600026c0
+    u32 ReleaseRendererDeviceInstance(void)
+    {
+        ReleaseRendererDeviceSurfaces();
+
+        State.DX.Instance->Release();
+        State.DX.Instance = NULL;
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x600026e0
