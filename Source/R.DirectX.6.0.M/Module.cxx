@@ -67,18 +67,19 @@ namespace RendererModule
     // a.k.a. THRASH_clearwindow
     DLLAPI u32 STDCALLAPI ClearGameWindow()
     {
-        // TODO NOT IMPLEMENTED
-
-        return RENDERER_MODULE_FAILURE;
+        return ClearRendererViewPort(State.ViewPort.X0, State.ViewPort.Y0, State.ViewPort.X1, State.ViewPort.Y1);
     }
 
     // 0x600011f0
     // a.k.a. THRASH_clip
     DLLAPI u32 STDCALLAPI ClipGameWindow(const u32 x0, const u32 y0, const u32 x1, const u32 y1)
     {
-        // TODO NOT IMPLEMENTED
+        State.ViewPort.X0 = x0;
+        State.ViewPort.Y0 = y0;
+        State.ViewPort.X1 = x1;
+        State.ViewPort.Y1 = y1;
 
-        return RENDERER_MODULE_FAILURE;
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x600015f0
@@ -289,9 +290,58 @@ namespace RendererModule
     // a.k.a. THRASH_selectdisplay
     DLLAPI u32 STDCALLAPI SelectDevice(const s32 indx)
     {
-        // TODO NOT IMPLEMENTED
+        State.Device.Identifier = NULL;
 
-        return RENDERER_MODULE_FAILURE;
+        if (State.DX.Instance != NULL) { RestoreGameWindow(); }
+
+        const char* name = NULL;
+
+        if (indx < DEFAULT_RENDERER_DEVICE_INDEX || State.Devices.Count <= indx)
+        {
+            RendererDeviceIndex = DEFAULT_RENDERER_DEVICE_INDEX;
+            State.Device.Identifier = State.Devices.Indexes[DEFAULT_RENDERER_DEVICE_INDEX];
+            name = State.Devices.Names[DEFAULT_RENDERER_DEVICE_INDEX];
+        }
+        else
+        {
+            RendererDeviceIndex = indx;
+            State.Device.Identifier = State.Devices.Indexes[indx];
+            name = State.Devices.Names[indx];
+        }
+
+        strcpy(ModuleDescriptor.Name, name);
+
+        if (State.Lambdas.Lambdas.AcquireWindow == NULL)
+        {
+            InitializeRendererDevice();
+        }
+        else
+        {
+            InitializeRendererDeviceLambdas();
+        }
+
+        {
+            const char* value = getenv(RENDERER_MODULE_DEVICE_TYPE_ENVIRONEMNT_PROPERTY_NAME);
+
+            if (value != NULL)
+            {
+                const s32 val = atoi(value);
+
+                if (val != RENDERER_MODULE_DEVICE_TYPE_ACCELERATED)
+                {
+                    if (val == RENDERER_MODULE_DEVICE_TYPE_RGB)
+                    {
+                        SelectState(RENDERER_MODULE_STATE_SELECT_DEVICE_TYPE, (void*)RENDERER_MODULE_DEVICE_TYPE_RGB);
+                    }
+
+                    return RENDERER_MODULE_SUCCESS;
+                }
+            }
+        }
+
+        SelectState(RENDERER_MODULE_STATE_SELECT_DEVICE_TYPE, (void*)RENDERER_MODULE_DEVICE_TYPE_ACCELERATED);
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60003310

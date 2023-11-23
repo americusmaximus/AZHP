@@ -29,6 +29,7 @@ namespace RendererModuleValues
     s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
 
     u32 RendererVersion = RENDERER_MODULE_VERSION_105;
+    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_ACCELERATED;
 
     RendererModuleDescriptor ModuleDescriptor;
     RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];
