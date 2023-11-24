@@ -67,7 +67,7 @@ namespace RendererModule
         if (RendererDeviceIndex < DEFAULT_RENDERER_DEVICE_INDEX
             && (State.Lambdas.Lambdas.AcquireWindow != NULL || State.Window.HWND != NULL))
         {
-            const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONEMNT_PROPERTY_NAME);
+            const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME);
 
             SelectDevice(value == NULL ? DEFAULT_RENDERER_DEVICE_INDEX : atoi(value));
         }
@@ -1619,5 +1619,382 @@ namespace RendererModule
         State.ViewPort.Y0 = 0;
         State.ViewPort.X1 = 0;
         State.ViewPort.Y1 = 0;
+    }
+
+    // 0x60005590
+    void InitializeRendererModuleState(const u32 pending, const u32 depth)
+    {
+        SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE, NULL);
+        SelectState(RENDERER_MODULE_STATE_SELECT_CULL_STATE, (void*)RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE);
+        SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE_FILTER_STATE, (void*)RENDERER_MODULE_TEXTURE_FILTER_LENEAR);
+        SelectState(RENDERER_MODULE_STATE_SELECT_SHADE_STATE, (void*)RENDERER_MODULE_SHADE_GOURAUD);
+        SelectState(RENDERER_MODULE_STATE_SELECT_ALPHA_BLEND_STATE, (void*)RENDERER_MODULE_ALPHA_BLEND_ACTIVE);
+        SelectState(RENDERER_MODULE_STATE_SELECT_ALPHA_TEST_STATE, (void*)RENDERER_MODULE_ALPHA_TEST_16);
+        SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE_MIP_FILTER_STATE, (void*)RENDERER_MODULE_TEXTURE_MIP_FILTER_POINT);
+        SelectState(RENDERER_MODULE_STATE_SELECT_MATERIAL, (void*)0x00000000);
+        SelectState(RENDERER_MODULE_STATE_SELECT_CHROMATIC_COLOR, (void*)0x00000000);
+
+        {
+            const f32 value = 0.0f;
+            SelectState(RENDERER_MODULE_STATE_SELECT_FOG_DENSITY, (void*)(u32)(*(u32*)&value));
+        }
+
+        SelectState(RENDERER_MODULE_STATE_SELECT_FOG_COLOR, (void*)GRAPCHICS_COLOR_WHITE);
+        SelectState(RENDERER_MODULE_STATE_SELECT_BLEND_STATE, (void*)RENDERER_MODULE_BLEND_SOURCE_ALPHA_INVERSE_SOURCE_ALPHA);
+        SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE_ADDRESS_STATE, (void*)RENDERER_MODULE_TEXTURE_ADDRESS_CLAMP);
+
+        {
+            const f32 value = 1.0f;
+            SelectState(RENDERER_MODULE_STATE_SELECT_GAMMA_CONTROL_STATE_ALTERNATIVE, (void*)(u32)(*(u32*)&value)); // TODO
+        }
+
+        {
+            const f32 value = 0.0f;
+            SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_BIAS_STATE, (void*)(u32)(*(u32*)&value));
+        }
+
+        {
+            const f32 value = 0.0f;
+            SelectState(RENDERER_MODULE_STATE_SELECT_MIP_MAP_LOD_BIAS_STATE, (void*)(u32)(*(u32*)&value));
+        }
+
+        SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)((depth < 1) - 1 & 2)); // TODO
+        SelectState(RENDERER_MODULE_STATE_MAX_PENDING, (void*)(pending - 2U & ((int)(pending - 2U) < 0) - 1)); // TODO
+    }
+
+    // 0x60004220
+    RendererTexture* InitializeRendererTexture(void)
+    {
+        RendererTexture* result = (RendererTexture*)AllocateRendererTexture(sizeof(RendererTexture));
+
+        if (result == NULL) { LOGERROR("D3D texture allocation ran out of memory\n"); }
+
+        return result;
+    }
+
+    // 0x60005240
+    RendererTexture* AllocateRendererTexture(const u32 size)
+    {
+        if (State.Lambdas.AllocateMemory != NULL) { return (RendererTexture*)State.Lambdas.AllocateMemory(size); }
+
+        return (RendererTexture*)malloc(size);
+    }
+
+    // 0x60004260
+    void ReleaseRendererTexture(RendererTexture* tex)
+    {
+        if (tex != NULL) { DisposeRendererTexture(tex); }
+    }
+
+    // 0x60005270
+    u32 DisposeRendererTexture(RendererTexture* tex)
+    {
+        if (State.Lambdas.ReleaseMemory != NULL) { return State.Lambdas.ReleaseMemory(tex); }
+
+        free(tex);
+
+        return RENDERER_MODULE_SUCCESS;
+    }
+
+    // 0x60007230
+    s32 InitializeRendererTextureDetails(RendererTexture* tex) // TODO returns -1, 0, 1, where 1 is success, -1 is total failure and no further allocations allowed
+    {
+        DDSURFACEDESC2 desc;
+        CopyMemory(&desc, &State.Textures.Formats.Formats[tex->FormatIndex].Descriptor, sizeof(DDSURFACEDESC2));
+
+        desc.dwSize = sizeof(DDSURFACEDESC2);
+
+        // Attempt to create texture in RAM.
+        {
+            {
+                const char* value = getenv(RENDERER_MODULE_AUTO_MIP_MAP_ENVIRONMENT_PROPERTY_NAME);
+
+                if (value == NULL)
+                {
+                    desc.dwFlags = DDSD_MIPMAPCOUNT | DDSD_PIXELFORMAT | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+                    desc.dwMipMapCount = tex->MipMapCount;
+                    desc.ddsCaps.dwCaps = DDSCAPS_MIPMAP | DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY | DDSCAPS_COMPLEX;
+                }
+                else
+                {
+                    const int count = atoi(value);
+
+                    if (count == 0) // TODO
+                    {
+                        desc.dwFlags = DDSD_MIPMAPCOUNT | DDSD_PIXELFORMAT | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+                        desc.dwMipMapCount = tex->MipMapCount;
+                        desc.ddsCaps.dwCaps = DDSCAPS_MIPMAP | DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY | DDSCAPS_COMPLEX;
+                    }
+                    else
+                    {
+                        desc.dwFlags = DDSD_PIXELFORMAT | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+                        desc.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY;
+                    }
+                }
+
+                if (RendererTextureHint == RENDERER_MODULE_TEXTURE_HINT_DYNAMIC) { desc.ddsCaps.dwCaps2 = DDSCAPS2_HINTDYNAMIC; }
+                else if (RendererTextureHint == RENDERER_MODULE_TEXTURE_HINT_STATIC) { desc.ddsCaps.dwCaps2 = DDSCAPS2_HINTSTATIC; }
+            }
+
+            desc.dwHeight = tex->Height;
+            desc.dwWidth = tex->Width;
+
+            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1)
+            {
+                ZeroMemory(&desc.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
+
+                desc.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
+                desc.ddpfPixelFormat.dwFlags = DDPF_FOURCC;
+                desc.ddpfPixelFormat.dwFourCC = FOURCC_DXT1;
+
+                LOGWARNING("[DX6:S3TC] Set PixelFormat Data\n");
+            }
+
+            IDirectDrawSurface4* surf = NULL;
+
+            {
+                const HRESULT result = State.DX.Active.Instance->CreateSurface(&desc, &surf, NULL);
+
+                if (result != DD_OK) { return (result != DDERR_INVALIDPIXELFORMAT) - 1; } // TODO
+            }
+
+            IDirectDrawSurface4* surface = NULL;
+            if (surf->QueryInterface(IID_IDirectDrawSurface4, (void**)&surface) != DD_OK)
+            {
+                if (surf != NULL) { surf->Release(); }
+
+                return 0; // TODO
+            }
+
+            surf->Release();
+
+            IDirect3DTexture2* texture = NULL;
+            if (surface->QueryInterface(IID_IDirect3DTexture2, (void**)&texture) != DD_OK)
+            {
+                if (surface != NULL) { surface->Release(); }
+
+                return 0; // TODO
+            }
+
+            tex->Surface1 = surface;
+            tex->Texture1 = texture;
+
+            ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
+
+            desc.dwSize = sizeof(DDSURFACEDESC2);
+
+            if (surface->GetSurfaceDesc(&desc) != DD_OK)
+            {
+                if (surface != NULL) { surface->Release(); }
+                if (texture != NULL) { texture->Release(); }
+
+                return 0; // TODO
+            }
+        }
+
+        CopyMemory(&tex->Descriptor, &desc, sizeof(DDSURFACEDESC2));
+
+        // Attempt to create texture in Video Memory or RAM, depending on the device capabilities.
+        {
+            {
+                const char* value = getenv(RENDERER_MODULE_AUTO_MIP_MAP_ENVIRONMENT_PROPERTY_NAME);
+
+                if (value == NULL)
+                {
+                    desc.dwFlags = DDSD_MIPMAPCOUNT | DDSD_PIXELFORMAT | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+                    desc.dwMipMapCount = tex->MipMapCount;
+                    desc.ddsCaps.dwCaps = DDSCAPS_MIPMAP | DDSCAPS_TEXTURE | DDSCAPS_COMPLEX;
+                }
+                else
+                {
+                    const int count = atoi(value);
+
+                    if (count == 0)
+                    {
+                        desc.dwFlags = DDSD_MIPMAPCOUNT | DDSD_PIXELFORMAT | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+                        desc.dwMipMapCount = tex->MipMapCount;
+                        desc.ddsCaps.dwCaps = DDSCAPS_MIPMAP | DDSCAPS_TEXTURE | DDSCAPS_COMPLEX;
+                    }
+                    else
+                    {
+                        desc.dwFlags = DDSD_PIXELFORMAT | DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
+                        desc.ddsCaps.dwCaps = DDSCAPS_TEXTURE;
+                    }
+                }
+
+                if (RendererTextureHint == RENDERER_MODULE_TEXTURE_HINT_DYNAMIC) { desc.ddsCaps.dwCaps2 = DDSCAPS2_HINTDYNAMIC; }
+                else if (RendererTextureHint == RENDERER_MODULE_TEXTURE_HINT_STATIC) { desc.ddsCaps.dwCaps2 = DDSCAPS2_HINTSTATIC; }
+            }
+
+            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1)
+            {
+                ZeroMemory(&desc.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
+
+                desc.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
+                desc.ddpfPixelFormat.dwFlags = DDPF_FOURCC;
+                desc.ddpfPixelFormat.dwFourCC = FOURCC_DXT1;
+
+                LOGWARNING("[DX6:S3TC] Set PixelFormat Data\n");
+            }
+
+            desc.ddsCaps.dwCaps = State.Device.Capabilities.IsAccelerated
+                ? desc.ddsCaps.dwCaps | DDSCAPS_VIDEOMEMORY
+                : desc.ddsCaps.dwCaps | DDSCAPS_SYSTEMMEMORY;
+
+            IDirectDrawSurface4* surf = NULL;
+
+            {
+                const HRESULT result = State.DX.Active.Instance->CreateSurface(&desc, &surf, NULL);
+
+                if (result != DD_OK)
+                {
+                    if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
+                    if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
+
+                    return (result != DDERR_INVALIDPIXELFORMAT) - 1; // TODO
+                }
+            }
+
+            IDirectDrawSurface4* surface = NULL;
+
+            if (surf->QueryInterface(IID_IDirectDrawSurface4, (void**)&surface) != DD_OK)
+            {
+                if (surf != NULL) { surf->Release(); }
+
+                if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
+                if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
+
+                return 0; // TODO
+            }
+
+            surf->Release();
+
+            IDirectDrawPalette* palette = NULL;
+
+            if (desc.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8)
+            {
+                tex->Colors = 256;
+
+                PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
+                ZeroMemory(entries, MAX_TEXTURE_PALETTE_COLOR_COUNT * sizeof(PALETTEENTRY));
+
+                if (State.DX.Active.Instance->CreatePalette(DDPCAPS_ALLOW256 | DDPCAPS_8BIT, entries, &palette, NULL) != DD_OK)
+                {
+                    if (surface != NULL) { surface->Release(); }
+
+                    if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
+                    if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
+
+                    return 0; // TODO
+                }
+
+                if (surface->SetPalette(palette) != DD_OK)
+                {
+                    if (surface != NULL) { surface->Release(); }
+
+                    if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
+                    if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
+
+                    if (palette != NULL) { palette->Release(); }
+
+                    return 0; // TODO
+                }
+
+                tex->Palette = palette;
+            }
+            else if (desc.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED4)
+            {
+                tex->Colors = 16;
+
+                PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
+                ZeroMemory(entries, sizeof(PALETTEENTRY));
+
+                if (State.DX.Active.Instance->CreatePalette(DDPCAPS_4BIT, entries, &palette, NULL) != DD_OK)
+                {
+                    if (surface != NULL) { surface->Release(); }
+
+                    if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
+                    if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
+
+                    return 0; // TODO
+                }
+
+                if (surface->SetPalette(palette) != DD_OK)
+                {
+                    if (surface != NULL) { surface->Release(); }
+
+                    if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
+                    if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
+
+                    if (palette != NULL) { palette->Release(); }
+
+                    return 0; // TODO
+                }
+
+                tex->Palette = palette;
+            }
+            else
+            {
+                tex->Colors = 0;
+                tex->Palette = NULL;
+            }
+
+            IDirect3DTexture2* texture = NULL;
+
+            if (surface->QueryInterface(IID_IDirect3DTexture2, (void**)&texture) != DD_OK)
+            {
+                if (texture != NULL) { texture->Release(); }
+
+                if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
+                if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
+
+                if (palette != NULL) { palette->Release(); }
+
+                return 0; // TODO
+            }
+
+            if (surface->Blt(NULL, tex->Surface1, NULL, DDBLT_WAIT, NULL) != DD_OK)
+            {
+                if (surface != NULL) { surface->Release(); }
+
+                if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
+                if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
+
+                if (texture != NULL) { texture->Release(); }
+
+                if (palette != NULL) { palette->Release(); }
+
+                return 0; // TODO
+            }
+
+            ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
+
+            desc.dwSize = sizeof(DDSURFACEDESC2);
+
+            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1) { desc.dwFlags = DDSD_LINEARSIZE; }
+
+            if (surface->GetSurfaceDesc(&desc) != DD_OK)
+            {
+                if (surface != NULL) { surface->Release(); }
+
+                if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
+                if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
+
+                if (texture != NULL) { texture->Release(); }
+
+                if (palette != NULL) { palette->Release(); }
+            }
+
+            tex->MemoryType = desc.ddsCaps.dwCaps & DDSCAPS_VIDEOMEMORY
+                ? (desc.ddsCaps.dwCaps & DDSCAPS_NONLOCALVIDMEM ? RENDERER_MODULE_TEXTURE_LOCATION_NON_LOCAL_VIDEO_MEMORY : RENDERER_MODULE_TEXTURE_LOCATION_LOCAL_VIDEO_MEMORY)
+                : (desc.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY ? RENDERER_MODULE_TEXTURE_LOCATION_NON_LOCAL_VIDEO_MEMORY : RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY);
+
+            tex->Surface2 = surface;
+            tex->Texture2 = texture;
+
+            return 1; // TODO
+        }
+
+        return 0; // TODO
     }
 }

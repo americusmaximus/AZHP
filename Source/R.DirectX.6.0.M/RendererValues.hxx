@@ -31,6 +31,8 @@ namespace RendererModuleValues
 {
     extern s32 RendererDeviceIndex; // 0x60012104
 
+    extern u32 RendererTextureHint; // 0x60012838
+
     extern f32 RendererDepthBias; // 0x60014b64
 
     extern s32 RendererDeviceType; // 0x600128c4
@@ -39,6 +41,8 @@ namespace RendererModuleValues
     extern s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60012030
 
     extern s32 UnknownArray06[6]; // 0x60012068 // TODO
+
+    extern u32 UnknownFormatValues[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60012ddc
 
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x6003bd00
     extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT]; // 0x6003f000

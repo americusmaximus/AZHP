@@ -77,6 +77,8 @@ SOFTWARE.
 #define MAX_TEXTURE_FORMAT_COUNT 128 /* ORIGINAL: 100 */
 #define MAX_USABLE_TEXTURE_FORMAT_COUNT 14
 
+#define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
+
 #if !defined(__WATCOMC__) && _MSC_VER <= 1200
 inline void LOGERROR(...) { }
 inline void LOGWARNING(...) { }
@@ -89,6 +91,33 @@ inline void LOGMESSAGE(...) { }
 
 namespace Renderer
 {
+    struct RendererTexture
+    {
+        u32 Width;
+        u32 Height;
+
+        u32 UnknownFormatIndexValue; // TODO
+        s32 FormatIndex; // TODO
+        s32 FormatIndexValue; // TODO
+
+        void* Unk06; // TODO
+
+        u32 MipMapCount;
+        RendererTexture* Previous;
+        u32 MemoryType;
+
+        BOOL Unk10; // TODO
+
+        IDirectDrawSurface4* Surface1;
+        IDirect3DTexture2* Texture1;
+        IDirectDrawSurface4* Surface2;
+        IDirect3DTexture2* Texture2;
+        IDirectDrawPalette* Palette;
+
+        DDSURFACEDESC2 Descriptor;
+
+        u32 Colors;
+    };
 }
 
 namespace RendererModule
@@ -212,6 +241,9 @@ namespace RendererModule
         {
             RENDERERMODULELOGLAMBDA Log; // 0x600150b8
 
+            RENDERERMODULEALLOCATEMEMORYLAMBDA AllocateMemory; // 0x600150cc
+            RENDERERMODULERELEASEMEMORYLAMBDA ReleaseMemory; // 0x600150d0
+
             RendererModuleLambdaContainer Lambdas; // 0x6003bcc0
         } Lambdas;
 
@@ -242,6 +274,9 @@ namespace RendererModule
 
         struct
         {
+            Renderer::RendererTexture* Current; // 0x60014b6c
+
+            BOOL Illegal; // 0x60014b70
 
             struct
             {
@@ -284,10 +319,14 @@ namespace RendererModule
     HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC2 desc, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDevicePixelFormats(LPDDPIXELFORMAT format, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDeviceTextureFormats(LPDDPIXELFORMAT format, LPVOID context);
+    Renderer::RendererTexture* AllocateRendererTexture(const u32 size);
+    Renderer::RendererTexture* InitializeRendererTexture(void);
     s32 AcquireRendererDeviceTextureFormatIndex(const u32 palette, const u32 alpha, const u32 red, const u32 green, const u32 blue, const BOOL dxt);
+    s32 InitializeRendererTextureDetails(Renderer::RendererTexture* tex);
     u32 AcquirePixelFormat(const DDPIXELFORMAT* format);
     u32 AcquireRendererDeviceCount(void);
     u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1);
+    u32 DisposeRendererTexture(Renderer::RendererTexture* tex);
     u32 EndRendererScene(void);
     u32 InitializeRendererDevice(void);
     u32 InitializeRendererDeviceAcceleration(void);
@@ -304,11 +343,13 @@ namespace RendererModule
     void AcquireWindowModeCapabilities(void);
     void InitializeConcreteRendererDevice(void);
     void InitializeRendererDeviceCapabilities(void);
+    void InitializeRendererModuleState(const u32 pending, const u32 depth);
     void InitializeRendererState(void);
     void InitializeRendererTransforms(void);
     void InitializeVertexes(Renderer::RTLVX* vertexes, const u32 count);
     void InitializeViewPort(void);
     void ReleaseRendererDevice(void);
     void ReleaseRendererDeviceSurfaces(void);
+    void ReleaseRendererTexture(Renderer::RendererTexture* tex);
     void SelectRendererDevice(void);
 }

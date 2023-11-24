@@ -407,7 +407,7 @@ namespace RendererModule
         }
 
         {
-            const char* value = getenv(RENDERER_MODULE_DEVICE_TYPE_ENVIRONEMNT_PROPERTY_NAME);
+            const char* value = getenv(RENDERER_MODULE_DEVICE_TYPE_ENVIRONMENT_PROPERTY_NAME);
 
             if (value != NULL)
             {
@@ -452,9 +452,44 @@ namespace RendererModule
     // a.k.a. THRASH_setvideomode
     DLLAPI u32 STDCALLAPI SelectVideoMode(const u32 mode, const u32 pending, const u32 depth)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.Scene.IsActive) { LOGERROR("D3D Setting videomode in 3d scene !!!!\n"); }
 
-        return RENDERER_MODULE_FAILURE;
+        SelectRendererDevice();
+
+        s32 result = RENDERER_MODULE_FAILURE;
+
+        if (State.DX.Instance != NULL)
+        {
+            if (State.Lambdas.Lambdas.AcquireWindow == NULL)
+            {
+                InitializeRendererDeviceSurfacesExecute(0, State.Window.HWND, RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES, mode, pending, NULL);
+            }
+            else
+            {
+                SetForegroundWindow(State.Window.HWND);
+                PostMessageA(State.Window.HWND, RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES, mode, pending);
+                WaitForSingleObject(State.Mutex, INFINITE);
+            }
+
+            if (State.DX.Code == DD_OK)
+            {
+                DDSURFACEDESC2 desc;
+                ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
+
+                desc.dwSize = sizeof(DDSURFACEDESC2);
+
+                const HRESULT code = State.DX.Surfaces.Active[1]->GetSurfaceDesc(&desc);
+
+                if (code != DD_OK) { LOGWARNING("DX6_setvideomode:  Error getting Surface Description %8x\n", code); }
+            }
+            else { LOGERROR("DX6_setdisplay - error\n"); }
+
+            result = State.DX.Code == DD_OK;
+        }
+
+        InitializeRendererModuleState(pending, depth);
+
+        return result;
     }
 
     // 0x600011e0
@@ -470,9 +505,47 @@ namespace RendererModule
     // a.k.a. THRASH_talloc
     DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, void* p4, const u32)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.Textures.Illegal) { return NULL; }
 
-        return NULL;
+        RendererTexture* tex = InitializeRendererTexture();
+
+        tex->Width = width;
+        tex->Height = height;
+
+        tex->UnknownFormatIndexValue = UnknownFormatValues[format];
+        tex->FormatIndex = State.Textures.Formats.Indexes[format];
+        tex->FormatIndexValue = format;
+
+        tex->MipMapCount = 1;
+
+        tex->Unk10 = (format == RENDERER_PIXEL_FORMAT_16_BIT_555 || format == RENDERER_PIXEL_FORMAT_16_BIT_444) ? 1 : 0; // TODO
+
+        tex->Unk06 = p4;
+        tex->MemoryType = RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY;
+
+        tex->Surface1 = NULL;
+        tex->Texture1 = NULL;
+        tex->Surface2 = NULL;
+        tex->Texture2 = NULL;
+        tex->Palette = NULL;
+
+        tex->Colors = 0;
+
+        const s32 result = InitializeRendererTextureDetails(tex);
+
+        if (result < 1) // TODO
+        {
+            ReleaseRendererTexture(tex);
+
+            if (result != -1) { State.Textures.Illegal = TRUE; } // TODO
+
+            return NULL;
+        }
+
+        tex->Previous = State.Textures.Current;
+        State.Textures.Current = tex;
+
+        return tex;
     }
 
     // 0x600042a0
