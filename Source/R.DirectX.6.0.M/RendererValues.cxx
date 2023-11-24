@@ -28,12 +28,20 @@ namespace RendererModuleValues
 {
     s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
 
+    u32 RendererFogColor = DEFAULT_FOG_COLOR;
+    f32 RendererFogDensity = DEFAULT_FOG_DINSITY;
+    u32 RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
     u32 RendererTextureHint = RENDERER_MODULE_TEXTURE_HINT_DYNAMIC;
+
+    f32 RendererFogStart = DEFAULT_FOG_START;
+    f32 RendererFogEnd = DEFAULT_FOG_END;
 
     f32 RendererDepthBias;
 
     u32 RendererVersion = RENDERER_MODULE_VERSION_105;
     s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_ACCELERATED;
+
+    u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
 
     RendererModuleDescriptor ModuleDescriptor;
     RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];

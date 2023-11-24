@@ -79,6 +79,14 @@ SOFTWARE.
 
 #define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
 
+#define MAX_OUTPUT_FOG_ALPHA_COUNT 256
+#define MAX_OUTPUT_FOG_ALPHA_VALUE 255
+
+#define DEFAULT_FOG_DINSITY (0.5f)
+#define DEFAULT_FOG_COLOR 0x00FFFFFF
+#define DEFAULT_FOG_START (0.0f)
+#define DEFAULT_FOG_END (1.0f)
+
 #if !defined(__WATCOMC__) && _MSC_VER <= 1200
 inline void LOGERROR(...) { }
 inline void LOGWARNING(...) { }
@@ -269,6 +277,10 @@ namespace RendererModule
             BOOL IsWindowMode; // 0x60014978
 
             u32 MaxAvailableMemory; // 0x60014980
+
+            BOOL IsFogActive; // 0x60014b5c
+
+            u32 Cull; // 0x600150d4
         } Settings;
 
         HANDLE Mutex; // 0x600149b8
@@ -317,7 +329,11 @@ namespace RendererModule
     BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context);
     BOOL InitializeRendererDeviceCapabilities(RendererModuleDescriptorDeviceCapabilities* caps);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
+    BOOL RestoreRendererSurfaces(void);
+    BOOL RestoreRendererTextures(void);
+    BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
     BOOL SelectRendererTexture(Renderer::RendererTexture* tex);
+    BOOL SelectRendererTextureStage(const DWORD stage, const D3DTEXTURESTAGESTATETYPE type, const DWORD value);
     BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette);
     HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC2 desc, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDevicePixelFormats(LPDDPIXELFORMAT format, LPVOID context);
@@ -337,6 +353,7 @@ namespace RendererModule
     u32 ReleaseRendererDeviceInstance(void);
     u32 ReleaseRendererWindow(void);
     u32 RendererRenderScene(void);
+    u32 SelectBasicRendererState(const u32 state, void* value);
     u32 SelectRendererTransforms(const f32 zNear, const f32 zFar);
     u32 STDCALLAPI InitializeRendererDeviceExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result); // TODO
     u32 STDCALLAPI InitializeRendererDeviceSurfacesExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result); // TODO
@@ -356,4 +373,7 @@ namespace RendererModule
     void ReleaseRendererDeviceSurfaces(void);
     void ReleaseRendererTexture(Renderer::RendererTexture* tex);
     void SelectRendererDevice(void);
+    void SelectRendererDeviceType(const u32 type);
+    void SelectRendererFogAlphas(const u8* input, u8* output);
+    void SelectRendererMaterial(const f32 r, const f32 g, const f32 b);
 }

@@ -24,6 +24,7 @@ SOFTWARE.
 #include "Renderer.hxx"
 #include "RendererValues.hxx"
 
+#include <math.h>
 #include <stdio.h>
 
 #define MAX_MESSAGE_BUFFER_LENGTH 512
@@ -2055,6 +2056,163 @@ namespace RendererModule
             if (tex->Palette->SetEntries(0, 0, tex->Colors, entries) != DD_OK) { return FALSE; }
 
             if (tex->Texture2->PaletteChanged(0, tex->Colors) != DD_OK) { return FALSE; }
+        }
+
+        return TRUE;
+    }
+
+    // 0x60006950
+    BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value)
+    {
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        if (State.Data.Vertexes.Count != 0) { RendererRenderScene(); }
+
+        return State.DX.Device->SetRenderState(type, value) == DD_OK;
+    }
+
+    // 0x60006900
+    BOOL SelectRendererTextureStage(const DWORD stage, const D3DTEXTURESTAGESTATETYPE type, const DWORD value)
+    {
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        if (State.Data.Vertexes.Count != 0) { RendererRenderScene(); }
+
+        return State.DX.Device->SetTextureStageState(stage, type, value) == DD_OK;
+    }
+
+    // 0x60006b50
+    void SelectRendererMaterial(const f32 r, const f32 g, const f32 b)
+    {
+        D3DMATERIAL material;
+        ZeroMemory(&material, sizeof(D3DMATERIAL));
+
+        material.dwSize = sizeof(D3DMATERIAL);
+
+        material.diffuse.r = r;
+        material.diffuse.g = g;
+        material.diffuse.b = b;
+
+        material.ambient.r = r;
+        material.ambient.g = g;
+        material.ambient.b = b;
+
+        material.dwRampSize = 1;
+
+        State.DX.Material->SetMaterial(&material);
+    }
+
+    // 0x60004390
+    void SelectRendererDeviceType(const u32 type)
+    {
+        RendererDeviceType = type;
+    }
+
+    // 0x60004050
+    void SelectRendererFogAlphas(const u8* input, u8* output)
+    {
+        if (input == NULL) { return; }
+
+        for (u32 x = 0; x < MAX_OUTPUT_FOG_ALPHA_COUNT; x++)
+        {
+            const f32 value = roundf(x / 255.0f) * 63.0f;
+            const u32 indx = (u32)value;
+
+            const f32 diff = value - indx;
+
+            if (0.0f < diff)
+            {
+                const u8 result = (u8)roundf(input[indx] + (input[indx + 1] - input[indx]) * diff);
+                output[x] = (u8)(MAX_OUTPUT_FOG_ALPHA_VALUE - result);
+            }
+            else
+            {
+
+                output[x] = (u8)(MAX_OUTPUT_FOG_ALPHA_VALUE - input[indx]);
+            }
+        }
+    }
+
+    // 0x600053f0
+    u32 SelectBasicRendererState(const u32 state, void* value)
+    {
+        switch (state)
+        {
+        case RENDERER_MODULE_STATE_SELECT_CULL_STATE:
+        {
+            switch ((u32)value)
+            {
+            case RENDERER_MODULE_CULL_NONE: { State.Settings.Cull = 1; break; } // TODO
+            case RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE: { State.Settings.Cull = 0x80000000; break; }  // TODO
+            case RENDERER_MODULE_CULL_CLOCK_WISE: { State.Settings.Cull = 0; break; } // TODO
+            default: { return RENDERER_MODULE_FAILURE; }
+            }
+
+            break;
+        }
+        case RENDERER_MODULE_STATE_SELECT_WINDOW_MODE_STATE:
+        case RENDERER_MODULE_STATE_SELECT_WINDOW:
+        case RENDERER_MODULE_STATE_SELECT_EXECUTE_LAMBDA:
+        case RENDERER_MODULE_STATE_SELECT_LOCK_WINDOW_LAMBDA: { break; }
+        case RENDERER_MODULE_STATE_SELECT_LAMBDAS:
+        {
+            const RendererModuleLambdaContainer* lambdas = (RendererModuleLambdaContainer*)value;
+
+            State.Lambdas.Log = lambdas == NULL ? NULL : lambdas->Log;
+
+            break;
+        }
+        case RENDERER_MODULE_STATE_SELECT_LOG_LAMBDA: { State.Lambdas.Log = (RENDERERMODULELOGLAMBDA)value; break; }
+        case RENDERER_MODULE_STATE_SELECT_VERSION:
+        {
+            const u32 version = (u32)value;
+
+            if (version != RENDERER_MODULE_VERSION_104 && version != RENDERER_MODULE_VERSION_105) { return RENDERER_MODULE_FAILURE; }
+
+            RendererVersion = version;
+
+            break;
+        }
+        case RENDERER_MODULE_STATE_SELECT_MEMORY_ALLOCATE_LAMBDA: { State.Lambdas.AllocateMemory = (RENDERERMODULEALLOCATEMEMORYLAMBDA)value; break; }
+        case RENDERER_MODULE_STATE_SELECT_MEMORY_RELEASE_LAMBDA: { State.Lambdas.ReleaseMemory = (RENDERERMODULERELEASEMEMORYLAMBDA)value; break; }
+        case RENDERER_MODULE_STATE_SELECT_SELECT_STATE_LAMBDA: { State.Lambdas.SelectState = (RENDERERMODULESELECTSTATELAMBDA)value; break; }
+        default: { return RENDERER_MODULE_FAILURE; }
+        }
+
+        if (State.Lambdas.SelectState != NULL) { State.Lambdas.SelectState(state, value); }
+
+        return RENDERER_MODULE_SUCCESS;
+    }
+
+    // 0x60006b00
+    BOOL RestoreRendererSurfaces(void)
+    {
+        const HRESULT mr = State.DX.Active.Surfaces.Active.Main->Restore();
+        const HRESULT dr = State.DX.Active.Surfaces.Active.Depth->Restore();
+
+        return RestoreRendererTextures() && mr == DD_OK && dr == DD_OK;
+    }
+
+    // 0x60004350
+    BOOL RestoreRendererTextures(void)
+    {
+        RendererTexture* tex = State.Textures.Current;
+
+        while (tex != NULL)
+        {
+            if (tex->Surface2 != NULL) { tex->Surface2->Restore(); }
+
+            tex = tex->Previous;
         }
 
         return TRUE;
