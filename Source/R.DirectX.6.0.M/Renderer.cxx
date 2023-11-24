@@ -1652,7 +1652,7 @@ namespace RendererModule
             const f32 value = 0.0f;
             SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_BIAS_STATE, (void*)(u32)(*(u32*)&value));
         }
-
+        
         {
             const f32 value = 0.0f;
             SelectState(RENDERER_MODULE_STATE_SELECT_MIP_MAP_LOD_BIAS_STATE, (void*)(u32)(*(u32*)&value));
@@ -1996,5 +1996,67 @@ namespace RendererModule
         }
 
         return 0; // TODO
+    }
+
+    // 0x60006890
+    BOOL SelectRendererTexture(RendererTexture* tex)
+    {
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        if (State.Data.Vertexes.Count != 0) { RendererRenderScene(); }
+
+        return State.DX.Device->SetTexture(0, tex == NULL ? NULL : tex->Texture2) == DD_OK;
+    }
+
+    // 0x600056c0
+    void AttemptRenderScene(void)
+    {
+        if (State.Data.Vertexes.Count != 0) { RendererRenderScene(); }
+    }
+
+    // 0x60007830
+    BOOL UpdateRendererTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
+    {
+        if (pixels != NULL)
+        {
+            tex->Descriptor.lpSurface = (void*)pixels;
+
+            tex->Descriptor.dwFlags = DDSD_LPSURFACE;
+
+            if (tex->Surface1->SetSurfaceDesc(&tex->Descriptor, 0) != DD_OK) { return FALSE; }
+
+            if (State.Scene.IsActive)
+            {
+                AttemptRenderScene();
+
+                State.DX.Device->SetRenderState(D3DRENDERSTATE_FLUSHBATCH, TRUE);
+            }
+
+            tex->Surface2->Blt(NULL, tex->Surface1, NULL, DDBLT_WAIT, NULL);
+        }
+
+        if (palette != NULL && tex->Unk06 != NULL) // TODO
+        {
+            PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
+
+            for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
+            {
+                entries[x].peRed = (u8)((palette[x] >> 16) & 0xff);
+                entries[x].peGreen = (u8)((palette[x] >> 8) & 0xff);
+                entries[x].peBlue = (u8)((palette[x] >> 0) & 0xff);
+                entries[x].peFlags = 0;
+            }
+
+            if (tex->Palette->SetEntries(0, 0, tex->Colors, entries) != DD_OK) { return FALSE; }
+
+            if (tex->Texture2->PaletteChanged(0, tex->Colors) != DD_OK) { return FALSE; }
+        }
+
+        return TRUE;
     }
 }

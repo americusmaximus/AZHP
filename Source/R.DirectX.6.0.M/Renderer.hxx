@@ -241,6 +241,7 @@ namespace RendererModule
         {
             RENDERERMODULELOGLAMBDA Log; // 0x600150b8
 
+            RENDERERMODULESELECTSTATELAMBDA SelectState; // 0x600150c8
             RENDERERMODULEALLOCATEMEMORYLAMBDA AllocateMemory; // 0x600150cc
             RENDERERMODULERELEASEMEMORYLAMBDA ReleaseMemory; // 0x600150d0
 
@@ -316,6 +317,8 @@ namespace RendererModule
     BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context);
     BOOL InitializeRendererDeviceCapabilities(RendererModuleDescriptorDeviceCapabilities* caps);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
+    BOOL SelectRendererTexture(Renderer::RendererTexture* tex);
+    BOOL UpdateRendererTexture(Renderer::RendererTexture* tex, const u32* pixels, const u32* palette);
     HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC2 desc, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDevicePixelFormats(LPDDPIXELFORMAT format, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDeviceTextureFormats(LPDDPIXELFORMAT format, LPVOID context);
@@ -341,6 +344,7 @@ namespace RendererModule
     u32 ToggleRenderer(void);
     void AcquireRendererDeviceTextureFormats(void);
     void AcquireWindowModeCapabilities(void);
+    void AttemptRenderScene(void);
     void InitializeConcreteRendererDevice(void);
     void InitializeRendererDeviceCapabilities(void);
     void InitializeRendererModuleState(const u32 pending, const u32 depth);

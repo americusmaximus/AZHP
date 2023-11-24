@@ -443,9 +443,11 @@ namespace RendererModule
     // a.k.a. THRASH_settexture
     DLLAPI u32 STDCALLAPI SelectTexture(RendererTexture* tex)
     {
-        // TODO NOT IMPLEMENTED
+        const BOOL result = SelectRendererTexture(tex);
 
-        return RENDERER_MODULE_FAILURE;
+        if (result && State.Lambdas.SelectState != NULL) { State.Lambdas.SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE, tex); }
+
+        return result;
     }
 
     // 0x600027a0
@@ -552,18 +554,40 @@ namespace RendererModule
     // a.k.a. THRASH_treset
     DLLAPI u32 STDCALLAPI ResetTextures(void)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.Scene.IsActive)
+        {
+            FlushGameWindow();
+            SyncGameWindow(0);
+            Idle();
 
-        return RENDERER_MODULE_FAILURE;
+            State.Scene.IsActive = FALSE;
+        }
+
+        while (State.Textures.Current != NULL)
+        {
+            if (State.Textures.Current->Surface1 != NULL) { State.Textures.Current->Surface1->Release(); }
+            if (State.Textures.Current->Texture1 != NULL) { State.Textures.Current->Texture1->Release(); }
+            if (State.Textures.Current->Surface2 != NULL) { State.Textures.Current->Surface2->Release(); }
+            if (State.Textures.Current->Texture2 != NULL) { State.Textures.Current->Texture2->Release(); }
+            if (State.Textures.Current->Palette != NULL) { State.Textures.Current->Palette->Release(); }
+
+            State.Textures.Current = State.Textures.Current->Previous;
+        }
+
+        State.Textures.Current = NULL;
+
+        State.Textures.Illegal = FALSE;
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60004270
     // a.k.a. THRASH_tupdate
     DLLAPI RendererTexture* STDCALLAPI UpdateTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
     {
-        // TODO NOT IMPLEMENTED
+        if (tex == NULL) { return NULL; }
 
-        return NULL;
+        return UpdateRendererTexture(tex, pixels, palette) ? tex : NULL;
     }
 
     // 0x600013e0

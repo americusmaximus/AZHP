@@ -217,6 +217,7 @@ typedef const void(STDCALLAPI* RENDERERMODULEEXECUTELAMBDA)(const u32 message, c
 typedef const void(STDCALLAPI* RENDERERMODULELOCKWINDOWLAMBDA)(const BOOL state);
 typedef const void(STDCALLAPI* RENDERERMODULELOGLAMBDA)(const u32 severity, const char* message);
 typedef const void(STDCALLAPI* RENDERERMODULESELECTINSTANCELAMBDA)(const void*);
+typedef const void(STDCALLAPI* RENDERERMODULESELECTSTATELAMBDA)(const u32, void*);
 typedef void* (STDCALLAPI* RENDERERMODULEALLOCATEMEMORYLAMBDA)(const u32 size);
 
 namespace RendererModule
