@@ -75,7 +75,7 @@ namespace RendererModule
     {
         if (RendererDeviceIndex < DEFAULT_RENDERER_DEVICE_INDEX && State.Lambdas.AcquireWindow != NULL)
         {
-            const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONEMNT_PROPERTY_NAME);
+            const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME);
 
             SelectDevice(value == NULL ? DEFAULT_RENDERER_DEVICE_INDEX : atoi(value));
         }
