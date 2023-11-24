@@ -54,6 +54,7 @@ The original game had no DirectX 6.0 renderers, thus the one you see here is a r
 ## Thanks
 1. [My Abandonware](https://www.myabandonware.com/) for providing [Need For Speed: Hot Pursuit](https://www.myabandonware.com/game/need-for-speed-iii-hot-pursuit-a4b).
 3. [VEG.BY](https://veg.by/en/projects/nfs3/) for providing modern patch for the game.
+4. [GamePressure](https://www.gamepressure.com/download.asp?ID=82122) for providing demo version of the game.
 
 ## Legal
 1. This is not a complete game. Please purchase software you like!
