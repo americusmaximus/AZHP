@@ -127,6 +127,10 @@ SOURCE=..\..\..\Source\AZX\Native.Basic.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\Source\AZX\RendererModule.Settings.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\Source\AZX\Sound.Basic.hxx
 # End Source File
 # Begin Source File
