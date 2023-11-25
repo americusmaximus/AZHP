@@ -23,6 +23,7 @@
     <ClInclude Include="App.Resources.hxx" />
     <ClInclude Include="Renderer.hxx" />
     <ClInclude Include="RendererValues.hxx" />
+    <ClInclude Include="Settings.hxx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Renderer.Module.MSVC.def" />
@@ -36,6 +37,7 @@
     <ClCompile Include="Module.cxx" />
     <ClCompile Include="Renderer.cxx" />
     <ClCompile Include="RendererValues.cxx" />
+    <ClCompile Include="Settings.cxx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

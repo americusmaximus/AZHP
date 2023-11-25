@@ -22,11 +22,12 @@ SOFTWARE.
 
 #include "Graphics.Basic.hxx"
 #include "Module.hxx"
-#include "Renderer.hxx"
 #include "RendererValues.hxx"
+#include "Settings.hxx"
 
 using namespace Renderer;
 using namespace RendererModuleValues;
+using namespace Settings;
 
 namespace RendererModule
 {
@@ -86,21 +87,30 @@ namespace RendererModule
     // a.k.a. THRASH_drawline
     DLLAPI void STDCALLAPI DrawLine(RVX* a, RVX* b)
     {
-        // TODO NOT IMPLEMENTED
+        RTLVX vertexes[2];
+
+        InitializeVertex(&vertexes[0], (RTLVX*)a);
+        InitializeVertex(&vertexes[1], (RTLVX*)b);
+
+        RenderLines(vertexes, 2);
     }
 
     // 0x60001630
     // a.k.a. THRASH_drawlinemesh
     DLLAPI void STDCALLAPI DrawLineMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawLine((RVX*)&vs[indexes[x * 2 + 0]], (RVX*)&vs[indexes[x * 2 + 1]]); }
     }
 
     // 0x600017a0
     // a.k.a. THRASH_drawlinestrip
     DLLAPI void STDCALLAPI DrawLineStrip(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawLine((RVX*)&vs[x + 0], (RVX*)&vs[x + 1]); }
     }
 
     // 0z60001670
@@ -108,56 +118,64 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI void STDCALLAPI DrawLineStrips(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawLine((RVX*)&vs[indexes[x + 0]], (RVX*)&vs[indexes[x + 1]]); }
     }
 
     // 0x600016b0
     // a.k.a. THRASH_drawpoint
     DLLAPI void STDCALLAPI DrawPoint(RVX* vertex)
     {
-        // TODO NOT IMPLEMENTED
+        RenderPoints((RTLVX*)vertex, 1);
     }
 
     // 0x600016d0
     // a.k.a. THRASH_drawpointmesh
     DLLAPI void STDCALLAPI DrawPointMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawPoint((RVX*)&vs[indexes[x]]); }
     }
 
     // 0x600017d0
     // a.k.a. THRASH_drawpointstrip
     DLLAPI void STDCALLAPI DrawPointStrip(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawPoint((RVX*)&vs[x]); }
     }
 
     // 0x60001570
     // a.k.a. THRASH_drawquad
     DLLAPI void STDCALLAPI DrawQuad(RVX* a, RVX* b, RVX* c, RVX* d)
     {
-        // TODO NOT IMPLEMENTED
+        if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d); } // TODO
     }
 
     // 0x600015d0
     // a.k.a. THRASH_drawquadmesh
     DLLAPI void STDCALLAPI DrawQuadMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        RenderQuadMesh((RTLVX*)vertexes, indexes, count);
     }
 
     // 0x60001480
     // a.k.a. THRASH_drawtri
     DLLAPI void STDCALLAPI DrawTriangle(RVX* a, RVX* b, RVX* c)
     {
-        // TODO NOT IMPLEMENTED
+        if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle((RTLVX*)a, (RTLVX*)b, (RTLVX*)c); }  // TODO
     }
 
     // 0x60001760
     // a.k.a. THRASH_drawtrifan
     DLLAPI void STDCALLAPI DrawTriangleFan(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawTriangle((RVX*)&vs[0], (RVX*)&vs[x + 1], (RVX*)&vs[x + 2]); }
     }
 
     // 0x60001510
@@ -165,14 +183,21 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI void STDCALLAPI DrawTriangleFans(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        for (u32 x = 0, i = 1; x < (count * 3 + 2) / 3; x = x + 3, i = i + 2)
+        {
+            State.Data.Indexes.Small[x + 0] = 0;
+            State.Data.Indexes.Small[x + 1] = i + 0;
+            State.Data.Indexes.Small[x + 2] = i + 1;
+        }
+
+        RenderTriangleFans((RTLVX*)vertexes, count + 2, count * 3, State.Data.Indexes.Small);
     }
 
     // 0x600014d0
     // a.k.a. THRASH_drawtrimesh
     DLLAPI void STDCALLAPI DrawTriangleMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        RenderTriangleMesh((RTLVX*)vertexes, indexes, count);
     }
 
     // 0x60001700
@@ -180,7 +205,18 @@ namespace RendererModule
     // NOTE: Triangle strip vertex order: 0 1 2, 1 3 2, 2 3 4, 3 5 4, 4 5 6, ...
     DLLAPI void STDCALLAPI DrawTriangleStrip(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        if (count == 0) { return; }
+
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        DrawTriangle((RVX*)&vs[0], (RVX*)&vs[1], (RVX*)&vs[2]);
+
+        for (u32 x = 1; x < count; x = x + 2)
+        {
+            DrawTriangle((RVX*)&vs[x + 0], (RVX*)&vs[x + 2], (RVX*)&vs[x + 1]);
+
+            if ((x + 1) < count) { DrawTriangle((RVX*)&vs[x + 1], (RVX*)&vs[x + 2], (RVX*)&vs[x + 3]); }
+        }
     }
 
     // 0x600014f0
@@ -188,7 +224,7 @@ namespace RendererModule
     // NOTE: Never being called by the application.
     DLLAPI void STDCALLAPI DrawTriangleStrips(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        RenderTriangleStrips((RTLVX*)vertexes, count + 2, count, indexes);
     }
 
     // 0x60001180
@@ -206,6 +242,8 @@ namespace RendererModule
     // a.k.a. THRASH_init
     DLLAPI u32 STDCALLAPI Init(void)
     {
+        InitializeSettings();
+
         AcquireRendererDeviceCount();
 
         return State.Devices.Count;
@@ -545,11 +583,20 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_SHADE_STATE:
         {
-            if ((u32)value == RENDERER_MODULE_SHADE_FLAT)
+            if (SettingsState.FlatShading)
             {
-                SelectRendererState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_FLAT);
+                if ((u32)value == RENDERER_MODULE_SHADE_FLAT)
+                {
+                    SelectRendererState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_FLAT);
 
-                RendererShadeMode = RENDERER_MODULE_SHADE_FLAT;
+                    RendererShadeMode = RENDERER_MODULE_SHADE_FLAT;
+                }
+                else
+                {
+                    SelectRendererState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
+
+                    RendererShadeMode = RENDERER_MODULE_SHADE_GOURAUD;
+                }
             }
             else
             {

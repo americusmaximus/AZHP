@@ -52,8 +52,24 @@ namespace RendererModule
         if (State.Lambdas.Log != NULL) { State.Lambdas.Log(severity, buffer); }
     }
 
+    // 0x60001440
+    void InitializeVertex(RTLVX* dst, const RTLVX* src)
+    {
+        dst->XYZ.X = src->XYZ.X;
+        dst->XYZ.Y = src->XYZ.Y;
+        dst->XYZ.Z = src->XYZ.Z;
+
+        dst->RHW = src->RHW;
+
+        dst->Color = src->Color;
+        dst->Specular = src->Specular;
+
+        dst->UV.X = src->UV.X;
+        dst->UV.Y = src->UV.Y;
+    }
+
     // 0x6000e514
-    void InitializeVertexes(Renderer::RTLVX* vertexes, const u32 count)
+    void InitializeVertexes(RTLVX* vertexes, const u32 count)
     {
         for (u32 x = 0; x < count; x++)
         {
@@ -2216,5 +2232,337 @@ namespace RendererModule
         }
 
         return TRUE;
+    }
+
+    // 0x600065a0
+    BOOL RenderLines(RTLVX* vertexes, const u32 count)
+    {
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        for (u32 x = 0; x < count; x++)
+        {
+            if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertexes[x].Color = GRAPCHICS_COLOR_WHITE; }
+
+            if (State.Settings.IsFogActive)
+            {
+                vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf(vertexes[x].XYZ.Z * 255.0f + 0.5f)]) << 24;
+            }
+
+            vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
+        }
+
+        InitializeVertexes(vertexes, count);
+
+        return State.DX.Device->DrawPrimitive(D3DPT_LINESTRIP, D3DFVF_TLVERTEX,
+            vertexes, count, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
+    }
+
+    // 0x60006720
+    BOOL RenderPoints(RTLVX* vertexes, const u32 count)
+    {
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        for (u32 x = 0; x < count; x++)
+        {
+            if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertexes[x].Color = GRAPCHICS_COLOR_WHITE; }
+
+            if (State.Settings.IsFogActive)
+            {
+                vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf(vertexes[x].XYZ.Z * 255.0f + 0.5f)]) << 24;
+            }
+
+            vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
+        }
+
+        InitializeVertexes(vertexes, count);
+
+        return State.DX.Device->DrawPrimitive(D3DPT_POINTLIST, D3DFVF_TLVERTEX,
+            vertexes, count, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
+    }
+
+    // 0x60005f90
+    void RenderQuad(RTLVX* a, RTLVX* b, RTLVX* c, RTLVX* d)
+    {
+        if (MaximumRendererVertexCount - 4 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+        // A
+        {
+            RTLVX* vertex = &State.Data.Vertexes.Vertexes[State.Data.Vertexes.Count + 0];
+
+            vertex->XYZ.X = a->XYZ.X;
+            vertex->XYZ.Y = a->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + a->XYZ.Z;
+
+            vertex->RHW = a->RHW;
+
+            vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : a->Color;
+
+            vertex->Specular = State.Settings.IsFogActive
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - a->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                : a->Specular;
+
+            vertex->UV.X = a->UV.X;
+            vertex->UV.Y = a->UV.Y;
+        }
+
+        // B
+        {
+            RTLVX* vertex = &State.Data.Vertexes.Vertexes[State.Data.Vertexes.Count + 1];
+
+            vertex->XYZ.X = b->XYZ.X;
+            vertex->XYZ.Y = b->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + b->XYZ.Z;
+
+            vertex->RHW = b->RHW;
+
+            vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : b->Color;
+
+            vertex->Specular = State.Settings.IsFogActive
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - b->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                : b->Specular;
+
+            vertex->UV.X = b->UV.X;
+            vertex->UV.Y = b->UV.Y;
+        }
+
+        // C
+        {
+            RTLVX* vertex = &State.Data.Vertexes.Vertexes[State.Data.Vertexes.Count + 2];
+
+            vertex->XYZ.X = c->XYZ.X;
+            vertex->XYZ.Y = c->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + c->XYZ.Z;
+
+            vertex->RHW = c->RHW;
+
+            vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : c->Color;
+
+            vertex->Specular = State.Settings.IsFogActive
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - c->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                : c->Specular;
+
+            vertex->UV.X = c->UV.X;
+            vertex->UV.Y = c->UV.Y;
+        }
+
+        // D
+        {
+            RTLVX* vertex = &State.Data.Vertexes.Vertexes[State.Data.Vertexes.Count + 3];
+
+            vertex->XYZ.X = d->XYZ.X;
+            vertex->XYZ.Y = d->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + d->XYZ.Z;
+
+            vertex->RHW = d->RHW;
+
+            vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : d->Color;
+
+            vertex->Specular = State.Settings.IsFogActive
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - d->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                : d->Specular;
+
+            vertex->UV.X = d->UV.X;
+            vertex->UV.Y = d->UV.Y;
+        }
+
+        State.Data.Indexes.Medium[State.Data.Indexes.Count + 0] = State.Data.Vertexes.Count + 0;
+        State.Data.Indexes.Medium[State.Data.Indexes.Count + 1] = State.Data.Vertexes.Count + 1;
+        State.Data.Indexes.Medium[State.Data.Indexes.Count + 2] = State.Data.Vertexes.Count + 2;
+        State.Data.Indexes.Medium[State.Data.Indexes.Count + 3] = State.Data.Vertexes.Count + 0;
+        State.Data.Indexes.Medium[State.Data.Indexes.Count + 4] = State.Data.Vertexes.Count + 2;
+        State.Data.Indexes.Medium[State.Data.Indexes.Count + 5] = State.Data.Vertexes.Count + 3;
+
+        State.Data.Indexes.Count = State.Data.Indexes.Count + 6;
+        State.Data.Vertexes.Count = State.Data.Vertexes.Count + 4;
+    }
+
+    // 0x60005c10
+    void RenderQuadMesh(RTLVX* vertexes, const u32* indexes, const u32 count)
+    {
+        for (u32 x = 0; x < count; x++)
+        {
+            if (MaximumRendererVertexCount - 4 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+            RTLVX* a = &vertexes[indexes[x * 4 + 0]];
+            RTLVX* b = &vertexes[indexes[x * 4 + 1]];
+            RTLVX* c = &vertexes[indexes[x * 4 + 2]];
+            RTLVX* d = &vertexes[indexes[x * 4 + 3]];
+
+            if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); } // TODO
+        }
+    }
+
+
+    // 0x60005740
+    void RenderTriangle(RTLVX* a, RTLVX* b, RTLVX* c)
+    {
+        if (MaximumRendererVertexCount - 3 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+        // A
+        {
+            RTLVX* vertex = &State.Data.Vertexes.Vertexes[State.Data.Vertexes.Count + 0];
+
+            vertex->XYZ.X = a->XYZ.X;
+            vertex->XYZ.Y = a->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + a->XYZ.Z;
+
+            vertex->RHW = a->RHW;
+
+            vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : a->Color;
+
+            vertex->Specular = State.Settings.IsFogActive
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - a->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                : a->Specular;
+
+            vertex->UV.X = a->UV.X;
+            vertex->UV.Y = a->UV.Y;
+
+            State.Data.Indexes.Medium[State.Data.Indexes.Count + 0] = State.Data.Vertexes.Count + 0;
+        }
+
+        // B
+        {
+            RTLVX* vertex = &State.Data.Vertexes.Vertexes[State.Data.Vertexes.Count + 1];
+
+            vertex->XYZ.X = b->XYZ.X;
+            vertex->XYZ.Y = b->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + b->XYZ.Z;
+
+            vertex->RHW = b->RHW;
+
+            vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : b->Color;
+
+            vertex->Specular = State.Settings.IsFogActive
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - b->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                : b->Specular;
+
+            vertex->UV.X = b->UV.X;
+            vertex->UV.Y = b->UV.Y;
+
+            State.Data.Indexes.Medium[State.Data.Indexes.Count + 1] = State.Data.Vertexes.Count + 1;
+        }
+
+        // C
+        {
+            RTLVX* vertex = &State.Data.Vertexes.Vertexes[State.Data.Vertexes.Count + 2];
+
+            vertex->XYZ.X = c->XYZ.X;
+            vertex->XYZ.Y = c->XYZ.Y;
+            vertex->XYZ.Z = RendererDepthBias + c->XYZ.Z;
+
+            vertex->RHW = c->RHW;
+
+            vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : c->Color;
+
+            vertex->Specular = State.Settings.IsFogActive
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - c->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                : c->Specular;
+
+            vertex->UV.X = c->UV.X;
+            vertex->UV.Y = c->UV.Y;
+
+            State.Data.Indexes.Medium[State.Data.Indexes.Count + 2] = State.Data.Vertexes.Count + 2;
+        }
+
+        State.Data.Indexes.Count = State.Data.Indexes.Count + 3;
+        State.Data.Vertexes.Count = State.Data.Vertexes.Count + 3;
+    }
+
+    // 0x60006400
+    BOOL RenderTriangleFans(RTLVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes)
+    {
+        for (u32 x = 0; x < indexCount; x++) { State.Data.Indexes.Large[x] = indexes[x]; }
+
+        if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT || State.Settings.IsFogActive || RendererDepthBias != 0.0f)
+        {
+            for (u32 x = 0; x < vertexCount; x++)
+            {
+                if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertexes[x].Color = GRAPCHICS_COLOR_WHITE; }
+
+                if (State.Settings.IsFogActive)
+                {
+                    vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf((1.0f - vertexes[x].XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24;
+                }
+
+                vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
+            }
+        }
+
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        InitializeVertexes(vertexes, vertexCount);
+
+        return State.DX.Device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX,
+            vertexes, vertexCount, State.Data.Indexes.Large, indexCount, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
+    }
+
+    // 0x60005960
+    void RenderTriangleMesh(RTLVX* vertexes, const u32* indexes, const u32 count)
+    {
+        for (u32 x = 0; x < count; x++)
+        {
+            if (MaximumRendererVertexCount - 3 < State.Data.Vertexes.Count) { RendererRenderScene(); }
+
+            RTLVX* a = &vertexes[indexes[x * 3 + 0]];
+            RTLVX* b = &vertexes[indexes[x * 3 + 1]];
+            RTLVX* c = &vertexes[indexes[x * 3 + 2]];
+
+            if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle(a, b, c); } // TODO
+        }
+    }
+
+    // 0x60006240
+    BOOL RenderTriangleStrips(RTLVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes)
+    {
+        u32 max = 0;
+
+        for (u32 x = 0; x < indexCount + 2; x++)
+        {
+            State.Data.Indexes.Large[x] = indexes[x];
+
+            if (max < indexes[x]) { max = indexes[x]; }
+        }
+
+        if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT || State.Settings.IsFogActive || RendererDepthBias != 0.0f)
+        {
+            for (u32 x = 0; x < vertexCount; x++)
+            {
+                if (RendererShadeMode == RENDERER_MODULE_SHADE_FLAT) { vertexes[x].Color = GRAPCHICS_COLOR_WHITE; }
+
+                if (State.Settings.IsFogActive)
+                {
+                    vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf((1.0f - vertexes[x].XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24;
+                }
+
+                vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
+            }
+        }
+
+        if (!State.Scene.IsActive)
+        {
+            BeginRendererScene();
+
+            State.Scene.IsActive = TRUE;
+        }
+
+        InitializeVertexes(vertexes, vertexCount);
+
+        return State.DX.Device->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,
+            vertexes, max + 1, State.Data.Indexes.Large, indexCount + 2, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
     }
 }

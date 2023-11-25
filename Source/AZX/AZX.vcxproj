@@ -30,6 +30,7 @@
     <ClInclude Include="RendererModule.Export.hxx" />
     <ClInclude Include="RendererModule.hxx" />
     <ClInclude Include="RendererModule.Import.hxx" />
+    <ClInclude Include="RendererModule.Settings.hxx" />
     <ClInclude Include="Sound.Basic.hxx" />
     <ClInclude Include="Sound.hxx" />
     <ClInclude Include="SoundModule.Basic.hxx" />
