@@ -21,7 +21,7 @@
 ++_ToggleGameWindow@0.._THRASH_pageflip@0
 ++_ReadRectangle@20.._THRASH_readrect@20
 ++_RestoreGameWindow@0.._THRASH_restore@0
-++_SelectDisplay@4.._THRASH_selectdisplay@4
+++_SelectDevice@4.._THRASH_selectdisplay@4
 ++_SelectState@8.._THRASH_setstate@8
 ++_SelectTexture@4.._THRASH_settexture@4
 ++_SelectVideoMode@12.._THRASH_setvideomode@12
