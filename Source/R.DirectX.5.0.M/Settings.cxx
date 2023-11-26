@@ -20,42 +20,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "RendererValues.hxx"
+#pragma once
 
-using namespace Renderer;
-using namespace RendererModule;
+#include "Native.Basic.hxx"
+#include "Settings.hxx"
 
-namespace RendererModuleValues
+#ifdef __WATCOMC__
+#include <RendererModule.Settings.hxx>
+#else
+#include "RendererModule.Settings.hxx"
+#endif
+
+namespace Settings
 {
-    s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
+    SettingsContainer SettingsState;
 
-    u32 RendererFogColor = DEFAULT_FOG_COLOR;
-    f32 RendererFogDensity = DEFAULT_FOG_DINSITY;
-    f32 RendererDepthBias;
-
-    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED;
-
-    u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
-
-    RendererTexture* CurrentRendererTexture;
-
-    u32 MaximumRendererVertexCount = DEFAULT_RENDERER_VERTEX_COUNT;
-
-    RendererModuleDescriptor ModuleDescriptor;
-    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];
-
-    s32 UnknownArray06[6] =
+    void InitializeSettings(void)
     {
-        0, 0, 0, 0, 5, -1
-    }; // TODO
-
-    u32 UnknownFormatValues[MAX_OTHER_USABLE_TEXTURE_FORMAT_COUNT] =
-    {
-        0, 1, 1, 2, 2, 3, 4, 2, 1, 2, 2, 0
-    }; // TODO
-
-    s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1
-    }; // TODO
+        SettingsState.Accelerate = GetPrivateProfileIntA(RENDERER_MODULE_SETTINGS_SECTION_DX5_NAME,
+            RENDERER_MODULE_SETTINGS_ACCELERATE_GRAPHICS_PROPERTY_NAME, FALSE, RENDERER_MODULE_SETTINGS_FILE_NAME);
+    }
 }

@@ -23,11 +23,13 @@ SOFTWARE.
 #include "Graphics.Basic.hxx"
 #include "Module.hxx"
 #include "RendererValues.hxx"
+#include "Settings.hxx"
 
 #include <math.h>
 
 using namespace Renderer;
 using namespace RendererModuleValues;
+using namespace Settings;
 
 namespace RendererModule
 {
@@ -196,6 +198,8 @@ namespace RendererModule
     // a.k.a. THRASH_init
     DLLAPI u32 STDCALLAPI Init(void)
     {
+        InitializeSettings();
+
         AcquireRendererDeviceCount();
 
         return State.Devices.Count;
@@ -378,11 +382,11 @@ namespace RendererModule
 
             if (value != NULL)
             {
-                if (atoi(value) != RENDERER_MODULE_DEVICE_TYPE_ACCELERATED) { return RENDERER_MODULE_SUCCESS; }
+                if (atoi(value) != RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED) { return RENDERER_MODULE_SUCCESS; }
             }
         }
 
-        SelectState(RENDERER_MODULE_STATE_SELECT_DEVICE_TYPE, (void*)RENDERER_MODULE_DEVICE_TYPE_ACCELERATED);
+        SelectState(RENDERER_MODULE_STATE_SELECT_DEVICE_TYPE, (void*)RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED);
 
         return RENDERER_MODULE_SUCCESS;
     }

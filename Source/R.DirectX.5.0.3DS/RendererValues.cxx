@@ -34,7 +34,7 @@ namespace RendererModuleValues
 
     f32 RendererDepthBias;
 
-    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_ACCELERATED;
+    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED;
 
     u32 MaximumRendererVertexCount = MAX_RENDERER_VERTEX_COUNT;
 

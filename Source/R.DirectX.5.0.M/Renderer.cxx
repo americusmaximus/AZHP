@@ -23,6 +23,7 @@ SOFTWARE.
 #include "Graphics.Basic.hxx"
 #include "Renderer.hxx"
 #include "RendererValues.hxx"
+#include "Settings.hxx"
 
 #include <math.h>
 #include <stdarg.h>
@@ -32,6 +33,7 @@ SOFTWARE.
 
 using namespace Renderer;
 using namespace RendererModuleValues;
+using namespace Settings;
 
 namespace RendererModule
 {
@@ -594,7 +596,7 @@ namespace RendererModule
                 desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
                 desc.dwHeight = State.Window.Height;
                 desc.dwWidth = State.Window.Width;
-                desc.ddsCaps.dwCaps = RendererDeviceType == RENDERER_MODULE_DEVICE_TYPE_ACCELERATED
+                desc.ddsCaps.dwCaps = RendererDeviceType == RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED
                     ? DDSCAPS_VIDEOMEMORY | DDSCAPS_3DDEVICE | DDSCAPS_OFFSCREENPLAIN
                     : DDSCAPS_3DDEVICE | DDSCAPS_SYSTEMMEMORY | DDSCAPS_OFFSCREENPLAIN;
 
@@ -849,31 +851,39 @@ namespace RendererModule
     {
         HRESULT result = DD_OK;
 
+        if (SettingsState.Accelerate)
+        {
+            const HRESULT res = State.DX.DirectX->CreateDevice(IID_IDirect3DHALDevice,
+                State.DX.Active.Surfaces.Back, &State.DX.Device);
+
+            if (res == DD_OK) { return; }
+        }
+
         switch (RendererDeviceType)
         {
-        case RENDERER_MODULE_DEVICE_TYPE_RAMP:
+        case RENDERER_MODULE_DEVICE_TYPE_0_RAMP:
         {
             result = State.DX.DirectX->CreateDevice(IID_IDirect3DRampDevice,
                 State.DX.Active.Surfaces.Back, &State.DX.Device);
 
             break;
         }
-        case RENDERER_MODULE_DEVICE_TYPE_RGB:
+        case RENDERER_MODULE_DEVICE_TYPE_0_RGB:
         {
             result = State.DX.DirectX->CreateDevice(IID_IDirect3DRGBDevice,
                 State.DX.Active.Surfaces.Back, &State.DX.Device);
 
             break;
         }
-        case RENDERER_MODULE_DEVICE_TYPE_MMX:
+        case RENDERER_MODULE_DEVICE_TYPE_0_MMX:
         {
             result = State.DX.DirectX->CreateDevice(IID_IDirect3DMMXDevice,
                 State.DX.Active.Surfaces.Back, &State.DX.Device);
 
             break;
         }
-        case RENDERER_MODULE_DEVICE_TYPE_INVALID:
-        case RENDERER_MODULE_DEVICE_TYPE_ACCELERATED:
+        case RENDERER_MODULE_DEVICE_TYPE_0_INVALID:
+        case RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED:
         {
             result = State.DX.DirectX->CreateDevice(IID_IDirect3DHALDevice,
                 State.DX.Active.Surfaces.Back != NULL ? State.DX.Active.Surfaces.Back : State.DX.Active.Surfaces.Main, &State.DX.Device);

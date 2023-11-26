@@ -33,7 +33,7 @@ namespace RendererModuleValues
     f32 RendererFogDensity = DEFAULT_FOG_DINSITY;
     f32 RendererDepthBias;
 
-    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_ACCELERATED;
+    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED;
 
     u8 RendererFogAlphas[MAX_OUTPUT_FOG_ALPHA_COUNT];
     u8 RendererFogExponentialValues[MAX_INPUT_FOG_ALPHA_COUNT];
