@@ -206,7 +206,7 @@ namespace RendererModule
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Format = RENDERER_PIXEL_FORMAT_16_BIT_565;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk03 = 1;
                         ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk04 = 1;
-                        ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk02 = 1;
+                        ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].IsActive = TRUE;
 
                         ModuleDescriptor.Capabilities.Count = 2;
 
@@ -253,7 +253,7 @@ namespace RendererModule
             ModuleDescriptor.Capabilities.Capabilities[indx].Height = height;
             ModuleDescriptor.Capabilities.Capabilities[indx].Bits =
                 format == RENDERER_PIXEL_FORMAT_16_BIT_555 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
-            ModuleDescriptor.Capabilities.Capabilities[indx].Unk02 = 1;
+            ModuleDescriptor.Capabilities.Capabilities[indx].IsActive = TRUE;
 
             if (count < 4) // TODO
             {
@@ -459,7 +459,7 @@ namespace RendererModule
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Format = RENDERER_PIXEL_FORMAT_16_BIT_565;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk03 = 3;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk04 = 2;
-                ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Unk02 = 1;
+                ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].IsActive = TRUE;
 
                 ModuleDescriptor.Capabilities.Count = 2;
 

@@ -932,7 +932,7 @@ namespace RendererModule
         {
             if (value == NULL) { return NULL; }
 
-            RendererModuleDeviceCapabilities* result = (RendererModuleDeviceCapabilities*)value;
+            RendererModuleDeviceCapabilities5* result = (RendererModuleDeviceCapabilities5*)value;
 
             result->IsAccelerated = State.Device.Capabilities.IsAccelerated;
             result->DepthBits = State.Device.Capabilities.DepthBits;

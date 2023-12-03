@@ -527,7 +527,7 @@ namespace RendererModule
                     ? (GRAPHICS_BITS_PER_PIXEL_16 - 1)
                     : desc->ddpfPixelFormat.dwRGBBitCount;
 
-                caps.Unk02 = 1; // TODO
+                caps.IsActive = TRUE;
 
                 const u32 bytes = caps.Bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1) ? 2 : (caps.Bits >> 3);
 
@@ -1679,14 +1679,14 @@ namespace RendererModule
             const f32 value = 0.0f;
             SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_BIAS_STATE, (void*)(u32)(*(u32*)&value));
         }
-        
+
         {
             const f32 value = 0.0f;
             SelectState(RENDERER_MODULE_STATE_SELECT_MIP_MAP_LOD_BIAS_STATE, (void*)(u32)(*(u32*)&value));
         }
 
         SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)((depth < 1) - 1 & 2)); // TODO
-        SelectState(RENDERER_MODULE_STATE_MAX_PENDING, (void*)(pending - 2U & ((int)(pending - 2U) < 0) - 1)); // TODO
+        SelectState(RENDERER_MODULE_STATE_MAX_PENDING_STATE, (void*)(pending - 2U & ((int)(pending - 2U) < 0) - 1)); // TODO
     }
 
     // 0x60004220
@@ -1766,7 +1766,7 @@ namespace RendererModule
             desc.dwHeight = tex->Height;
             desc.dwWidth = tex->Width;
 
-            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1)
+            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1)
             {
                 ZeroMemory(&desc.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
 
@@ -1853,7 +1853,7 @@ namespace RendererModule
                 else if (RendererTextureHint == RENDERER_MODULE_TEXTURE_HINT_STATIC) { desc.ddsCaps.dwCaps2 = DDSCAPS2_HINTSTATIC; }
             }
 
-            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1)
+            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1)
             {
                 ZeroMemory(&desc.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
 
@@ -1998,7 +1998,7 @@ namespace RendererModule
 
             desc.dwSize = sizeof(DDSURFACEDESC2);
 
-            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_UNKNOWN_DXT1) { desc.dwFlags = DDSD_LINEARSIZE; }
+            if (tex->FormatIndexValue == RENDERER_PIXEL_FORMAT_DXT1) { desc.dwFlags = DDSD_LINEARSIZE; }
 
             if (surface->GetSurfaceDesc(&desc) != DD_OK)
             {

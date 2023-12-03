@@ -91,6 +91,9 @@ struct u32x4 { u32 X, Y, Z, W; };
 #define S16_MIN (-32768)
 #define S16_MAX 32767
 
+#define U16_MIN 0
+#define U16_MAX 65535
+
 #define S32_MIN (-2147483648)
 #define S32_MAX 2147483647
 

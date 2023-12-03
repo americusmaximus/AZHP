@@ -463,8 +463,8 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_MIP_MAP_LOD_BIAS_STATE:
         case RENDERER_MODULE_STATE_SELECT_ANTI_ALIAS_STATE:
-        case RENDERER_MODULE_STATE_20:
-        case RENDERER_MODULE_STATE_103: { return RENDERER_MODULE_FAILURE; }
+        case RENDERER_MODULE_STATE_SELECT_FOG_ALPHAS:
+        case RENDERER_MODULE_STATE_SELECT_TOGGLE_STATE_ALTERNATIVE: { return RENDERER_MODULE_FAILURE; }
         case RENDERER_MODULE_STATE_SELECT_TEXTURE_ADDRESS_STATE:
         {
             switch ((u32)value)
@@ -569,7 +569,7 @@ namespace RendererModule
 
             return RENDERER_MODULE_SUCCESS;
         }
-        case RENDERER_MODULE_STATE_SELECT_FOG_ALPHAS:
+        case RENDERER_MODULE_STATE_SELECT_FOG_ALPHAS_ALTERNATIVE:
         {
             const u32* vs = (u32*)value;
 
@@ -598,7 +598,7 @@ namespace RendererModule
         {
             if (value == NULL) { return NULL; }
 
-            RendererModuleDeviceCapabilities* result = (RendererModuleDeviceCapabilities*)value;
+            RendererModuleDeviceCapabilities5* result = (RendererModuleDeviceCapabilities5*)value;
 
             result->IsAccelerated = State.Device.Capabilities.IsAccelerated;
             result->RenderBits = State.Device.Capabilities.RendererBits;

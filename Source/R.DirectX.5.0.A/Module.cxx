@@ -684,7 +684,7 @@ namespace RendererModule
         {
             if (value == NULL) { return NULL; }
 
-            RendererModuleDeviceCapabilities* result = (RendererModuleDeviceCapabilities*)value;
+            RendererModuleDeviceCapabilities5* result = (RendererModuleDeviceCapabilities5*)value;
 
             result->IsAccelerated = State.Device.Capabilities.IsAccelerated;
             result->DepthBits = State.Device.Capabilities.DepthBits;
@@ -695,8 +695,8 @@ namespace RendererModule
             result->IsAlphaTextures = State.Device.Capabilities.IsAlphaTextures;
             result->IsModulateBlending = State.Device.Capabilities.IsModulateBlending;
             result->IsSourceAlphaBlending = State.Device.Capabilities.IsSourceAlphaBlending;
-            result->IsSpecularBlending = State.Device.Capabilities.IsColorBlending;
-            result->IsUnknownBlending = State.Device.Capabilities.IsSpecularBlending;
+            result->IsColorBlending = State.Device.Capabilities.IsColorBlending;
+            result->IsSpecularBlending = State.Device.Capabilities.IsSpecularBlending;
 
             return (u32)result;
         }
