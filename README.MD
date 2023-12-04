@@ -29,7 +29,7 @@ Modern Visual Studio makes the binary dependent on modern runtime libraries that
 ### Sound Module
 The sound system module, `eacsnd.dll`, is a module that is used by the game to manage sound and sound effects playback. The module is only responsible for playback, and has no insight into anything else. The module calls functions back from the main game to acquire data, signal events, or log messages.
 
-Based on the structure sizes, the original module uses DirectSound version prior to 7.0, since no other inputs or hints were given, I selected version 5.0 for the project, and it aligns well with the release dates.
+Based on the structure sizes, the original module uses DirectSound version prior to 7, since no other inputs or hints were given, I selected version 5 for the project, and it aligns well with the release dates.
 
 The original game requires the sound system to be present, no graceful error handling is happening if the file is missing. Moreover, the game mostly expects the module to be valid as well, it does not perform checks whether all required methods were imported correctly, and just assumes they were.
 
@@ -44,7 +44,7 @@ The original game shipped with two DirectX 5 renderers with slightly different d
 3. DirectX 5 M is a a renderer based on the DirectX 5 renderer `dx5a.dll` from the modern patch. Since the patch is a binarry patch to the `DirectX 5 A`, I untangled it as well, for completeness.
 
 #### DirectX 6
-The original game had no DirectX 6.0 renderers, thus the one you see here is a renderer from the modern patch, which in its turn is based on file `d3da.dll` version: 1999.01.15.1121 (6553.1.21.4385) that came with Need For Speed: High Stakes in 1999. See [AutoZone High Stakes](https://github.com/americusmaximus/AZHS) DirectX 6 3DS renderer details for additional information.
+The original game had no DirectX 6 renderers, thus the one you see here is a renderer from the modern patch, which in its turn is based on file `d3da.dll` version: 1999.01.15.1121 (6553.1.21.4385) that came with Need For Speed: High Stakes in 1999. See [AutoZone High Stakes](https://github.com/americusmaximus/AZHS) DirectX 6 3DS renderer details for additional information.
 
 
 ## Other Similar Projects
