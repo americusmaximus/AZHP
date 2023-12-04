@@ -22,6 +22,8 @@
     <ClInclude Include="App.Resources.hxx" />
     <ClInclude Include="Module.hxx" />
     <ClInclude Include="Renderer.hxx" />
+    <ClInclude Include="RendererValues.hxx" />
+    <ClInclude Include="Settings.hxx" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="App.Resources.rc" />
@@ -30,6 +32,8 @@
     <ClCompile Include="Main.cxx" />
     <ClCompile Include="Module.cxx" />
     <ClCompile Include="Renderer.cxx" />
+    <ClCompile Include="RendererValues.cxx" />
+    <ClCompile Include="Settings.cxx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Renderer.Module.MSVC.def" />

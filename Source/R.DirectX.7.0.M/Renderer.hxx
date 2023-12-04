@@ -43,6 +43,26 @@ SOFTWARE.
 #include <mmsystem.h>
 #endif
 
+#define DDGDI_NONE 0
+#define DDEDM_NONE 0
+#define D3DDP_NONE 0
+#define D3DVBCAPS_NONE 0
+#define D3DVBOPTIMIZE_NONE 0
+#define DDSDM_NONE 0
+#define D3DCOLOR_NONE 0
+
+#define RENDERER_STATE_INACTIVE 0
+#define RENDERER_STATE_ACTIVE 1
+
+#define RENDERER_MODULE_ENVIRONMENT_SECTION_NAME "DX7"
+
+#define MAX_ENUMERATE_RENDERER_DEVICE_COUNT 60 /* ORIGINAL: 16 */
+#define MAX_ENUMERATE_RENDERER_DEVICE_NAME_COUNT 60 /* ORIGINAL: 10 */
+#define MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH 80
+
+#define MAX_RENDERER_MODULE_TEXTURE_STAGE_COUNT 8
+#define MAX_RENDERER_MODULE_TEXTURE_STATE_STATE_COUNT 120
+
 namespace Renderer
 {
 
@@ -50,10 +70,59 @@ namespace Renderer
 
 namespace RendererModule
 {
+    struct TextureStageState
+    {
+        s32 Values[MAX_RENDERER_MODULE_TEXTURE_STAGE_COUNT];
+    };
+
     struct RendererModuleState
     {
+        struct
+        {
+            GUID* Identifier; // 0x600186d8
+        } Device;
 
+        struct
+        {
+            u32 Count; // 0x600186e0
+
+            GUID* Indexes[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x60018250
+
+            struct
+            {
+                u32 Count; // 0x60059000
+                BOOL IsAvailable; // 0x60059004
+
+                char Names[MAX_ENUMERATE_RENDERER_DEVICE_NAME_COUNT][MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH]; // 0x60018340
+
+                struct
+                {
+                    GUID* Indexes[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x60058e40
+                    GUID Identifiers[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x60058e80
+                } Identifiers;
+
+                struct
+                {
+                    HMONITOR* Indexes[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x60058f80
+                    HMONITOR Monitors[MAX_ENUMERATE_RENDERER_DEVICE_COUNT]; // 0x60058fc0
+                } Monitors;
+
+                DDDEVICEIDENTIFIER Identifier; // 0x60059010
+            } Enumeration;
+        } Devices;
+
+        struct
+        {
+            TextureStageState StageStates[MAX_RENDERER_MODULE_TEXTURE_STATE_STATE_COUNT]; // 0x6007b8a0
+        } Textures;
     };
 
     extern RendererModuleState State;
+
+    BOOL AcquireRendererDeviceAccelerationState(const u32 indx);
+    BOOL CALLBACK EnumerateDirectDrawDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context, HMONITOR monitor);
+    s32 AcquireSettingsValue(const s32 value, const char* section, const char* name);
+    u32 AcquireDirectDrawDeviceCount(GUID** uids, HMONITOR** monitors, const char* section);
+    u32 AcquireRendererDeviceCount(void);
+    void InitializeTextureStateStates(void);
 }

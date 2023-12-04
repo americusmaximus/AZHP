@@ -20,22 +20,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma once
+#include "Graphics.Basic.hxx"
+#include "RendererValues.hxx"
 
-#include "Renderer.hxx"
+using namespace Renderer;
+using namespace RendererModule;
 
-#define RENDERER_MODULE_NAME "DX7 3rash"
-
-#ifdef _WIN64
-#define RENDERER_MODULE_TITLE_NAME "DirectX 7.0 (x64)"
-#else
-#define RENDERER_MODULE_TITLE_NAME "DirectX 7.0 (x32)"
-#endif
-
-// ORIGINAL: Daniel Kennett, Thursday 04:50PM Jan 18, 2001
-#define RENDERER_MODULE_AUTHOR "Americus Maximus"
-
-namespace RendererModule
+namespace RendererModuleValues
 {
-    void ReleaseRendererModule(void);
+    s32 RendererState = DEFAULT_RENDERER_STATE;
 }
