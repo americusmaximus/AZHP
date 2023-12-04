@@ -506,7 +506,7 @@ namespace RendererModule
             switch ((u32)value)
             {
             case RENDERER_MODULE_ALPHA_BLEND_NONE: { SelectRendererState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE); break; }
-            case RENDERER_MODULE_ALPHA_BLEND_UNKNOWN: { return RENDERER_MODULE_FAILURE; }
+            case RENDERER_MODULE_ALPHA_BLEND_UNKNOWN_1: { return RENDERER_MODULE_FAILURE; }
             case RENDERER_MODULE_ALPHA_BLEND_ACTIVE: { SelectRendererState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE); break; }
             default: { return RENDERER_MODULE_FAILURE; }
             }

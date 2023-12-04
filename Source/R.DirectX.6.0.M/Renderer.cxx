@@ -966,8 +966,8 @@ namespace RendererModule
                 State.Device.Capabilities.AntiAliasing = State.Device.Capabilities.AntiAliasing | RENDERER_MODULE_ANTIALIASING_SORT_INDEPENDENT;
             }
 
-            State.Device.Capabilities.IsWBuffer = (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WBUFFER) != 0;
-            State.Device.Capabilities.IsDither = (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_DITHER) != 0;
+            State.Device.Capabilities.IsWBufferAvailable = (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WBUFFER) != 0;
+            State.Device.Capabilities.IsDitherAvailable = (hal.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_DITHER) != 0;
             State.Device.Capabilities.IsPerspectiveTextures = hal.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_PERSPECTIVE;
             State.Device.Capabilities.IsAlphaTextures = (hal.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHA) != 0;
 
@@ -1667,7 +1667,7 @@ namespace RendererModule
         }
 
         SelectState(RENDERER_MODULE_STATE_SELECT_FOG_COLOR, (void*)GRAPCHICS_COLOR_WHITE);
-        SelectState(RENDERER_MODULE_STATE_SELECT_BLEND_STATE, (void*)RENDERER_MODULE_BLEND_SOURCE_ALPHA_INVERSE_SOURCE_ALPHA);
+        SelectState(RENDERER_MODULE_STATE_SELECT_BLEND_STATE_ALTERNATIVE, (void*)RENDERER_MODULE_BLEND_SOURCE_ALPHA_INVERSE_SOURCE_ALPHA);
         SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE_ADDRESS_STATE, (void*)RENDERER_MODULE_TEXTURE_ADDRESS_CLAMP);
 
         {
@@ -1686,7 +1686,7 @@ namespace RendererModule
         }
 
         SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)((depth < 1) - 1 & 2)); // TODO
-        SelectState(RENDERER_MODULE_STATE_MAX_PENDING_STATE, (void*)(pending - 2U & ((int)(pending - 2U) < 0) - 1)); // TODO
+        SelectState(RENDERER_MODULE_STATE_MAX_PENDING_STATE, (void*)(pending - 2U & ((s32)(pending - 2U) < 0) - 1)); // TODO
     }
 
     // 0x60004220

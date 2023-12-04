@@ -550,7 +550,7 @@ namespace RendererModule
             }
             case RENDERER_MODULE_DEPTH_W:
             {
-                if (State.Device.Capabilities.IsWBuffer)
+                if (State.Device.Capabilities.IsWBufferAvailable)
                 {
                     SelectRendererState(D3DRENDERSTATE_ZENABLE, D3DZB_TRUE);
                     SelectRendererState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
@@ -579,7 +579,7 @@ namespace RendererModule
         {
             SelectRendererState(D3DRENDERSTATE_DITHERENABLE, ((u32)value) != 0 ? TRUE : FALSE);
 
-            result = State.Device.Capabilities.IsDither; break;
+            result = State.Device.Capabilities.IsDitherAvailable; break;
         }
         case RENDERER_MODULE_STATE_SELECT_SHADE_STATE:
         {
@@ -647,7 +647,7 @@ namespace RendererModule
             switch ((u32)value)
             {
             case RENDERER_MODULE_ALPHA_BLEND_NONE: { SelectRendererState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE); break; }
-            case RENDERER_MODULE_ALPHA_BLEND_UNKNOWN: { return RENDERER_MODULE_FAILURE; }
+            case RENDERER_MODULE_ALPHA_BLEND_UNKNOWN_1: { return RENDERER_MODULE_FAILURE; }
             case RENDERER_MODULE_ALPHA_BLEND_ACTIVE: { SelectRendererState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE); break; }
             default: { return RENDERER_MODULE_FAILURE; }
             }
@@ -870,7 +870,7 @@ namespace RendererModule
 
             result = RENDERER_MODULE_SUCCESS; break;
         }
-        case RENDERER_MODULE_STATE_SELECT_BLEND_STATE:
+        case RENDERER_MODULE_STATE_SELECT_BLEND_STATE_ALTERNATIVE:
         {
             switch ((u32)value)
             {
@@ -907,7 +907,7 @@ namespace RendererModule
 
             result = RENDERER_MODULE_SUCCESS; break;
         }
-        case RENDERER_MODULE_STATE_SELECT_FOG_ALPHAS:
+        case RENDERER_MODULE_STATE_SELECT_FOG_ALPHAS_ALTERNATIVE:
         {
             SelectRendererFogAlphas((u8*)value, RendererFogAlphas);
 
@@ -935,12 +935,12 @@ namespace RendererModule
             RendererModuleDeviceCapabilities5* result = (RendererModuleDeviceCapabilities5*)value;
 
             result->IsAccelerated = State.Device.Capabilities.IsAccelerated;
-            result->DepthBits = State.Device.Capabilities.DepthBits;
             result->RenderBits = State.Device.Capabilities.RendererBits;
+            result->DepthBits = State.Device.Capabilities.DepthBits;
             result->IsPerspectiveTextures = State.Device.Capabilities.IsPerspectiveTextures;
+            result->IsAlphaTextures = State.Device.Capabilities.IsAlphaTextures;
             result->IsAlphaFlatBlending = State.Device.Capabilities.IsAlphaFlatBlending;
             result->IsAlphaProperBlending = State.Device.Capabilities.IsAlphaProperBlending;
-            result->IsAlphaTextures = State.Device.Capabilities.IsAlphaTextures;
             result->IsModulateBlending = State.Device.Capabilities.IsModulateBlending;
             result->IsSourceAlphaBlending = State.Device.Capabilities.IsSourceAlphaBlending;
             result->IsColorBlending = State.Device.Capabilities.IsColorBlending;
@@ -1063,7 +1063,7 @@ namespace RendererModule
 
             result = RENDERER_MODULE_SUCCESS; break;
         }
-        case RENDERER_MODULE_STATE_SELECT_WINDOW_MODE_ACTIVE_STATE:
+        case RENDERER_MODULE_STATE_SELECT_WINDOW_MODE_ACTIVE_STATE_ALTERNATIVE:
         {
             State.Settings.IsWindowModeActive = ((u32)value) != 0 ? TRUE : FALSE;
 
@@ -1228,7 +1228,7 @@ namespace RendererModule
     }
 
     // 0x600013e0
-    // a.k.a.  _THRASH_unlockwindow
+    // a.k.a. THRASH_unlockwindow
     DLLAPI u32 STDCALLAPI UnlockGameWindow(const RendererModuleWindowLock* state)
     {
         if (State.Lock.IsActive && State.Lock.Surface != NULL)

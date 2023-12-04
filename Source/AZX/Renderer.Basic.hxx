@@ -31,6 +31,10 @@ SOFTWARE.
 #define RENDERER_PIXEL_FORMAT_32_BIT 6
 #define RENDERER_PIXEL_FORMAT_16_BIT_444 7
 #define RENDERER_PIXEL_FORMAT_DXT1 12
+#define RENDERER_PIXEL_FORMAT_DXT3 13
+#define RENDERER_PIXEL_FORMAT_BUMPDUDV_1 18
+#define RENDERER_PIXEL_FORMAT_BUMPDUDV_2 19
+#define RENDERER_PIXEL_FORMAT_BUMPDUDV_3 20
 
 #define RENDERER_RESOLUTION_MODE_INVALID (-1)
 #define RENDERER_RESOLUTION_MODE_NONE 0
@@ -53,5 +57,15 @@ namespace Renderer
         u32 Color;
         u32 Specular;
         f32x2 UV;
+    };
+
+    struct RTLVX2
+    {
+        f32x3 XYZ;
+        f32 RHW;
+        u32 Color;
+        u32 Specular;
+        f32x2 UV1;
+        f32x2 UV2;
     };
 }
