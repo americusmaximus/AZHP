@@ -71,12 +71,14 @@ namespace RendererModule
     }
 
     // 0x6000e514
-    void InitializeVertexes(RTLVX* vertexes, const u32 count)
+    void InitializeVertexes(void* vertexes, const u32 count)
     {
         for (u32 x = 0; x < count; x++)
         {
-            vertexes[x].XYZ.X = vertexes[x].XYZ.X - 0.5f;
-            vertexes[x].XYZ.Y = vertexes[x].XYZ.Y - 0.5f;
+            f32x3* xyz = (f32x3*)((addr)vertexes + (addr)(x * sizeof(RTLVX)));
+
+            xyz->X = xyz->X - 0.5f;
+            xyz->Y = xyz->Y - 0.5f;
         }
     }
 

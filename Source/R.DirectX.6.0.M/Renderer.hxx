@@ -380,7 +380,7 @@ namespace RendererModule
     void InitializeRendererState(void);
     void InitializeRendererTransforms(void);
     void InitializeVertex(Renderer::RTLVX* dst, const Renderer::RTLVX* src);
-    void InitializeVertexes(Renderer::RTLVX* vertexes, const u32 count);
+    void InitializeVertexes(void* vertexes, const u32 count);
     void InitializeViewPort(void);
     void ReleaseRendererDevice(void);
     void ReleaseRendererDeviceSurfaces(void);
