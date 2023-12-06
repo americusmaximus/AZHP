@@ -29,4 +29,21 @@ using namespace RendererModule;
 namespace RendererModuleValues
 {
     s32 RendererState = DEFAULT_RENDERER_STATE;
+
+    s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
+
+    s32 RendererDeviceType;
+
+    D3DPRIMITIVETYPE RendererPrimitiveType = D3DPT_TRIANGLELIST;
+    u32 RendererVertexType = D3DFVF_TLVERTEX;
+    u32 RendererVertexSize = sizeof(RTLVX);
+
+    f32 RendererDepthBias;
+
+    RendererModuleDescriptor ModuleDescriptor;
+
+    s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
+    {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1
+    }; // TODO
 }

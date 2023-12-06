@@ -58,9 +58,28 @@ namespace RendererModule
     // a.k.a. THRASH_clip
     DLLAPI u32 STDCALLAPI ClipGameWindow(const u32 x0, const u32 y0, const u32 x1, const u32 y1)
     {
-        // TODO NOT IMPLEMENTED
+        State.ViewPort.X0 = x0;
+        State.ViewPort.Y0 = y0;
+        State.ViewPort.X1 = x1 - x0;
+        State.ViewPort.Y1 = y1 - y0;
 
-        return RENDERER_MODULE_FAILURE;
+        AttemptRenderScene();
+
+        if (State.Scene.IsActive) { EndRendererScene(); }
+
+        D3DVIEWPORT7 vp;
+        ZeroMemory(&vp, sizeof(D3DVIEWPORT7));
+
+        vp.dwX = x0;
+        vp.dwY = y0;
+        vp.dvMinZ = 0.0f;
+        vp.dvMaxZ = 1.0f;
+        vp.dwWidth = x1 - x0;
+        vp.dwHeight = y1 - y0;
+
+        State.DX.Device->SetViewport(&vp);
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60001880
@@ -347,9 +366,47 @@ namespace RendererModule
     // a.k.a. THRASH_selectdisplay
     DLLAPI u32 STDCALLAPI SelectDevice(const s32 indx)
     {
-        // TODO NOT IMPLEMENTED
+        State.Device.Identifier = NULL;
 
-        return RENDERER_MODULE_FAILURE;
+        if (State.DX.Instance != NULL) { RestoreGameWindow(); }
+
+        const char* name = NULL;
+
+        if (indx < DEFAULT_RENDERER_DEVICE_INDEX || State.Devices.Count <= indx)
+        {
+            RendererDeviceIndex = DEFAULT_RENDERER_DEVICE_INDEX;
+            State.Device.Identifier = State.Devices.Indexes[DEFAULT_RENDERER_DEVICE_INDEX];
+            name = State.Devices.Enumeration.Names[DEFAULT_RENDERER_DEVICE_INDEX];
+        }
+        else
+        {
+            RendererDeviceIndex = indx;
+            State.Device.Identifier = State.Devices.Indexes[indx];
+            name = State.Devices.Enumeration.Names[indx];
+        }
+
+        strncpy(State.Device.Name, name, MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH);
+
+        if (State.Lambdas.Lambdas.Execute != NULL)
+        {
+            State.Lambdas.Lambdas.Execute(RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_DEVICE, (RENDERERMODULEEXECUTECALLBACK)InitializeRendererDeviceExecute);
+            State.Lambdas.Lambdas.Execute(RENDERER_MODULE_WINDOW_MESSAGE_RELEASE_DEVICE, (RENDERERMODULEEXECUTECALLBACK)ReleaseRendererDeviceExecute);
+            State.Lambdas.Lambdas.Execute(RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES, (RENDERERMODULEEXECUTECALLBACK)InitializeRendererDeviceSurfacesExecute);
+
+            if (State.Lambdas.Lambdas.Execute != NULL)
+            {
+                if (GetWindowThreadProcessId(State.Window.Parent.HWND, NULL) != GetCurrentThreadId())
+                {
+                    InitializeRendererDeviceLambdas();
+
+                    return RENDERER_MODULE_SUCCESS;
+                }
+            }
+        }
+
+        InitializeRendererDevice();
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60003ca0

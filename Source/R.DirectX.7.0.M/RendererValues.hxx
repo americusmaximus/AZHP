@@ -32,4 +32,18 @@ SOFTWARE.
 namespace RendererModuleValues
 {
     extern s32 RendererState; // 0x600170b8
+
+    extern s32 RendererDeviceIndex; // 0x600170bc
+
+    extern s32 RendererDeviceType; // 0x60058d70
+
+    extern D3DPRIMITIVETYPE RendererPrimitiveType; // 0x60017104
+    extern u32 RendererVertexType; // 0x600170f0
+    extern u32 RendererVertexSize; // 0x600170fc
+
+    extern f32 RendererDepthBias; // 0x6001885c
+
+    extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x600fc7c0
+
+    extern s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60017010
 }
