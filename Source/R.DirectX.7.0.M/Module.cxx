@@ -431,9 +431,85 @@ namespace RendererModule
     // a.k.a. THRASH_setvideomode
     DLLAPI u32 STDCALLAPI SelectVideoMode(const u32 mode, const u32 pending, const u32 depth)
     {
-        // TODO NOT IMPLEMENTED
+        State.Window.Bits = depth;
 
-        return RENDERER_MODULE_FAILURE;
+        if (depth == 1) { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_16; } // TODO
+        else if (depth == 2) { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_32; } // TODO
+
+        if (State.Scene.IsActive) { LOGWARNING("D3D Setting videomode in 3d scene !!!!\n"); }
+
+        SelectRendererDevice();
+
+        if (ModuleDescriptor.Capabilities.Capabilities[mode].Bits < State.Window.Bits) { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_16; }
+
+        s32 result = RENDERER_MODULE_FAILURE;
+
+        if (State.DX.Instance != NULL)
+        {
+            if (State.Lambdas.Lambdas.AcquireWindow == NULL)
+            {
+                InitializeRendererDeviceSurfacesExecute(0, State.Window.HWND, RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES, mode, pending, NULL);
+            }
+            else
+            {
+                if (GetWindowThreadProcessId(State.Window.Parent.HWND, NULL) == GetCurrentThreadId())
+                {
+                    InitializeRendererDeviceSurfacesExecute(0, State.Window.HWND, RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES, mode, pending, NULL);
+                }
+                else
+                {
+                    SetForegroundWindow(State.Window.HWND);
+                    PostMessageA(State.Window.HWND, RENDERER_MODULE_WINDOW_MESSAGE_INITIALIZE_SURFACES, mode, pending);
+                    WaitForSingleObject(State.Mutex, INFINITE);
+                }
+            }
+
+            if (State.DX.Code == DD_OK)
+            {
+                DDSURFACEDESC2 desc;
+                ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
+
+                desc.dwSize = sizeof(DDSURFACEDESC2);
+
+                const HRESULT code = State.DX.Surfaces.Active[1]->GetSurfaceDesc(&desc);
+
+                if (code != DD_OK) { LOGWARNING("DX7_setvideomode:  Error getting Surface Description %8x\n", code); }
+            }
+            else { LOGERROR("DX7_setdisplay - error\n"); }
+
+            result = State.DX.Code == DD_OK;
+        }
+
+        InitializeRendererModuleState(mode, pending, depth, RENDERER_MODULE_ENVIRONMENT_SECTION_NAME);
+        SelectBasicRendererState(RENDERER_MODULE_STATE_62, (void*)(DAT_60058df8 + 1));
+
+        SelectGameWindow(1); // TODO
+
+        const RendererModuleWindowLock* lock = LockGameWindow();
+
+        UnlockGameWindow(lock);
+
+        SelectGameWindow(0); // TODO
+
+        ZeroMemory(&State.Settings.Lock, sizeof(RendererModuleWindowLock));
+
+        if (lock != NULL)
+        {
+            State.Settings.Lock.Data = NULL;
+
+            State.Settings.Lock.Stride = lock->Stride;
+            State.Settings.Lock.Format = lock->Format;
+            State.Settings.Lock.Width = lock->Width;
+            State.Settings.Lock.Height = lock->Height;
+
+            SelectRendererStateValue(RENDERER_MODULE_STATE_SELECT_WINDOW_LOCK_STATE, &State.Settings.Lock);
+        }
+
+        ResetTextures();
+
+        RendererState = RENDERER_STATE_INACTIVE;
+
+        return result;
     }
 
     // 0x60001380

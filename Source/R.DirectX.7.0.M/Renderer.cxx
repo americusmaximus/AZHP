@@ -44,6 +44,8 @@ namespace RendererModule
 {
     RendererModuleState State;
 
+    u32 DAT_60058df4; // TODO
+    u32 DAT_60058df8; // TODO
     u32 DAT_6005ab50; // TODO
     u32 DAT_6005ab5c; // TODO
 
@@ -2104,10 +2106,267 @@ namespace RendererModule
         return D3DENUMRET_OK;
     }
 
+    // 0x60002060
+    void SelectRendererDevice(void)
+    {
+        if (RendererDeviceIndex < DEFAULT_RENDERER_DEVICE_INDEX)
+        {
+            if (State.Lambdas.Lambdas.AcquireWindow != NULL || State.Window.HWND != NULL)
+            {
+                const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME);
+
+                SelectDevice(value == NULL ? DEFAULT_RENDERER_DEVICE_INDEX : atoi(value));
+            }
+        }
+    }
+
+    // 0x6000b2c0
+    u32 SelectBasicRendererState(const u32 state, void* value)
+    {
+        switch (state)
+        {
+        case RENDERER_MODULE_STATE_SELECT_CULL_STATE:
+        {
+            switch ((u32)value)
+            {
+            case RENDERER_MODULE_CULL_NONE:
+            {
+                State.Settings.Cull = 1; // TODO
+
+                SelectRendererStateValue(state, (void*)RENDERER_MODULE_CULL_NONE);
+
+                return RENDERER_MODULE_SUCCESS;
+            }
+            case RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE:
+            {
+                State.Settings.Cull = 0x80000000; // TODO
+
+                SelectRendererStateValue(state, (void*)RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE);
+
+                return RENDERER_MODULE_FAILURE;
+            }
+            case RENDERER_MODULE_CULL_CLOCK_WISE:
+            {
+                State.Settings.Cull = 0; // TODO
+
+                SelectRendererStateValue(state, (void*)RENDERER_MODULE_CULL_CLOCK_WISE);
+
+                return RENDERER_MODULE_FAILURE;
+            }
+            default: { return RENDERER_MODULE_FAILURE; }
+            }
+
+            break;
+        }
+        case RENDERER_MODULE_STATE_SELECT_WINDOW_MODE_STATE:
+        case RENDERER_MODULE_STATE_SELECT_EXECUTE_LAMBDA:
+        case RENDERER_MODULE_STATE_SELECT_LOCK_WINDOW_LAMBDA:
+        case RENDERER_MODULE_STATE_SELECT_DISPLAY_STATE:
+        case RENDERER_MODULE_STATE_SELECT_GAME_WINDOW_INDEX:
+        case RENDERER_MODULE_STATE_SELECT_SHAMELESS_PLUG_STATE:
+        case RENDERER_MODULE_STATE_SELECT_LOG_STATE: { break; }
+        case RENDERER_MODULE_STATE_SELECT_LAMBDAS:
+        {
+            const RendererModuleLambdaContainer* lambdas = (RendererModuleLambdaContainer*)value;
+
+            State.Lambdas.Log = lambdas == NULL ? NULL : lambdas->Log;
+
+            break;
+        }
+        case RENDERER_MODULE_STATE_SELECT_WINDOW: { State.Window.Parent.HWND = (HWND)value; break; }
+        case RENDERER_MODULE_STATE_SELECT_LOG_LAMBDA: { State.Lambdas.Log = (RENDERERMODULELOGLAMBDA)value; break; }
+        case RENDERER_MODULE_STATE_SELECT_LINE_VERTEX_SIZE: { RendererLineVertexSize = (u32)value; break; }
+        case RENDERER_MODULE_STATE_SELECT_VERSION:
+        {
+            const u32 version = (u32)value;
+
+            RendererVersion = version;
+
+            if (version < RENDERER_MODULE_VERSION_104 || version < RENDERER_MODULE_VERSION_107)
+            {
+                RendererVersion = RENDERER_MODULE_VERSION_107;
+            }
+
+            break;
+        }
+        case RENDERER_MODULE_STATE_SELECT_MEMORY_ALLOCATE_LAMBDA: { State.Lambdas.AllocateMemory = (RENDERERMODULEALLOCATEMEMORYLAMBDA)value; break; }
+        case RENDERER_MODULE_STATE_SELECT_MEMORY_RELEASE_LAMBDA: { State.Lambdas.ReleaseMemory = (RENDERERMODULERELEASEMEMORYLAMBDA)value; break; }
+        case RENDERER_MODULE_STATE_SELECT_SELECT_STATE_LAMBDA: { State.Lambdas.SelectState = (RENDERERMODULESELECTSTATELAMBDA)value; break; }
+        case RENDERER_MODULE_STATE_55: { DAT_60058df4 = (u32)value; break; }
+        case RENDERER_MODULE_STATE_62: { DAT_60058df8 = (u32)value; break; }
+        case RENDERER_MODULE_STATE_INDEX_SIZE:
+        {
+            switch ((u32)value)
+            {
+            case RENDERER_MODULE_INDEX_SIZE_1: { RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_1; break; }
+            case RENDERER_MODULE_INDEX_SIZE_2: { RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_2; break; }
+            case RENDERER_MODULE_INDEX_SIZE_4: { RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_4; break; }
+            case RENDERER_MODULE_INDEX_SIZE_8: { RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_8; break; }
+            default: { return RENDERER_MODULE_FAILURE; }
+            }
+
+            break;
+        }
+        default: { return RENDERER_MODULE_FAILURE; }
+        }
+
+        SelectRendererStateValue(state, value);
+
+        return RENDERER_MODULE_SUCCESS;
+    }
+
     // 0x60001f20
     void InitializeTextureStateStates(void)
     {
         ZeroMemory(State.Textures.StageStates, MAX_RENDERER_MODULE_TEXTURE_STATE_STATE_COUNT * sizeof(TextureStageState));
+    }
+
+    // 0x6000b590
+    void InitializeRendererModuleState(const u32 mode, const u32 pending, const u32 depth, const char* section)
+    {
+        SelectState(RENDERER_MODULE_STATE_SELECT_HINT_STATE,
+            (void*)AcquireSettingsValue(0, section, "HINT")); // TODO
+        SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE, NULL);
+        SelectState(RENDERER_MODULE_STATE_SELECT_CULL_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE, section, "CULL"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE_FILTER_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_TEXTURE_FILTER_LENEAR, section, "FILTER"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_SHADE_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_SHADE_GOURAUD, section, "SHADE"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_ALPHA_BLEND_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_ALPHA_BLEND_ACTIVE, section, "TRANSPARENCY"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_ALPHA_TEST_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_ALPHA_TEST_16, section, "ALPHATEST"));
+        SelectState(RENDERER_MODULE_STATE_SELCT_ALPHA_FUNCTION,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_ALPHA_FUNCTION_GREATER, section, "ALPHACMP"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE_MIP_FILTER_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_TEXTURE_MIP_FILTER_POINT, section, "MIPMAP"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_MATERIAL,
+            (void*)AcquireSettingsValue(0x00000000, section, "BACKGROUNDCOLOUR"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_CHROMATIC_COLOR,
+            (void*)AcquireSettingsValue(0x00000000, section, "CHROMACOLOUR"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_DITHER_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_DITHER_INACTIVE, section, "DITHER")); // ORIGINAL: ACTIVE
+        SelectState(RENDERER_MODULE_STATE_SELECT_FOG_ALPHAS, NULL);
+        SelectState(RENDERER_MODULE_STATE_SELECT_FOG_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_FOG_INACTIVE, section, "FOGMODE"));
+
+        {
+            const f32 value = 0.0f;
+            SelectState(RENDERER_MODULE_STATE_SELECT_FOG_DENSITY,
+                (void*)AcquireSettingsValue((s32)(*(s32*)&value), section, "FOGDENSITY"));
+        }
+
+        {
+            const f32 value = 0.0f;
+            SelectState(RENDERER_MODULE_STATE_SELECT_FOG_START,
+                (void*)AcquireSettingsValue((s32)(*(s32*)&value), section, "STATE_FOGZNEAR"));
+        }
+
+        {
+            const f32 value = 1.0f;
+            SelectState(RENDERER_MODULE_STATE_SELECT_FOG_END,
+                (void*)AcquireSettingsValue((s32)(*(s32*)&value), section, "FOGZFAR"));
+        }
+
+        SelectState(RENDERER_MODULE_STATE_SELECT_FOG_COLOR,
+            (void*)AcquireSettingsValue(GRAPCHICS_COLOR_WHITE, section, "FOGCOLOUR"));
+
+        SelectState(RENDERER_MODULE_STATE_INDEX_SIZE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_INDEX_SIZE_4, section, "INDEXSIZE"));
+
+        SelectState(RENDERER_MODULE_STATE_SELECT_BLEND_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_ALPHA_BLEND_SOURCE_INVERSE_SOURCE, section, "ALPHA"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE_ADDRESS_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_TEXTURE_ADDRESS_CLAMP, section, "TEXTURECLAMP"));
+
+        {
+            const f32 value = 1.0f;
+            SelectState(RENDERER_MODULE_STATE_SELECT_GAMMA_CONTROL_STATE, (void*)(u32)(*(u32*)&value));
+        }
+
+        {
+            const f32 value = 0.0f;
+            SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_BIAS_STATE,
+                (void*)AcquireSettingsValue((u32)(*(u32*)&value), section, "DEPTHBIAS"));
+        }
+
+        {
+            const f32 value = 0.0f;
+            SelectState(RENDERER_MODULE_STATE_SELECT_MIP_MAP_LOD_BIAS_STATE, (void*)(u32)(*(u32*)&value));
+        }
+
+        SelectState(RENDERER_MODULE_STATE_SELECT_VERTEX_TYPE, (void*)RENDERER_MODULE_VERTEX_TYPE_RTLVX);
+        SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE_STAGE_BLEND_STATE, (void*)RENDERER_MODULE_TEXTURE_STAGE_BLEND_NORMAL);
+        SelectState(MAKETEXTURESTAGEMASK(RENDERER_TEXTURE_STAGE_1) | RENDERER_MODULE_STATE_SELECT_TEXTURE_STAGE_BLEND_STATE, (void*)RENDERER_MODULE_TEXTURE_STAGE_BLEND_DISABLE);
+        SelectState(RENDERER_MODULE_STATE_MAX_PENDING_STATE,
+            (void*)AcquireSettingsValue(pending - 2U & ((s32)(pending - 2U) < 0) - 1, section, "MAXPENDING")); // TODO
+        SelectState(RENDERER_MODULE_STATE_SELECT_BACK_BUFFER_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_BACK_BUFFER_ACTIVE, section, "BACKBUFFERTYPE"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_FLAT_FANS_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_STATE_FLAT_FANS_ACTIVE, section, "FLATFANS"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_LINE_WIDTH, (void*)AcquireSettingsValue(1, section, "LINEWIDTH"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_STENCIL_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_STENCIL_INACTIVE, section, "STENCILBUFFER"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_DISPLAY_STATE, (void*)AcquireSettingsValue(mode, section, "DISPLAYMODE"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_LINE_DOUBLE_STATE, (void*)AcquireSettingsValue(0, section, "LINEDOUBLE"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_GAME_WINDOW_INDEX, (void*)0);
+
+        {
+            const f32 value = 1.0f;
+            SelectState(RENDERER_MODULE_STATE_SELECT_CLEAR_DEPTH_STATE, (void*)(u32)(*(u32*)&value));
+        }
+
+        SelectState(RENDERER_MODULE_STATE_SELECT_TOGGLE_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_TOGGLE_VERTICAL_SYNC, section, "FLIPRATE"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_SHAMELESS_PLUG_STATE,
+            (void*)AcquireSettingsValue(0, section, "SHAMELESSPLUG")); // TODO
+
+        {
+            const u32 value = AcquireSettingsValue(((depth < 1) - 1) & 2, section, "DEPTHBUFFER");
+            const u32 result = SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)value);
+
+            if (result == RENDERER_MODULE_FAILURE && value == RENDERER_MODULE_DEPTH_W)
+            {
+                SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)RENDERER_MODULE_DEPTH_ENABLE);
+            }
+        }
+
+        SelectState(RENDERER_MODULE_STATE_SELCT_DEPTH_FUNCTION,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_DEPTH_FUNCTION_LESS_EQUAL, section, "DEPTHCMP"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_LOG_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_LOG_ACTIVE, section, "LOG"));
+    }
+
+    // 0x60001e70
+    void SelectRendererStateValue(const u32 state, void* value)
+    {
+        const u32 actual = state & RENDERER_MODULE_SELECT_STATE_MASK;
+        const u32 stage = MAKETEXTURESTAGEVALUE(state);
+
+        const s32 indx = AcquireTextureStateStageIndex(actual);
+
+        if (indx >= 0) { State.Textures.StageStates[indx].Values[stage] = (s32)value; }
+
+        if (State.Lambdas.SelectState != NULL) { State.Lambdas.SelectState(actual, value); }
+    }
+
+    // 0x60001e20
+    s32 AcquireTextureStateStageIndex(const u32 state)
+    {
+        s32 sum = 0;
+        u32 indx = 0;
+
+        while (state < RendererModuleValues::MinMax[indx].Min || RendererModuleValues::MinMax[indx].Max < state)
+        {
+            sum = sum + (RendererModuleValues::MinMax[indx].Max - RendererModuleValues::MinMax[indx].Min);
+
+            indx = indx + 1;
+
+            if (5 < indx) { return -1; }
+        }
+
+        return (sum - RendererModuleValues::MinMax[indx].Min) + state;
     }
 
     // 0x60009670

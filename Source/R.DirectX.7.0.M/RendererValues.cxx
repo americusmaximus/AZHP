@@ -29,16 +29,31 @@ using namespace RendererModule;
 namespace RendererModuleValues
 {
     s32 RendererState = DEFAULT_RENDERER_STATE;
-
     s32 RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
 
-    s32 RendererDeviceType;
-
-    D3DPRIMITIVETYPE RendererPrimitiveType = D3DPT_TRIANGLELIST;
     u32 RendererVertexType = D3DFVF_TLVERTEX;
     u32 RendererVertexSize = sizeof(RTLVX);
 
+    D3DPRIMITIVETYPE RendererPrimitiveType = D3DPT_TRIANGLELIST;
+
+    u32 RendererVersion = RENDERER_MODULE_VERSION_107;
+    u32 RendererLineVertexSize = sizeof(RTLVX);
+
+    u32 RendererIndexSize = RENDERER_MODULE_INDEX_SIZE_4;
+
     f32 RendererDepthBias;
+
+    s32 RendererDeviceType;
+
+    RendererModule::MinMax MinMax[6] =
+    {
+        { 0x0,   0x4a },
+        { 0x64,  0x6e },
+        { 0xc8,  0xd7 },
+        { 0x12c, 0x13b },
+        { 0x190, 0x19f },
+        { 0x2bc, 0x2cb }
+    }; // TODO
 
     RendererModuleDescriptor ModuleDescriptor;
 
