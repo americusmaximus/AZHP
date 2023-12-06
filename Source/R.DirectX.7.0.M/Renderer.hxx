@@ -91,9 +91,19 @@ SOFTWARE.
 #define MAX_RENDERER_MODULE_TEXTURE_STAGE_COUNT 8
 #define MAX_RENDERER_MODULE_TEXTURE_STATE_STATE_COUNT 120
 
+#define DEFAULT_RENDERER_MODULE_CLEAR_DEPTH_VALUE (1.0f)
+
+#define MAX_OUTPUT_FOG_ALPHA_VALUE 255
+#define MAX_OUTPUT_FOG_ALPHA_COUNT 256
+
 #define RENDERER_WINDOW_OFFSET 8
 #define MAX_RENDERER_WINDOW_COUNT 65536
 #define MAX_RENDERER_WINDOW_INDEX 65535
+
+#define DEFAULT_FOG_DINSITY (1.0f)
+#define DEFAULT_FOG_COLOR 0x00FF0000
+#define DEFAULT_FOG_START (0.0f)
+#define DEFAULT_FOG_END (1.0f)
 
 #if !defined(__WATCOMC__) && _MSC_VER <= 1200
 inline void LOGERROR(...) { }
@@ -112,6 +122,7 @@ namespace Renderer
 
 namespace RendererModule
 {
+    extern u32 DAT_60018850; // 0x60018850
     extern u32 DAT_60058df4; // 0x60058df4
     extern u32 DAT_60058df8; // 0x60058df8
     extern u32 DAT_6005ab50; // 0x6005ab50
@@ -379,6 +390,7 @@ namespace RendererModule
             u32 Cull; // 0x60058e1c
 
             BOOL IsWindowModeActive; // 0x60018860
+            BOOL IsToggleAllowed; // 0x60018864
 
             u32 CooperativeLevel; // 0x60018684
             BOOL IsWindowMode; // 0x60018688
@@ -386,6 +398,9 @@ namespace RendererModule
             u32 MaxAvailableMemory; // 0x60018690
 
             u32 Acceleration; // 0x60018844
+            u32 ClipPlaneState; // 0x60018848
+
+            BOOL IsFogActive; // 0x60018854
 
             DDGAMMARAMP GammaControl; // 0x6007b240
 
@@ -457,6 +472,9 @@ namespace RendererModule
     BOOL CALLBACK EnumerateDirectDrawDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context, HMONITOR monitor);
     BOOL EndRendererScene(void);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height, IDirectDrawSurface7* depth, IDirectDrawSurface7* surf);
+    BOOL RestoreRendererSurfaces(void);
+    BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
+    BOOL SelectRendererTextureStage(const u32 stage, const D3DTEXTURESTAGESTATETYPE type, const DWORD value);
     const char* AcquireRendererMessage(const HRESULT code);
     const char* AcquireRendererMessageDescription(const HRESULT code);
     HRESULT CALLBACK EnumerateDirectDrawAcceleratedDevices(LPSTR description, LPSTR name, LPD3DDEVICEDESC7 desc, LPVOID context);
@@ -493,5 +511,9 @@ namespace RendererModule
     void ReleaseRendererWindows(void);
     void RendererRenderScene(void);
     void SelectRendererDevice(void);
+    void SelectRendererDeviceType(const u32 type);
+    void SelectRendererFogAlphas(const u8* input, u8* output);
+    void SelectRendererMaterial(const u32 color);
     void SelectRendererStateValue(const u32 state, void* value);
+    void SelectRendererVertexCount(void);
 }

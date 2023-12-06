@@ -679,4 +679,109 @@ namespace RendererModule
 
         u32 DXV;
     };
+
+    // NOTE: D3DLIGHTTYPE
+    typedef enum RendererLightType
+    {
+        RendererLightTypeNone = 0,
+        RendererLightTypePoint = 1,
+        RendererLightTypeSpot = 2,
+        RendererLightTypeDirectional = 3,
+        RendererLightTypeMax = U32_MAX
+    } RendererLightType;
+
+    // NOTE: D3DLIGHT7
+    struct RendererLight
+    {
+        RendererLightType Type;
+        u32 Diffuse;
+        u32 Specular;
+        u32 Ambient;
+        f32x3 Position;
+        f32x3 Direction;
+        f32 Range;
+        f32 Falloff;
+        f32 Attenuation0;
+        f32 Attenuation1;
+        f32 Attenuation2;
+        f32 Theta;
+        f32 Phi;
+    };
+
+    struct RendererMaterial
+    {
+        u32 Diffuse;
+        u32 Ambient;
+        u32 Specular;
+        u32 Emissive;
+        f32 Power;
+    };
+
+    typedef enum RendererPrimitiveType
+    {
+        RendererPrimitiveTypeNone = 0,
+        RendererPrimitiveTypePointList = 1,
+        RendererPrimitiveTypeLineList = 2,
+        RendererPrimitiveTypeLineStrip = 3,
+        RendererPrimitiveTypeTriangleList = 4,
+        RendererPrimitiveTypeTriangleStrip = 5,
+        RendererPrimitiveTypeTriangleFan = 6,
+        RendererPrimitiveTypeMax = U32_MAX
+    } RendererPrimitiveType;
+
+    struct RendererPacket
+    {
+        RendererPrimitiveType Type;
+        u32 FVF;
+        void* Vertexes;
+        u32 VertexCount;
+        u16* Indexes;
+        u32 IndexCount;
+    };
+
+    struct RendererBufferPacket
+    {
+        void* Vertexes;
+        RendererPrimitiveType Type;
+        s32 Unk02; // TODO
+        s32 Unk03; // TODO
+        s32 Unk04; // TODO
+        u32 VertexCount;
+        u16* Indexes;
+        u32 IndexCount;
+    };
+
+    struct RendererGuardBands
+    {
+        s32 Left;
+        s32 Right;
+        s32 Top;
+        s32 Bottom;
+    };
+
+    struct RendererTransformAndLightCapabilites
+    {
+        BOOL IsActive;
+        u32 MaxActiveLights;
+        s32 Unk03; // TODO
+        u32 MaxUserClipPlanes;
+        u32 MaxVertexBlendMatrices;
+        BOOL IsTransformLightBufferSystemMemoryAvailable;
+        BOOL IsTransformLightBufferVideoMemoryAvailable;
+    };
+
+    struct RendererTextureStageBumpMappingMatrix
+    {
+        f32 M00, M01, M10, M11;
+    };
+
+    struct RendererVertexBuffer
+    {
+        void* Buffer;
+        s32 Unk01; // TODO
+        u32 FVF;
+        u32 Capabilities;
+        s32 Unk04; // TODO
+        u32 VertexCount;
+    };
 }
