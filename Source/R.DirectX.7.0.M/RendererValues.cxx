@@ -74,9 +74,20 @@ namespace RendererModuleValues
     }; // TODO
 
     RendererModuleDescriptor ModuleDescriptor;
+    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT];
 
     s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
     {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1
+    }; // TODO
+
+    s32 UnknownArray06[6] =
+    {
+        0, 0, 0, 0, 5, -1
+    }; // TODO
+
+    u32 UnknownFormatValues[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
+    {
+       0, 1, 1, 2, 2, 3, 4, 2, 1, 2, 2, 2, 3, 0, 0, 0, 0, 0, 2, 3, 2, 0
     }; // TODO
 }

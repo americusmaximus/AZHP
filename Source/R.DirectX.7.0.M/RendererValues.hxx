@@ -69,6 +69,11 @@ namespace RendererModuleValues
     extern RendererModule::MinMax MinMax[6]; // 0x60017088 // TODO
 
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x600fc7c0
+    extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT]; // 0x60017250
 
     extern s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x60017010
+
+    extern s32 UnknownArray06[6]; // 0x60017068 // TODO
+
+    extern u32 UnknownFormatValues[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x600171c8
 }
