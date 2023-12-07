@@ -276,6 +276,8 @@ namespace RendererModule
                 u32 Count; // 0x60058878
 
                 u16 Indexes[MAX_RENDERER_INDEX_COUNT]; // 0x60038868
+
+                u16 Large[MAX_RENDERER_INDEX_COUNT]; // 0x6005ac40
             } Indexes;
 
             struct
@@ -507,6 +509,9 @@ namespace RendererModule
     BOOL CALLBACK EnumerateDirectDrawDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context, HMONITOR monitor);
     BOOL EndRendererScene(void);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height, IDirectDrawSurface7* depth, IDirectDrawSurface7* surf);
+    BOOL RenderPoints(Renderer::RVX* vertexes, const u32 count);
+    BOOL RenderTriangleFans(Renderer::RVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes);
+    BOOL RenderTriangleStrips(Renderer::RVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes);
     BOOL RestoreRendererSurfaces(void);
     BOOL SelectRendererState(const D3DRENDERSTATETYPE type, const DWORD value);
     BOOL SelectRendererTexture(Renderer::RendererTexture* tex);
@@ -521,6 +526,7 @@ namespace RendererModule
     HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC2 desc, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDevicePixelFormats(LPDDPIXELFORMAT format, LPVOID context);
     HRESULT CALLBACK EnumerateRendererDeviceTextureFormats(LPDDPIXELFORMAT format, LPVOID context);
+    inline f32 AcquireNormal(const f32x3* a, const f32x3* b, const f32x3* c) { return (b->X - a->X) * (c->Y - a->Y) - (c->X - a->X) * (b->Y - a->Y); };
     Renderer::RendererTexture* AllocateRendererTexture(const u32 size);
     Renderer::RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, void* p4, const u32 options, const BOOL destination);
     Renderer::RendererTexture* InitializeRendererTexture(void);
@@ -562,6 +568,12 @@ namespace RendererModule
     void ReleaseRendererTexture(Renderer::RendererTexture* tex);
     void ReleaseRendererWindows(void);
     void RendererRenderScene(void);
+    void RenderLine(Renderer::RVX* a, Renderer::RVX* b);
+    void RenderLineMesh(Renderer::RVX* vertexes, const u32* indexes, const u32 count);
+    void RenderQuad(Renderer::RVX* a, Renderer::RVX* b, Renderer::RVX* c, Renderer::RVX* d);
+    void RenderQuadMesh(Renderer::RVX* vertexes, const u32* indexes, const u32 count);
+    void RenderTriangle(Renderer::RVX* a, Renderer::RVX* b, Renderer::RVX* c);
+    void RenderTriangleMesh(Renderer::RVX* vertexes, const u32* indexes, const u32 count);
     void SelectRendererDevice(void);
     void SelectRendererDeviceType(const u32 type);
     void SelectRendererFogAlphas(const u8* input, u8* output);
