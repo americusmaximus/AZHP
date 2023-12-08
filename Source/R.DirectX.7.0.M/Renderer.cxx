@@ -2163,7 +2163,7 @@ namespace RendererModule
         D3DRECT rect;
 
         DWORD options = (mode == FALSE); // D3DCLEAR_TARGET
-
+        
         if (State.Device.Capabilities.IsDepthAvailable && State.Window.Bits != 0) { options = options | D3DCLEAR_ZBUFFER; }
 
         if (State.Device.Capabilities.IsStencilBuffer) { options = options | D3DCLEAR_STENCIL; }
@@ -3580,9 +3580,9 @@ namespace RendererModule
             // B
             {
                 void* v = (void*)((addr)State.Data.Vertexes.Vertexes + (addr)(RendererVertexSize * (State.Data.Vertexes.Count + 1)));
-
+                
                 const u16 indx = *(u16*)((addr)indexes + (addr)(RendererIndexSize * (x * 2 + 1)));
-
+                
                 void* b = (void*)((addr)vertexes + (addr)(RendererVertexSize * indx));
 
                 CopyMemory(v, b, RendererVertexSize);

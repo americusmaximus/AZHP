@@ -1687,7 +1687,7 @@ namespace RendererModule
             SelectState(RENDERER_MODULE_STATE_SELECT_MIP_MAP_LOD_BIAS_STATE, (void*)(u32)(*(u32*)&value));
         }
 
-        SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)((depth < 1) - 1 & 2)); // TODO
+        SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)(((depth < 1) - 1) & 2)); // TODO
         SelectState(RENDERER_MODULE_STATE_MAX_PENDING_STATE, (void*)(pending - 2U & ((s32)(pending - 2U) < 0) - 1)); // TODO
     }
 
@@ -2320,7 +2320,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : a->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - a->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - a->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : a->Specular;
 
             vertex->UV.X = a->UV.X;
@@ -2340,7 +2340,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : b->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - b->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - b->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : b->Specular;
 
             vertex->UV.X = b->UV.X;
@@ -2360,7 +2360,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : c->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - c->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - c->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : c->Specular;
 
             vertex->UV.X = c->UV.X;
@@ -2380,7 +2380,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : d->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - d->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - d->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : d->Specular;
 
             vertex->UV.X = d->UV.X;
@@ -2414,7 +2414,6 @@ namespace RendererModule
         }
     }
 
-
     // 0x60005740
     void RenderTriangle(RTLVX* a, RTLVX* b, RTLVX* c)
     {
@@ -2433,7 +2432,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : a->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - a->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - a->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : a->Specular;
 
             vertex->UV.X = a->UV.X;
@@ -2455,7 +2454,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : b->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - b->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - b->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : b->Specular;
 
             vertex->UV.X = b->UV.X;
@@ -2477,7 +2476,7 @@ namespace RendererModule
             vertex->Color = RendererShadeMode == RENDERER_MODULE_SHADE_FLAT ? GRAPCHICS_COLOR_WHITE : c->Color;
 
             vertex->Specular = State.Settings.IsFogActive
-                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - c->XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24
+                ? ((u32)RendererFogAlphas[(u32)roundf((1.0f - c->RHW * 0.000015259022f) * 255.0f + 0.5f)]) << 24
                 : c->Specular;
 
             vertex->UV.X = c->UV.X;
@@ -2503,7 +2502,7 @@ namespace RendererModule
 
                 if (State.Settings.IsFogActive)
                 {
-                    vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf((1.0f - vertexes[x].XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24;
+                    vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf(vertexes[x].XYZ.Z * 255.0f + 0.5f)]) << 24;
                 }
 
                 vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
@@ -2558,7 +2557,7 @@ namespace RendererModule
 
                 if (State.Settings.IsFogActive)
                 {
-                    vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf((1.0f - vertexes[x].XYZ.Z * 0.000015259022f) * 255.0f + 0.5f)]) << 24;
+                    vertexes[x].Specular = ((u32)RendererFogAlphas[(u32)roundf(vertexes[x].XYZ.Z * 255.0f + 0.5f)]) << 24;
                 }
 
                 vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
@@ -2572,7 +2571,7 @@ namespace RendererModule
             State.Scene.IsActive = TRUE;
         }
 
-        InitializeVertexes(vertexes, vertexCount);
+        InitializeVertexes(vertexes, max + 1);
 
         return State.DX.Device->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,
             vertexes, max + 1, State.Data.Indexes.Large, indexCount + 2, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
