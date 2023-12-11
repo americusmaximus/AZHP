@@ -525,7 +525,7 @@ namespace RendererModule
 
             if ((GRAPHICS_RESOLUTION_640 - 1) < caps.Width && (GRAPHICS_RESOLUTION_480 - 1) < caps.Height)
             {
-                caps.Bits = caps.Format == RENDERER_PIXEL_FORMAT_16_BIT_555
+                caps.Bits = caps.Format == RENDERER_PIXEL_FORMAT_R5G5B5
                     ? (GRAPHICS_BITS_PER_PIXEL_16 - 1)
                     : desc->ddpfPixelFormat.dwRGBBitCount;
 
@@ -563,14 +563,14 @@ namespace RendererModule
 
         if (bits == GRAPHICS_BITS_PER_PIXEL_16)
         {
-            if (red == 0x7c00 && green == 0x3e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_16_BIT_555; }
-            else if (red == 0xf800 && green == 0x7e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_16_BIT_565; }
-            else if (red == 0xf00 && green == 0xf0 && blue == 0xf && format->dwRGBAlphaBitMask == 0xf000) { return RENDERER_PIXEL_FORMAT_16_BIT_444; }
+            if (red == 0x7c00 && green == 0x3e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_R5G5B5; }
+            else if (red == 0xf800 && green == 0x7e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_R5G6B5; }
+            else if (red == 0xf00 && green == 0xf0 && blue == 0xf && format->dwRGBAlphaBitMask == 0xf000) { return RENDERER_PIXEL_FORMAT_R4G4B4; }
         }
         else if (red == 0xff0000 && green == 0xff00 && blue == 0xff)
         {
-            if (bits == GRAPHICS_BITS_PER_PIXEL_24) { return RENDERER_PIXEL_FORMAT_24_BIT; }
-            else if (bits == GRAPHICS_BITS_PER_PIXEL_32) { return RENDERER_PIXEL_FORMAT_32_BIT; }
+            if (bits == GRAPHICS_BITS_PER_PIXEL_24) { return RENDERER_PIXEL_FORMAT_R8G8B8; }
+            else if (bits == GRAPHICS_BITS_PER_PIXEL_32) { return RENDERER_PIXEL_FORMAT_A8R8G8B8; }
         }
 
         return RENDERER_PIXEL_FORMAT_NONE;

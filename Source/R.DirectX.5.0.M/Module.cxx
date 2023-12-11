@@ -283,12 +283,12 @@ namespace RendererModule
         else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
         {
             State.Lock.State.Format = (desc.ddpfPixelFormat.dwGBitMask == 0x7e0)
-                ? RENDERER_PIXEL_FORMAT_16_BIT_565
-                : RENDERER_PIXEL_FORMAT_UNKNOWN_11;
+                ? RENDERER_PIXEL_FORMAT_R5G6B5
+                : RENDERER_PIXEL_FORMAT_A1R5G5B5;
         }
         else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_32)
         {
-            State.Lock.State.Format = RENDERER_PIXEL_FORMAT_24_BIT;
+            State.Lock.State.Format = RENDERER_PIXEL_FORMAT_R8G8B8;
         }
 
         State.Lock.IsActive = TRUE;
@@ -317,7 +317,7 @@ namespace RendererModule
 
         if (state == NULL) { return RENDERER_MODULE_FAILURE; }
 
-        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_24_BIT ? 4 : 2;
+        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_R8G8B8 ? 4 : 2;
         const u32 length = multiplier * width;
 
         for (u32 xx = 0; xx < height; xx++)
@@ -776,7 +776,7 @@ namespace RendererModule
         tex->FormatIndex = State.Textures.Formats.Indexes[format];
         tex->FormatIndexValue = format;
 
-        tex->Unk10 = (format == RENDERER_PIXEL_FORMAT_16_BIT_555 || format == RENDERER_PIXEL_FORMAT_16_BIT_444) ? 1 : 0; // TODO
+        tex->Unk10 = (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R4G4B4) ? 1 : 0; // TODO
 
         tex->Handle = 0;
         tex->MemoryType = RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY;
@@ -884,7 +884,7 @@ namespace RendererModule
 
         if (state == NULL) { return RENDERER_MODULE_FAILURE; }
 
-        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_24_BIT ? 4 : 2;
+        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_R8G8B8 ? 4 : 2;
         const u32 length = multiplier * width;
 
         for (u32 xx = 0; xx < height; xx++)

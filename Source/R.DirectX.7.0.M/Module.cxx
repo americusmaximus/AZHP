@@ -143,7 +143,7 @@ namespace RendererModule
     DLLAPI u32 STDCALLAPI CreateGameWindow(const u32 width, const u32 height, const u32 format, void*)
     {
         if (DAT_6005ab5c != 0
-            && (format == RENDERER_PIXEL_FORMAT_16_BIT_555 || format == RENDERER_PIXEL_FORMAT_16_BIT_565 || format == RENDERER_PIXEL_FORMAT_32_BIT))
+            && (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R5G6B5 || format == RENDERER_PIXEL_FORMAT_A8R8G8B8))
         {
             State.Window.Count = State.Window.Count + 1;
 
@@ -480,16 +480,16 @@ namespace RendererModule
             if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
             {
                 State.Lock.State.Format = (desc.ddpfPixelFormat.dwGBitMask == 0x7e0)
-                    ? RENDERER_PIXEL_FORMAT_16_BIT_565
-                    : RENDERER_PIXEL_FORMAT_UNKNOWN_11;
+                    ? RENDERER_PIXEL_FORMAT_R5G6B5
+                    : RENDERER_PIXEL_FORMAT_A1R5G5B5;
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_32)
             {
-                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_32_BIT;
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_A8R8G8B8;
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_24)
             {
-                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_24_BIT;
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_R8G8B8;
             }
 
             if (State.Settings.IsWindowMode)
@@ -546,7 +546,7 @@ namespace RendererModule
 
         if (state == NULL) { return RENDERER_MODULE_FAILURE; }
 
-        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_24_BIT ? 4 : 2;
+        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_R8G8B8 ? 4 : 2;
         const u32 length = multiplier * width;
 
         for (u32 xx = 0; xx < height; xx++)
@@ -2772,8 +2772,8 @@ namespace RendererModule
 
         if (state == NULL) { return RENDERER_MODULE_FAILURE; }
 
-        const u32 multiplier = (state->Format == RENDERER_PIXEL_FORMAT_32_BIT)
-            ? 4 : (state->Format == RENDERER_PIXEL_FORMAT_24_BIT) ? 3 : 2; // TODO
+        const u32 multiplier = (state->Format == RENDERER_PIXEL_FORMAT_A8R8G8B8)
+            ? 4 : (state->Format == RENDERER_PIXEL_FORMAT_R8G8B8) ? 3 : 2; // TODO
         const u32 length = multiplier * width;
 
         for (u32 xx = 0; xx < height; xx++)

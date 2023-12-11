@@ -586,7 +586,7 @@ namespace RendererModule
                 ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].Width = desc->dwWidth;
                 ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].Height = desc->dwHeight;
                 ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].Bits =
-                    format == RENDERER_PIXEL_FORMAT_16_BIT_555 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
+                    format == RENDERER_PIXEL_FORMAT_R5G5B5 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
                 ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].IsActive = TRUE;
 
                 if (count < 4) // TODO
@@ -618,14 +618,14 @@ namespace RendererModule
 
         if (bits == GRAPHICS_BITS_PER_PIXEL_16)
         {
-            if (red == 0x7c00 && green == 0x3e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_16_BIT_555; }
-            else if (red == 0xf800 && green == 0x7e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_16_BIT_565; }
-            else if (red == 0xf00 && green == 0xf0 && blue == 0xf && format->dwRGBAlphaBitMask == 0xf000) { return RENDERER_PIXEL_FORMAT_16_BIT_444; }
+            if (red == 0x7c00 && green == 0x3e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_R5G5B5; }
+            else if (red == 0xf800 && green == 0x7e0 && blue == 0x1f) { return RENDERER_PIXEL_FORMAT_R5G6B5; }
+            else if (red == 0xf00 && green == 0xf0 && blue == 0xf && format->dwRGBAlphaBitMask == 0xf000) { return RENDERER_PIXEL_FORMAT_R4G4B4; }
         }
         else if (red == 0xff0000 && green == 0xff00 && blue == 0xff)
         {
-            if (bits == GRAPHICS_BITS_PER_PIXEL_24) { return RENDERER_PIXEL_FORMAT_24_BIT; }
-            else if (bits == GRAPHICS_BITS_PER_PIXEL_32) { return RENDERER_PIXEL_FORMAT_32_BIT; }
+            if (bits == GRAPHICS_BITS_PER_PIXEL_24) { return RENDERER_PIXEL_FORMAT_R8G8B8; }
+            else if (bits == GRAPHICS_BITS_PER_PIXEL_32) { return RENDERER_PIXEL_FORMAT_A8R8G8B8; }
         }
 
         return RENDERER_PIXEL_FORMAT_NONE;
@@ -2712,7 +2712,7 @@ namespace RendererModule
 
         tex->MipMapCount = ((options & 0xffff) != 0) ? ((options & 0xffff) + 1) : 0;
 
-        tex->Unk11 = (format == RENDERER_PIXEL_FORMAT_16_BIT_555 || format == RENDERER_PIXEL_FORMAT_16_BIT_444) ? 1 : 0; // TODO
+        tex->Unk11 = (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R4G4B4) ? 1 : 0; // TODO
 
         tex->Unk04 = p4;
         tex->MemoryType = RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY;
@@ -3127,16 +3127,16 @@ namespace RendererModule
             if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
             {
                 State.Lock.State.Format = (desc.ddpfPixelFormat.dwGBitMask == 0x7e0)
-                    ? RENDERER_PIXEL_FORMAT_16_BIT_565
-                    : RENDERER_PIXEL_FORMAT_UNKNOWN_11;
+                    ? RENDERER_PIXEL_FORMAT_R5G6B5
+                    : RENDERER_PIXEL_FORMAT_A1R5G5B5;
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_32)
             {
-                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_32_BIT;
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_A8R8G8B8;
             }
             else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_24)
             {
-                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_24_BIT;
+                State.Lock.State.Format = RENDERER_PIXEL_FORMAT_R8G8B8;
             }
 
             if (State.Settings.IsWindowMode)
