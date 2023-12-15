@@ -790,7 +790,7 @@ namespace RendererModule
     // 0x60003610
     void ReleaseRendererDeviceSurfaces(void)
     {
-        for (u32 x = (MAX_ACTIVE_SURFACE_COUNT - 1); x != 0; x--)
+        for (s32 x = (MAX_ACTIVE_SURFACE_COUNT - 1); x >= 0; x--)
         {
             if (State.DX.Surfaces.Active[x] != NULL)
             {
@@ -1204,7 +1204,7 @@ namespace RendererModule
         DAT_6005ab50 = 0; // TODO
         DAT_6005ab5c = 1; // TODO
 
-        ModuleDescriptor.SubType = 1; // TODO
+        ModuleDescriptor.SubType = 0; // TODO
 
         {
             DDCAPS hal;
@@ -2500,7 +2500,7 @@ namespace RendererModule
 
             indx = indx + 1;
 
-            if (5 < indx) { return -1; }
+            if (5 < indx) { return -1; } // TODO
         }
 
         return (sum - RendererModuleValues::MinMax[indx].Min) + state;
@@ -2516,7 +2516,7 @@ namespace RendererModule
     void InitializeRendererModuleState(const u32 mode, const u32 pending, const u32 depth, const char* section)
     {
         SelectState(RENDERER_MODULE_STATE_SELECT_HINT_STATE,
-            (void*)AcquireSettingsValue(0, section, "HINT")); // TODO
+            (void*)AcquireSettingsValue(RENDERER_MODULE_HINT_INACTIVE, section, "HINT"));
         SelectState(RENDERER_MODULE_STATE_SELECT_TEXTURE, NULL);
         SelectState(RENDERER_MODULE_STATE_SELECT_CULL_STATE,
             (void*)AcquireSettingsValue(RENDERER_MODULE_CULL_COUNTER_CLOCK_WISE, section, "CULL"));
@@ -2600,8 +2600,9 @@ namespace RendererModule
         SelectState(RENDERER_MODULE_STATE_SELECT_STENCIL_STATE,
             (void*)AcquireSettingsValue(RENDERER_MODULE_STENCIL_INACTIVE, section, "STENCILBUFFER"));
         SelectState(RENDERER_MODULE_STATE_SELECT_DISPLAY_STATE, (void*)AcquireSettingsValue(mode, section, "DISPLAYMODE"));
-        SelectState(RENDERER_MODULE_STATE_SELECT_LINE_DOUBLE_STATE, (void*)AcquireSettingsValue(0, section, "LINEDOUBLE"));
-        SelectState(RENDERER_MODULE_STATE_SELECT_GAME_WINDOW_INDEX, (void*)0);
+        SelectState(RENDERER_MODULE_STATE_SELECT_LINE_DOUBLE_STATE,
+            (void*)AcquireSettingsValue(RENDERER_MODULE_LINE_DOUBLE_INACTIVE, section, "LINEDOUBLE"));
+        SelectState(RENDERER_MODULE_STATE_SELECT_GAME_WINDOW_INDEX, (void*)0); // TODO
 
         {
             const f32 value = 1.0f;
@@ -2617,9 +2618,9 @@ namespace RendererModule
             const u32 value = AcquireSettingsValue(((depth < 1) - 1) & 2, section, "DEPTHBUFFER");
             const u32 result = SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)value);
 
-            if (result == RENDERER_MODULE_FAILURE && value == RENDERER_MODULE_DEPTH_W)
+            if (result == RENDERER_MODULE_FAILURE && value == RENDERER_MODULE_DEPTH_ACTIVE_W)
             {
-                SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)RENDERER_MODULE_DEPTH_ENABLE);
+                SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_STATE, (void*)RENDERER_MODULE_DEPTH_ACTIVE);
             }
         }
 

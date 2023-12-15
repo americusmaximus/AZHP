@@ -426,7 +426,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_DEPTH_STATE:
         {
-            if ((u32)value == RENDERER_MODULE_DEPTH_DISABLE)
+            if ((u32)value == RENDERER_MODULE_DEPTH_INACTIVE)
             {
                 SelectRendererState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
                 SelectRendererState(D3DRENDERSTATE_ZENABLE, FALSE);

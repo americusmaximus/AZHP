@@ -710,7 +710,7 @@ namespace RendererModule
 
             switch ((u32)value)
             {
-            case RENDERER_MODULE_DEPTH_DISABLE:
+            case RENDERER_MODULE_DEPTH_INACTIVE:
             {
                 SelectRendererState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
                 SelectRendererState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
@@ -718,7 +718,7 @@ namespace RendererModule
 
                 break;
             }
-            case RENDERER_MODULE_DEPTH_ENABLE:
+            case RENDERER_MODULE_DEPTH_ACTIVE:
             {
                 SelectRendererState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
                 SelectRendererState(D3DRENDERSTATE_ZENABLE, D3DZB_TRUE);
@@ -726,7 +726,7 @@ namespace RendererModule
 
                 break;
             }
-            case RENDERER_MODULE_DEPTH_W:
+            case RENDERER_MODULE_DEPTH_ACTIVE_W:
             {
                 if (State.Device.Capabilities.IsWBufferAvailable)
                 {
@@ -2485,7 +2485,7 @@ namespace RendererModule
 
         if (ModuleDescriptor.Capabilities.Capabilities[mode].Bits < State.Window.Bits) { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_16; }
 
-        s32 result = RENDERER_MODULE_FAILURE;
+        u32 result = RENDERER_MODULE_FAILURE;
 
         if (State.DX.Instance != NULL)
         {
