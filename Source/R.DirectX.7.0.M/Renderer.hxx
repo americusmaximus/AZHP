@@ -320,7 +320,7 @@ namespace RendererModule
                 u32 AntiAliasing; // 0x6005ab34
                 BOOL IsColorBlending; // 0x6005ab38
                 BOOL IsAnisotropyAvailable; // 0x6005ab3c
-                BOOL IsPrimaryGammaAvailable; // 0x6005ab40
+                BOOL IsGammaAvailable; // 0x6005ab40
                 BOOL IsSpecularGouraudBlending; // 0x6005ab44
                 BOOL IsStencilBuffer; // 0x6005ab48
                 BOOL IsSpecularBlending; // 0x6005ab4c

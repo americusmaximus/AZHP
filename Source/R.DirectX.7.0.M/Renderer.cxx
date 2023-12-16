@@ -1225,7 +1225,7 @@ namespace RendererModule
 
             State.Device.Capabilities.IsNoVerticalSyncAvailable = (hal.dwCaps2 & DDCAPS2_FLIPNOVSYNC) != 0;
 
-            State.Device.Capabilities.IsPrimaryGammaAvailable = (hal.dwCaps2 & DDCAPS2_PRIMARYGAMMA) != 0;
+            State.Device.Capabilities.IsGammaAvailable = (hal.dwCaps2 & DDCAPS2_PRIMARYGAMMA) != 0;
         }
 
         State.Device.Capabilities.IsTrilinearInterpolationAvailable = AcquireRendererDeviceTrilinearInterpolationCapabilities();
@@ -2340,28 +2340,17 @@ namespace RendererModule
     // 0x60008c80
     BOOL RestoreRendererSurfaces(void)
     {
-        u32 iteration = 0;
-        HRESULT result = DD_OK;
-
-        do
+        for (u32 x = 0; x < 5000; x++)
         {
-            result = State.DX.Active.Instance->TestCooperativeLevel();
+            if (State.DX.Active.Instance->TestCooperativeLevel() == DD_OK)
+            {
+                return State.DX.Active.Instance->RestoreAllSurfaces() == DD_OK;
+            }
 
-            if (result != DD_OK) { Sleep(100); }
-
-            iteration = iteration + 1;
-
-            if (5000 < iteration) { LOGERROR("WARNING! STATE_RESTORESURFACES failed. Focus/Mode not regained before timeout.\n"); }
-        } while (result != DD_OK);
-
-        if (iteration < 5001)
-        {
-            result = DD_OK;
-
-            if (State.DX.Active.Instance != NULL) { result = State.DX.Active.Instance->RestoreAllSurfaces(); }
-
-            return result == DD_OK;
+            Sleep(100);
         }
+
+        LOGERROR("WARNING! STATE_RESTORESURFACES failed. Focus/Mode not regained before timeout.\n");
 
         return FALSE;
     }
