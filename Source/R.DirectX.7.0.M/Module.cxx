@@ -1099,8 +1099,8 @@ namespace RendererModule
         case RENDERER_MODULE_STATE_INDEX_SIZE:
         case RENDERER_MODULE_STATE_SELECT_LOG_STATE:
         case RENDERER_MODULE_STATE_72:
-        case RENDERER_MODULE_STATE_73:
-        case RENDERER_MODULE_STATE_74:
+        case RENDERER_MODULE_STATE_SELECT_TEXTURE_MIN_FILTER_STATE:
+        case RENDERER_MODULE_STATE_SELECT_TEXTURE_MAG_FILTER_STATE:
         case RENDERER_MODULE_STATE_75:
         case RENDERER_MODULE_STATE_76:
         case RENDERER_MODULE_STATE_77:
@@ -1685,7 +1685,7 @@ namespace RendererModule
 
                 if (left != 0 && right != 0 && top != 0 && bottom != 0)
                 {
-                    RendererGuardBands* output = (RendererGuardBands*)value;
+                    RendererModuleGuardBands* output = (RendererModuleGuardBands*)value;
 
                     output->Left = left;
                     output->Right = right;
@@ -1831,8 +1831,8 @@ namespace RendererModule
             RendererModuleDeviceCapabilities7* result = (RendererModuleDeviceCapabilities7*)value;
 
             result->IsAccelerated = State.Device.Capabilities.IsAccelerated;
-            result->DepthBits = State.Device.Capabilities.RendererDepthBits;
-            result->RenderBits = State.Device.Capabilities.RendererBits;
+            result->RendererDepthBits = State.Device.Capabilities.RendererDepthBits;
+            result->RenderScreenBits = State.Device.Capabilities.RendererBits;
             result->RendererDeviceDepthBits = State.Device.Capabilities.RendererDeviceDepthBits;
             result->IsDepthVideoMemoryAvailable = State.Device.Capabilities.IsDepthVideoMemoryCapable;
             result->IsDepthAvailable = State.Device.Capabilities.IsDepthAvailable;
@@ -1843,20 +1843,20 @@ namespace RendererModule
             result->IsWBufferAvailable = State.Device.Capabilities.IsWBufferAvailable;
             result->IsWFogAvailable = State.Device.Capabilities.IsWFogAvailable;
             result->IsWindowModeAvailable = State.Device.Capabilities.IsWindowMode;
-            result->IsTrilinearInterpolationAvailable = State.Device.Capabilities.IsTrilinearInterpolationAvailable;
-            result->IsDepthBufferRemovalAvailable = State.Device.Capabilities.IsDepthBufferRemovalAvailable;
+            result->IsInterpolationAvailable = State.Device.Capabilities.IsTrilinearInterpolationAvailable;
+            result->IsDepthRemovalAvailable = State.Device.Capabilities.IsDepthBufferRemovalAvailable;
             result->IsPerspectiveTextures = State.Device.Capabilities.IsPerspectiveTextures;
-            result->IsAlphaFlatBlending = State.Device.Capabilities.IsAlphaFlatBlending;
+            result->IsAlphaBlending = State.Device.Capabilities.IsAlphaFlatBlending;
             result->IsAlphaProperBlending = State.Device.Capabilities.IsAlphaProperBlending;
             result->IsAlphaTextures = State.Device.Capabilities.IsAlphaTextures;
             result->IsModulateBlending = State.Device.Capabilities.IsModulateBlending;
             result->IsSourceAlphaBlending = State.Device.Capabilities.IsSourceAlphaBlending;
-            result->AntiAliasing = State.Device.Capabilities.AntiAliasing;
+            result->IsAntiAliasingAvailable = State.Device.Capabilities.AntiAliasing;
             result->IsColorBlending = State.Device.Capabilities.IsColorBlending;
             result->IsAnisotropyAvailable = State.Device.Capabilities.IsAnisotropyAvailable;
             result->IsGammaAvailable = State.Device.Capabilities.IsGammaAvailable;
             result->IsSpecularGouraudBlending = State.Device.Capabilities.IsSpecularGouraudBlending;
-            result->IsStencilBuffer = State.Device.Capabilities.IsStencilBuffer;
+            result->IsStencilBufferAvailable = State.Device.Capabilities.IsStencilBuffer;
             result->IsSpecularBlending = State.Device.Capabilities.IsSpecularBlending;
             result->Unk29 = DAT_6005ab50;
             result->IsTextureIndependentUVs = State.Device.Capabilities.IsTextureIndependentUVs;
@@ -1876,7 +1876,7 @@ namespace RendererModule
             result->GuardBandRight = State.Device.Capabilities.GuardBandRight;
             result->GuardBandTop = State.Device.Capabilities.GuardBandTop;
             result->GuardBandBottom = State.Device.Capabilities.GuardBandBottom;
-            result->MaxTextureRepeat = (u32)State.Device.Capabilities.MaxTextureRepeat;
+            result->MaxTextureRepeat = State.Device.Capabilities.MaxTextureRepeat;
 
             return (addr)result;
         }
@@ -1964,7 +1964,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_BUMP_MAPPING_MATRIX:
         {
-            const RendererTextureStageBumpMappingMatrix* matrix = (RendererTextureStageBumpMappingMatrix*)value;
+            const RendererModuleTextureStageBumpMappingMatrix* matrix = (RendererModuleTextureStageBumpMappingMatrix*)value;
 
             SelectRendererTextureStage(stage, D3DTSS_BUMPENVMAT00, *(DWORD*)&matrix->M00);
             SelectRendererTextureStage(stage, D3DTSS_BUMPENVMAT01, *(DWORD*)&matrix->M01);
@@ -2080,7 +2080,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_LIGHT:
         {
-            const RendererLight* input = (RendererLight*)value;
+            const RendererModuleLight* input = (RendererModuleLight*)value;
 
             D3DLIGHT7 light;
 
@@ -2129,9 +2129,9 @@ namespace RendererModule
 
             State.DX.Device->GetLight(stage, &light);
 
-            RendererLight* output = (RendererLight*)value;
+            RendererModuleLight* output = (RendererModuleLight*)value;
 
-            output->Type = (RendererLightType)light.dltType;
+            output->Type = (RendererModuleLightType)light.dltType;
 
             output->Diffuse = RGBA_MAKE((u32)(light.dcvDiffuse.r * 255.0), (u32)(light.dcvDiffuse.g * 255.0),
                 (u32)(light.dcvDiffuse.b * 255.0), (u32)(light.dcvDiffuse.a * 255.0));
@@ -2168,7 +2168,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_CURRENT_MATERIAL:
         {
-            const RendererMaterial* input = (RendererMaterial*)value;
+            const RendererModuleMaterial* input = (RendererModuleMaterial*)value;
 
             D3DMATERIAL7 material;
 
@@ -2204,7 +2204,7 @@ namespace RendererModule
 
             State.DX.Device->GetMaterial(&material);
 
-            RendererMaterial* output = (RendererMaterial*)value;
+            RendererModuleMaterial* output = (RendererModuleMaterial*)value;
 
             output->Diffuse = RGBA_MAKE((u32)(material.diffuse.r * 255.0f), (u32)(material.diffuse.g * 255.0f),
                 (u32)(material.diffuse.b * 255.0f), (u32)(material.diffuse.a * 255.0f));
@@ -2230,7 +2230,7 @@ namespace RendererModule
 
             AttemptRenderScene();
 
-            const RendererPacket* packet = (RendererPacket*)value;
+            const RendererModulePacket* packet = (RendererModulePacket*)value;
 
             if (packet->Indexes == NULL || packet->IndexCount == 0)
             {
@@ -2253,7 +2253,7 @@ namespace RendererModule
         {
             if (value != NULL)
             {
-                RendererTransformAndLightCapabilites* output = (RendererTransformAndLightCapabilites*)value;
+                RendererModuleTransformAndLightCapabilites* output = (RendererModuleTransformAndLightCapabilites*)value;
 
                 output->IsActive = State.DX.Active.IsActive;
                 output->MaxActiveLights = State.Device.Capabilities.MaxActiveLights;
@@ -2288,7 +2288,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_INITIALIZE_VERTEX_BUFFER:
         {
-            RendererVertexBuffer* input = (RendererVertexBuffer*)value;
+            const RendererModuleVertexBuffer* input = (RendererModuleVertexBuffer*)value;
 
             D3DDEVICEDESC7 caps;
             ZeroMemory(&caps, sizeof(D3DDEVICEDESC7));
@@ -2336,7 +2336,7 @@ namespace RendererModule
                 State.Scene.IsActive = TRUE;
             }
 
-            const RendererBufferPacket* input = (RendererBufferPacket*)value;
+            const RendererModuleBufferPacket* input = (RendererModuleBufferPacket*)value;
 
             if (input->Indexes == NULL || input->IndexCount == 0)
             {
@@ -2354,7 +2354,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_OPTIMIZE_VERTEX_BUFFER:
         {
-            const RendererVertexBuffer* input = (RendererVertexBuffer*)value;
+            const RendererModuleVertexBuffer* input = (RendererModuleVertexBuffer*)value;
 
             ((IDirect3DVertexBuffer7*)input->Buffer)->Optimize(State.DX.Device, 0);
 
@@ -2666,7 +2666,7 @@ namespace RendererModule
     }
 
     // 0x60001830
-    // a.k.a.  _THRASH_unlockwindow
+    // a.k.a. THRASH_unlockwindow
     DLLAPI u32 STDCALLAPI UnlockGameWindow(const RendererModuleWindowLock* state)
     {
         if (State.Lock.IsActive && State.Lock.Surface != NULL)

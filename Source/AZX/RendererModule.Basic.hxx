@@ -374,8 +374,8 @@ SOFTWARE.
 #define RENDERER_MODULE_STATE_INDEX_SIZE 70
 #define RENDERER_MODULE_STATE_SELECT_LOG_STATE 71
 #define RENDERER_MODULE_STATE_72 72
-#define RENDERER_MODULE_STATE_73 73
-#define RENDERER_MODULE_STATE_74 74
+#define RENDERER_MODULE_STATE_SELECT_TEXTURE_MIN_FILTER_STATE 73
+#define RENDERER_MODULE_STATE_SELECT_TEXTURE_MAG_FILTER_STATE 74
 #define RENDERER_MODULE_STATE_75 75
 #define RENDERER_MODULE_STATE_76 76
 #define RENDERER_MODULE_STATE_77 77
@@ -416,12 +416,19 @@ SOFTWARE.
 #define RENDERER_MODULE_STATE_SELECT_LINE_DOUBLE_STATE 305
 #define RENDERER_MODULE_STATE_SELECT_DEVICE_TYPE 400
 #define RENDERER_MODULE_STATE_401 401
+#define RENDERER_MODULE_STATE_ACQUIRE_DEVICE_CAPABILITIES_DX8 401
 #define RENDERER_MODULE_STATE_402 402
+#define RENDERER_MODULE_STATE_SELECT_SOURCE_BLEND_STATE_DX8 402
 #define RENDERER_MODULE_STATE_ACQUIRE_DEVICE_CAPABILITIES 403
+#define RENDERER_MODULE_STATE_SELECT_DESTINATION_BLEND_STATE_DX8 403
 #define RENDERER_MODULE_STATE_SELECT_SOURCE_BLEND_STATE 404
+#define RENDERER_MODULE_STATE_SELECT_TEXTURE_FACTOR_DX8 404
 #define RENDERER_MODULE_STATE_SELECT_DESTINATION_BLEND_STATE 405
+#define RENDERER_MODULE_STATE_SELECT_BUMP_MAPPING_MATRIX_DX8 405
 #define RENDERER_MODULE_STATE_SELECT_TEXTURE_STAGE_STATE 406
+#define RENDERER_MODULE_STATE_SELECT_BUMP_MAPPING_LUMINANCE_SCALE_DX8 406
 #define RENDERER_MODULE_STATE_SELECT_TEXTURE_HINT_STATE 407
+#define RENDERER_MODULE_STATE_SELECT_BUMP_MAPPING_LUMINANCE_OFFSET_DX8 407
 #define RENDERER_MODULE_STATE_SELECT_WINDOW_MODE_ACTIVE_STATE_ALTERNATIVE 408
 #define RENDERER_MODULE_STATE_SELECT_FILL_MODE_STATE 409
 #define RENDERER_MODULE_STATE_SELECT_TEXTURE_FACTOR 410
@@ -577,8 +584,8 @@ namespace RendererModule
     struct RendererModuleDeviceCapabilities7
     {
         BOOL IsAccelerated;
-        u32 DepthBits;
-        u32 RenderBits;
+        u32 RendererDepthBits;
+        u32 RenderScreenBits;
         u32 RendererDeviceDepthBits;
         BOOL IsDepthVideoMemoryAvailable;
         BOOL IsDepthAvailable;
@@ -589,20 +596,20 @@ namespace RendererModule
         BOOL IsWBufferAvailable;
         BOOL IsWFogAvailable;
         BOOL IsWindowModeAvailable;
-        BOOL IsTrilinearInterpolationAvailable;
-        BOOL IsDepthBufferRemovalAvailable;
+        BOOL IsInterpolationAvailable;
+        BOOL IsDepthRemovalAvailable;
         BOOL IsPerspectiveTextures;
-        BOOL IsAlphaFlatBlending;
+        BOOL IsAlphaBlending;
         BOOL IsAlphaProperBlending;
         BOOL IsAlphaTextures;
         BOOL IsModulateBlending;
         BOOL IsSourceAlphaBlending;
-        BOOL AntiAliasing;
+        BOOL IsAntiAliasingAvailable;
         BOOL IsColorBlending;
         BOOL IsAnisotropyAvailable;
         BOOL IsGammaAvailable;
         BOOL IsSpecularGouraudBlending;
-        BOOL IsStencilBuffer;
+        BOOL IsStencilBufferAvailable;
         BOOL IsSpecularBlending;
         s32 Unk29; // TODO
         BOOL IsTextureIndependentUVs;
@@ -616,14 +623,68 @@ namespace RendererModule
         BOOL IsPowerOfTwoTexturesWidth;
         u32 MultipleTextureHeight;
         BOOL IsPowerOfTwoTexturesHeight;
-        BOOL MaximumSimultaneousTextures;
+        u32 MaximumSimultaneousTextures;
         BOOL IsSquareOnlyTextures;
         BOOL IsAntiAliasEdges;
         f32 GuardBandLeft;
         f32 GuardBandRight;
         f32 GuardBandTop;
         f32 GuardBandBottom;
-        u32 MaxTextureRepeat;
+        f32 MaxTextureRepeat;
+    };
+
+    // NOTE: Used in DirectX 8 renderers.
+    struct RendererModuleDeviceCapabilities8
+    {
+        BOOL IsAccelerated;
+        u32 RendererDepthBits;
+        u32 RenderScreenBits;
+        u32 RendererDeviceDepthBits;
+        BOOL IsDepthVideoMemoryAvailable;
+        BOOL IsDepthAvailable;
+        BOOL IsGreenAllowSixBits;
+        BOOL IsVideoMemoryAvailable;
+        BOOL IsDitherAvailable;
+        BOOL IsNoVerticalSync;
+        BOOL IsWBufferAvailable;
+        BOOL IsWFogAvailable;
+        BOOL IsWindowModeAvailable;
+        BOOL IsInterpolationAvailable;
+        BOOL IsDepthRemovalAvailable;
+        BOOL IsPerspectiveTextures;
+        BOOL IsAlphaBlending;
+        BOOL IsAlphaProperBlending;
+        BOOL IsAlphaTextures;
+        BOOL IsModulateBlending;
+        BOOL IsSourceAlphaBlending;
+        BOOL IsAntiAliasingAvailable;
+        BOOL IsColorBlending;
+        BOOL IsAnisotropyAvailable;
+        u32 MaxAnisotropy;
+        BOOL IsGammaAvailable;
+        BOOL IsSpecularGouraudBlending;
+        BOOL IsStencilBufferAvailable;
+        BOOL IsSpecularBlending;
+        s32 Unk29; // TODO
+        BOOL IsTextureIndependentUVs;
+        BOOL IsMipMapBiasAvailable;
+        s32 Unk32; // TODO
+        u32 MinTextureWidth;
+        u32 MaxTextureWidth;
+        u32 MinTextureHeight;
+        u32 MaxTextureHeight;
+        u32 MultipleTextureWidth;
+        BOOL IsPowerOfTwoTexturesWidth;
+        u32 MultipleTextureHeight;
+        BOOL IsPowerOfTwoTexturesHeight;
+        u32 MaximumSimultaneousTextures;
+        BOOL IsSquareOnlyTextures;
+        BOOL IsAntiAliasEdges;
+        f32 GuardBandLeft;
+        f32 GuardBandRight;
+        f32 GuardBandTop;
+        f32 GuardBandBottom;
+        f32 MaxTextureRepeat;
     };
 
     struct RendererModuleLambdaContainer
@@ -696,19 +757,19 @@ namespace RendererModule
     };
 
     // NOTE: D3DLIGHTTYPE
-    typedef enum RendererLightType
+    typedef enum RendererModuleLightType
     {
-        RendererLightTypeNone = 0,
-        RendererLightTypePoint = 1,
-        RendererLightTypeSpot = 2,
-        RendererLightTypeDirectional = 3,
-        RendererLightTypeMax = U32_MAX
-    } RendererLightType;
+        RendererModuleLightTypeNone = 0,
+        RendererModuleLightTypePoint = 1,
+        RendererModuleLightTypeSpot = 2,
+        RendererModuleLightTypeDirectional = 3,
+        RendererModuleLightTypeMax = U32_MAX
+    } RendererModuleLightType;
 
     // NOTE: D3DLIGHT7
-    struct RendererLight
+    struct RendererModuleLight
     {
-        RendererLightType Type;
+        RendererModuleLightType Type;
         u32 Diffuse;
         u32 Specular;
         u32 Ambient;
@@ -723,7 +784,7 @@ namespace RendererModule
         f32 Phi;
     };
 
-    struct RendererMaterial
+    struct RendererModuleMaterial
     {
         u32 Diffuse;
         u32 Ambient;
@@ -732,21 +793,21 @@ namespace RendererModule
         f32 Power;
     };
 
-    typedef enum RendererPrimitiveType
+    typedef enum RendererModulePrimitiveType
     {
-        RendererPrimitiveTypeNone = 0,
-        RendererPrimitiveTypePointList = 1,
-        RendererPrimitiveTypeLineList = 2,
-        RendererPrimitiveTypeLineStrip = 3,
-        RendererPrimitiveTypeTriangleList = 4,
-        RendererPrimitiveTypeTriangleStrip = 5,
-        RendererPrimitiveTypeTriangleFan = 6,
-        RendererPrimitiveTypeMax = U32_MAX
-    } RendererPrimitiveType;
+        RendererModulePrimitiveTypeNone = 0,
+        RendererModulePrimitiveTypePointList = 1,
+        RendererModulePrimitiveTypeLineList = 2,
+        RendererModulePrimitiveTypeLineStrip = 3,
+        RendererModulePrimitiveTypeTriangleList = 4,
+        RendererModulePrimitiveTypeTriangleStrip = 5,
+        RendererModulePrimitiveTypeTriangleFan = 6,
+        RendererModulePrimitiveTypeMax = U32_MAX
+    } RendererModulePrimitiveType;
 
-    struct RendererPacket
+    struct RendererModulePacket
     {
-        RendererPrimitiveType Type;
+        RendererModulePrimitiveType Type;
         u32 FVF;
         void* Vertexes;
         u32 VertexCount;
@@ -754,10 +815,10 @@ namespace RendererModule
         u32 IndexCount;
     };
 
-    struct RendererBufferPacket
+    struct RendererModuleBufferPacket
     {
         void* Vertexes;
-        RendererPrimitiveType Type;
+        RendererModulePrimitiveType Type;
         s32 Unk02; // TODO
         s32 Unk03; // TODO
         s32 Unk04; // TODO
@@ -766,7 +827,7 @@ namespace RendererModule
         u32 IndexCount;
     };
 
-    struct RendererGuardBands
+    struct RendererModuleGuardBands
     {
         s32 Left;
         s32 Right;
@@ -774,7 +835,7 @@ namespace RendererModule
         s32 Bottom;
     };
 
-    struct RendererTransformAndLightCapabilites
+    struct RendererModuleTransformAndLightCapabilites
     {
         BOOL IsActive;
         u32 MaxActiveLights;
@@ -785,12 +846,12 @@ namespace RendererModule
         BOOL IsTransformLightBufferVideoMemoryAvailable;
     };
 
-    struct RendererTextureStageBumpMappingMatrix
+    struct RendererModuleTextureStageBumpMappingMatrix
     {
         f32 M00, M01, M10, M11;
     };
 
-    struct RendererVertexBuffer
+    struct RendererModuleVertexBuffer
     {
         void* Buffer;
         s32 Unk01; // TODO

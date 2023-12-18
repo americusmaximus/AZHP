@@ -1593,7 +1593,7 @@ namespace RendererModule
 
             InitializeVertexes(State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count);
 
-            State.DX.Device->DrawIndexedPrimitive(RendererModuleValues::RendererPrimitiveType, RendererVertexType,
+            State.DX.Device->DrawIndexedPrimitive(RendererPrimitiveType, RendererVertexType,
                 State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count,
                 State.Data.Indexes.Indexes, State.Data.Indexes.Count, 0);
 
@@ -3479,9 +3479,9 @@ namespace RendererModule
     // 0x600082f0
     void RenderLine(RVX* a, RVX* b)
     {
-        if (RendererModuleValues::RendererPrimitiveType != D3DPT_LINELIST) { RendererRenderScene(); }
+        if (RendererPrimitiveType != D3DPT_LINELIST) { RendererRenderScene(); }
 
-        RendererModuleValues::RendererPrimitiveType = D3DPT_LINELIST;
+        RendererPrimitiveType = D3DPT_LINELIST;
 
         if (MaximumRendererVertexCount - 2 < State.Data.Vertexes.Count) { RendererRenderScene(); }
 
@@ -3535,9 +3535,9 @@ namespace RendererModule
     // 0x600084e0
     void RenderLineMesh(RVX* vertexes, const u32* indexes, const u32 count)
     {
-        if (RendererModuleValues::RendererPrimitiveType != D3DPT_LINELIST) { RendererRenderScene(); }
+        if (RendererPrimitiveType != D3DPT_LINELIST) { RendererRenderScene(); }
 
-        RendererModuleValues::RendererPrimitiveType = D3DPT_LINELIST;
+        RendererPrimitiveType = D3DPT_LINELIST;
 
         for (u32 x = 0; x < count; x++)
         {
@@ -3628,9 +3628,9 @@ namespace RendererModule
     // 0x60007af0
     void RenderQuad(RVX* a, RVX* b, RVX* c, RVX* d)
     {
-        if (RendererModuleValues::RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
+        if (RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
 
-        RendererModuleValues::RendererPrimitiveType = D3DPT_TRIANGLELIST;
+        RendererPrimitiveType = D3DPT_TRIANGLELIST;
 
         if (MaximumRendererVertexCount - 4 < State.Data.Vertexes.Count) { RendererRenderScene(); }
 
@@ -3728,9 +3728,9 @@ namespace RendererModule
     // 0x60007650
     void RenderQuadMesh(RVX* vertexes, const u32* indexes, const u32 count)
     {
-        if (RendererModuleValues::RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
+        if (RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
 
-        RendererModuleValues::RendererPrimitiveType = D3DPT_TRIANGLELIST;
+        RendererPrimitiveType = D3DPT_TRIANGLELIST;
 
         for (u32 x = 0; x < count; x++)
         {
@@ -3753,9 +3753,9 @@ namespace RendererModule
     // 0x60006fe0
     void RenderTriangle(RVX* a, RVX* b, RVX* c)
     {
-        if (RendererModuleValues::RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
+        if (RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
 
-        RendererModuleValues::RendererPrimitiveType = D3DPT_TRIANGLELIST;
+        RendererPrimitiveType = D3DPT_TRIANGLELIST;
 
         if (MaximumRendererVertexCount - 3 < State.Data.Vertexes.Count) { RendererRenderScene(); }
 
@@ -3850,9 +3850,9 @@ namespace RendererModule
     // 0x600072a0
     void RenderTriangleMesh(RVX* vertexes, const u32* indexes, const u32 count)
     {
-        if (RendererModuleValues::RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
+        if (RendererPrimitiveType != D3DPT_TRIANGLELIST) { RendererRenderScene(); }
 
-        RendererModuleValues::RendererPrimitiveType = D3DPT_TRIANGLELIST;
+        RendererPrimitiveType = D3DPT_TRIANGLELIST;
 
         for (u32 x = 0; x < count; x++)
         {
@@ -3873,9 +3873,9 @@ namespace RendererModule
     // 0x60007e60
     BOOL RenderTriangleStrips(RVX* vertexes, const u32 vertexCount, const u32 indexCount, const u32* indexes)
     {
-        if (RendererModuleValues::RendererPrimitiveType != D3DPT_TRIANGLESTRIP) { RendererRenderScene(); }
+        if (RendererPrimitiveType != D3DPT_TRIANGLESTRIP) { RendererRenderScene(); }
 
-        RendererModuleValues::RendererPrimitiveType = D3DPT_TRIANGLESTRIP;
+        RendererPrimitiveType = D3DPT_TRIANGLESTRIP;
 
         if ((MaximumRendererVertexCount - vertexCount + 3) < State.Data.Vertexes.Count) { RendererRenderScene(); }
 
