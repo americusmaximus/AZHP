@@ -1681,7 +1681,7 @@ namespace RendererModule
             const f32 value = 0.0f;
             SelectState(RENDERER_MODULE_STATE_SELECT_DEPTH_BIAS_STATE, (void*)(u32)(*(u32*)&value));
         }
-
+        
         {
             const f32 value = 0.0f;
             SelectState(RENDERER_MODULE_STATE_SELECT_MIP_MAP_LOD_BIAS_STATE, (void*)(u32)(*(u32*)&value));

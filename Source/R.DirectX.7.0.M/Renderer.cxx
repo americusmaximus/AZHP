@@ -452,7 +452,7 @@ namespace RendererModule
             DDCAPS hel;
             ZeroMemory(&hel, sizeof(DDCAPS));
 
-            hel.dwSize = sizeof(hel);
+            hel.dwSize = sizeof(DDCAPS);
 
             if (State.DX.Instance->GetCaps(&hal, &hel) == DD_OK)
             {
