@@ -134,9 +134,9 @@ namespace RendererModule
         State.Devices.Count = 0;
         State.Device.Identifier = NULL;
 
-        GUID* uids[MAX_ENUMERATE_RENDERER_DEVICE_COUNT];
+        GUID* uids[MAX_ENUMERATE_DEVICE_COUNT];
 
-        State.Devices.Count = AcquireDirectDrawDeviceCount(uids, NULL, RENDERER_MODULE_ENVIRONMENT_SECTION_NAME);
+        State.Devices.Count = AcquireDirectDrawDeviceCount(uids, NULL, ENVIRONMENT_SECTION_NAME);
 
         u32 indx = 0;
 
@@ -157,7 +157,7 @@ namespace RendererModule
 
                 dd->GetDeviceIdentifier(&identifier, DDGDI_GETHOSTIDENTIFIER);
 
-                strncpy(State.Devices.Enumeration.Names[indx], identifier.szDescription, MAX_ENUMERATE_RENDERER_DEVICE_NAME_LENGTH);
+                strncpy(State.Devices.Enumeration.Names[indx], identifier.szDescription, MAX_ENUMERATE_DEVICE_NAME_LENGTH);
 
                 if (dd != NULL) { dd->Release(); dd = NULL; }
                 if (instance != NULL) { instance->Release(); instance = NULL; }
@@ -263,7 +263,7 @@ namespace RendererModule
 
         if (dd != NULL) { dd->Release(); }
 
-        if (!skip && State.Devices.Enumeration.Count < MAX_ENUMERATE_RENDERER_DEVICE_COUNT)
+        if (!skip && State.Devices.Enumeration.Count < MAX_ENUMERATE_DEVICE_COUNT)
         {
             if (uid != NULL)
             {
@@ -427,7 +427,7 @@ namespace RendererModule
 
                 State.Settings.MaxAvailableMemory = result == DD_OK
                     ? height * pitch + total
-                    : MIN_RENDERER_DEVICE_AVAIABLE_VIDEO_MEMORY;
+                    : MIN_DEVICE_AVAIABLE_VIDEO_MEMORY;
             }
 
             {
@@ -549,7 +549,7 @@ namespace RendererModule
             dx->EnumDevices(EnumerateDirectDrawAcceleratedDevices, NULL);
 
             ZeroMemory(ModuleDescriptor.Capabilities.Capabilities,
-                MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
+                MAX_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
 
             ModuleDescriptor.Capabilities.Count = 0;
 
@@ -564,7 +564,7 @@ namespace RendererModule
     // 0x600025ec
     HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC2 desc, LPVOID context)
     {
-        if ((MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT - 1) < ModuleDescriptor.Capabilities.Count) { return DDENUMRET_CANCEL; }
+        if ((MAX_DEVICE_CAPABILITIES_COUNT - 1) < ModuleDescriptor.Capabilities.Count) { return DDENUMRET_CANCEL; }
 
         const u32 format = AcquirePixelFormat(&desc->ddpfPixelFormat);
 
@@ -713,7 +713,7 @@ namespace RendererModule
 
                         State.Settings.MaxAvailableMemory = result == DD_OK
                             ? height * pitch + total
-                            : MIN_RENDERER_DEVICE_AVAIABLE_VIDEO_MEMORY;
+                            : MIN_DEVICE_AVAIABLE_VIDEO_MEMORY;
 
                         ModuleDescriptor.VideoMemorySize = State.Settings.MaxAvailableMemory;
                     }
@@ -1482,7 +1482,7 @@ namespace RendererModule
 
         State.DX.Device->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, GRAPCHICS_COLOR_WHITE);
 
-        ZeroMemory(State.Textures.Stages, MAX_RENDERER_MODULE_TEXTURE_STAGE_COUNT * sizeof(TextureStage));
+        ZeroMemory(State.Textures.Stages, MAX_TEXTURE_STAGE_COUNT * sizeof(TextureStage));
 
         State.Scene.IsActive = TRUE;
 
@@ -2110,13 +2110,13 @@ namespace RendererModule
     // 0x60002060
     void SelectRendererDevice(void)
     {
-        if (RendererDeviceIndex < DEFAULT_RENDERER_DEVICE_INDEX)
+        if (RendererDeviceIndex < DEFAULT_DEVICE_INDEX)
         {
             if (State.Lambdas.Lambdas.AcquireWindow != NULL || State.Window.HWND != NULL)
             {
                 const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME);
 
-                SelectDevice(value == NULL ? DEFAULT_RENDERER_DEVICE_INDEX : atoi(value));
+                SelectDevice(value == NULL ? DEFAULT_DEVICE_INDEX : atoi(value));
             }
         }
     }
@@ -2360,7 +2360,7 @@ namespace RendererModule
     {
         AttemptRenderScene();
 
-        MaximumRendererVertexCount = MAX_RENDERER_VERTEX_COUNT / RendererVertexSize;
+        MaximumRendererVertexCount = MAX_VERTEX_COUNT / RendererVertexSize;
     }
 
     // 0x600094f0
@@ -2498,7 +2498,7 @@ namespace RendererModule
     // 0x60001f20
     void InitializeTextureStateStates(void)
     {
-        ZeroMemory(State.Textures.StageStates, MAX_RENDERER_MODULE_TEXTURE_STATE_STATE_COUNT * sizeof(TextureStageState));
+        ZeroMemory(State.Textures.StageStates, MAX_TEXTURE_STATE_STATE_COUNT * sizeof(TextureStageState));
     }
 
     // 0x6000b590
@@ -2686,7 +2686,7 @@ namespace RendererModule
     }
 
     // 0x60009080
-    RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, void* p4, const u32 options, const BOOL destination)
+    RendererTexture* AllocateRendererTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state, const BOOL destination)
     {
         if (State.DX.Active.Instance == NULL) { return NULL; }
         if (State.Textures.Illegal) { return NULL; }
@@ -2697,14 +2697,14 @@ namespace RendererModule
         tex->Height = height;
         tex->FormatIndex = State.Textures.Formats.Indexes[format];
         tex->UnknownFormatIndexValue = UnknownFormatValues[format];
-        tex->Stage = MAKETEXTURESTAGEVALUE(options);
+        tex->Stage = MAKETEXTURESTAGEVALUE(state);
         tex->FormatIndexValue = format & 0xff;
 
-        tex->MipMapCount = ((options & 0xffff) != 0) ? ((options & 0xffff) + 1) : 0;
+        tex->MipMapCount = MAKETEXTUREMIPMAPVALUE(state) != 0 ? (MAKETEXTUREMIPMAPVALUE(state) + 1) : 0;
 
-        tex->Unk11 = (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R4G4B4) ? 1 : 0; // TODO
+        tex->Is16Bit = (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R4G4B4);
 
-        tex->Unk04 = p4;
+        tex->Options = options;
         tex->MemoryType = RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY;
 
         tex->Surface = NULL;
@@ -3098,9 +3098,9 @@ namespace RendererModule
 
             switch (mode)
             {
-            case RENDERER_LOCK_NONE: { options = DDLOCK_SURFACEMEMORYPTR; break; }
-            case RENDERER_LOCK_READ: { options = DDLOCK_READONLY; break; }
-            case RENDERER_LOCK_WRITE: { options = DDLOCK_WRITEONLY; break; }
+            case LOCK_NONE: { options = DDLOCK_SURFACEMEMORYPTR; break; }
+            case LOCK_READ: { options = DDLOCK_READONLY; break; }
+            case LOCK_WRITE: { options = DDLOCK_WRITEONLY; break; }
             }
 
             State.Lock.Surface = State.DX.Surfaces.Window;
@@ -3246,12 +3246,12 @@ namespace RendererModule
     // 0x60001980
     void ReleaseRendererWindows(void)
     {
-        for (u32 x = 0; x < State.Window.Count + RENDERER_WINDOW_OFFSET; x++)
+        for (u32 x = 0; x < State.Window.Count + WINDOW_OFFSET; x++)
         {
-            if (State.Windows[x + RENDERER_WINDOW_OFFSET].Surface != NULL)
+            if (State.Windows[x + WINDOW_OFFSET].Surface != NULL)
             {
-                State.Windows[x + RENDERER_WINDOW_OFFSET].Surface->Release();
-                State.Windows[x + RENDERER_WINDOW_OFFSET].Surface = NULL;
+                State.Windows[x + WINDOW_OFFSET].Surface->Release();
+                State.Windows[x + WINDOW_OFFSET].Surface = NULL;
             }
         }
 
@@ -3282,15 +3282,15 @@ namespace RendererModule
             if (tex->Texture->Blt(NULL, tex->Surface, NULL, DDBLT_WAIT, NULL) != DD_OK) { return FALSE; }
         }
 
-        if (palette != NULL && tex->Unk04 != NULL)
+        if (palette != NULL && tex->Options != 0)
         {
             PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
 
             for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
             {
-                entries[x].peRed = (u8)((palette[x] >> 16) & 0xff);
-                entries[x].peGreen = (u8)((palette[x] >> 8) & 0xff);
-                entries[x].peBlue = (u8)((palette[x] >> 0) & 0xff);
+                entries[x].peRed = (u8)RGBA_GETRED(palette[x]);
+                entries[x].peGreen = (u8)RGBA_GETGREEN(palette[x]);
+                entries[x].peBlue = (u8)RGBA_GETBLUE(palette[x]);
                 entries[x].peFlags = 0;
             }
 
@@ -3454,15 +3454,15 @@ namespace RendererModule
             if (tex->Texture->Blt(&source, tex->Surface, &destination, DDBLT_WAIT, NULL) != DD_OK) { return FALSE; }
         }
 
-        if (palette != NULL && tex->Unk04 != NULL)
+        if (palette != NULL && tex->Options != 0)
         {
             PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
 
             for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
             {
-                entries[x].peRed = (u8)((palette[x] >> 16) & 0xff);
-                entries[x].peGreen = (u8)((palette[x] >> 8) & 0xff);
-                entries[x].peBlue = (u8)((palette[x] >> 0) & 0xff);
+                entries[x].peRed = (u8)RGBA_GETRED(palette[x]);
+                entries[x].peGreen = (u8)RGBA_GETGREEN(palette[x]);
+                entries[x].peBlue = (u8)RGBA_GETBLUE(palette[x]);
                 entries[x].peFlags = 0;
             }
 

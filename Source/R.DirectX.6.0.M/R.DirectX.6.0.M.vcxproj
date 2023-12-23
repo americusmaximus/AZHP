@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DirectDraw.hxx" />
     <ClInclude Include="Module.hxx" />
     <ClInclude Include="App.Resources.hxx" />
     <ClInclude Include="Renderer.hxx" />

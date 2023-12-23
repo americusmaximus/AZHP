@@ -311,7 +311,7 @@ namespace RendererModule
 
     // 0x60002814
     // a.k.a. THRASH_readrect
-    DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* data)
+    DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* pixels)
     {
         RendererModuleWindowLock* state = LockGameWindow();
 
@@ -324,7 +324,7 @@ namespace RendererModule
         {
             const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
 
-            CopyMemory(&data[xx * length], (void*)((addr)state->Data + address), length);
+            CopyMemory(&pixels[xx * length], (void*)((addr)state->Data + address), length);
         }
 
         return UnlockGameWindow(state);
@@ -338,7 +338,7 @@ namespace RendererModule
 
         ReleaseRendererDevice();
 
-        RendererDeviceIndex = INVALID_RENDERER_DEVICE_INDEX;
+        RendererDeviceIndex = INVALID_DEVICE_INDEX;
 
         if (State.Lambdas.AcquireWindow != NULL)
         {
@@ -362,11 +362,11 @@ namespace RendererModule
 
         const char* name = NULL;
 
-        if (indx < DEFAULT_RENDERER_DEVICE_INDEX || State.Devices.Count <= indx)
+        if (indx < DEFAULT_DEVICE_INDEX || State.Devices.Count <= indx)
         {
-            RendererDeviceIndex = DEFAULT_RENDERER_DEVICE_INDEX;
-            State.Device.Identifier = State.Devices.Indexes[DEFAULT_RENDERER_DEVICE_INDEX];
-            name = State.Devices.Names[DEFAULT_RENDERER_DEVICE_INDEX];
+            RendererDeviceIndex = DEFAULT_DEVICE_INDEX;
+            State.Device.Identifier = State.Devices.Indexes[DEFAULT_DEVICE_INDEX];
+            name = State.Devices.Names[DEFAULT_DEVICE_INDEX];
         }
         else
         {
@@ -436,9 +436,9 @@ namespace RendererModule
         {
             const u32 color = (u32)value;
 
-            const f32 r = ((color >> 16) & 0xff) / 255.0f;
-            const f32 g = ((color >> 8) & 0xff) / 255.0f;
-            const f32 b = ((color >> 0) & 0xff) / 255.0f;
+            const f32 r = RGBA_GETRED(color) / 255.0f;
+            const f32 g = RGBA_GETGREEN(color) / 255.0f;
+            const f32 b = RGBA_GETBLUE(color) / 255.0f;
 
             SelectRendererMaterial(r, g, b);
 
@@ -756,7 +756,7 @@ namespace RendererModule
 
     // 0x60003534
     // a.k.a. THRASH_talloc
-    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, void* p4, const u32 options)
+    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state)
     {
         if (State.Textures.Formats.Indexes[format] < 0)
         {
@@ -776,7 +776,7 @@ namespace RendererModule
         tex->FormatIndex = State.Textures.Formats.Indexes[format];
         tex->FormatIndexValue = format;
 
-        tex->Unk10 = (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R4G4B4) ? 1 : 0; // TODO
+        tex->Is16Bit = (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R4G4B4);
 
         tex->Handle = 0;
         tex->MemoryType = RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY;
@@ -785,7 +785,7 @@ namespace RendererModule
         tex->Surface2 = NULL;
         tex->Texture2 = NULL;
         tex->Palette = NULL;
-        tex->Unk06 = p4;
+        tex->Options = options;
         tex->Colors = 0;
 
         if (InitializeRendererTextureDetails(tex))
@@ -793,7 +793,7 @@ namespace RendererModule
             tex->Previous = State.Textures.Current;
             State.Textures.Current = tex;
 
-            if (CurrentRendererTexture == NULL && tex->Unk10 == 0) { CurrentRendererTexture = tex; } // TODO
+            if (CurrentRendererTexture == NULL && !tex->Is16Bit) { CurrentRendererTexture = tex; }
 
             return tex;
         }
@@ -878,7 +878,7 @@ namespace RendererModule
 
     // 0x600028b0
     // a.k.a. THRASH_writerect
-    DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* data)
+    DLLAPI u32 STDCALLAPI WriteRectangle(const u32 x, const u32 y, const u32 width, const u32 height, const u32* pixels)
     {
         RendererModuleWindowLock* state = LockGameWindow();
 
@@ -891,7 +891,7 @@ namespace RendererModule
         {
             const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
 
-            CopyMemory((void*)((addr)state->Data + address), &data[xx * length], length);
+            CopyMemory((void*)((addr)state->Data + address), &pixels[xx * length], length);
         }
 
         return UnlockGameWindow(state);

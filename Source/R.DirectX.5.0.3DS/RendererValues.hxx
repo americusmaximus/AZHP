@@ -24,10 +24,9 @@ SOFTWARE.
 
 #include "Renderer.hxx"
 
-#define DEFAULT_RENDERER_DEVICE_INDEX 0
-#define INVALID_RENDERER_DEVICE_INDEX (-1)
-
-#define INVALID_RENDERER_DEVICE_STATE (-1)
+#define DEFAULT_DEVICE_INDEX 0
+#define INVALID_DEVICE_INDEX (-1)
+#define INVALID_DEVICE_STATE (-1)
 
 namespace RendererModuleValues
 {
@@ -53,5 +52,5 @@ namespace RendererModuleValues
     extern Renderer::RendererTexture* CurrentRendererTexture; // 0x60011870
 
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x60011010
-    extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT]; // 0x60011090
+    extern RendererModule::RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT]; // 0x60011090
 }

@@ -20,43 +20,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "RendererValues.hxx"
+#pragma once
 
-using namespace Renderer;
-using namespace RendererModule;
+#define DIRECTDRAW_VERSION 0x500
+#include <ddraw.h>
 
-namespace RendererModuleValues
-{
-    s32 RendererDeviceIndex = INVALID_DEVICE_INDEX;
-    s32 RendererDeviceState = INVALID_DEVICE_STATE;
+#ifdef __WATCOMC__
+#undef PURE
+#define PURE
+#endif
 
-    u32 RendererFogColor = DEFAULT_FOG_COLOR;
+#define DIRECT3D_VERSION 0x500
+#include <d3d.h>
 
-    f32 RendererDepthBias;
+#ifdef __WATCOMC__
+#define D3DTFG_GAUSSIANCUBIC 4 /* D3DTEXTUREMAGFILTER */
+#define D3DTFG_ANISOTROPIC   5 /* D3DTEXTUREMAGFILTER */
+#endif
 
-    s32 RendererDeviceType = RENDERER_MODULE_DEVICE_TYPE_0_ACCELERATED;
+#define DDGDI_NONE 0
+#define DDEDM_NONE 0
+#define D3DDP_NONE 0
+#define D3DVBCAPS_NONE 0
+#define D3DVBOPTIMIZE_NONE 0
+#define DDSDM_NONE 0
+#define D3DCOLOR_NONE 0
 
-    u32 MaximumRendererVertexCount = MAX_VERTEX_COUNT;
-
-    RendererTexture* CurrentRendererTexture;
-
-    u8 RendererFogAlphas[MAX_FOG_ALPHA_COUNT];
-
-    RendererModuleDescriptor ModuleDescriptor;
-    RendererModuleDescriptorDeviceCapabilities ModuleDescriptorDeviceCapabilities[MAX_DEVICE_CAPABILITIES_COUNT];
-
-    s32 UnknownArray06[6] =
-    {
-        0, 0, 0, 0, 5, -1
-    }; // TODO
-
-    u32 UnknownFormatValues[MAX_OTHER_USABLE_TEXTURE_FORMAT_COUNT] =
-    {
-        0, 1, 1, 2, 2, 3, 4, 2, 1, 2, 2, 0
-    }; // TODO
-
-    s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT] =
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1
-    }; // TODO
-}
+#define D3DRENDERSTATE_FOGSTART (D3DRENDERSTATETYPE)36
+#define D3DRENDERSTATE_FOGEND (D3DRENDERSTATETYPE)37
+#define D3DRENDERSTATE_FOGDENSITY (D3DRENDERSTATETYPE)38

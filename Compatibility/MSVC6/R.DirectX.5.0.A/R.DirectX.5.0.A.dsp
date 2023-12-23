@@ -126,6 +126,10 @@ SOURCE=..\..\..\Source\R.DirectX.5.0.A\Settings.cxx
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=..\..\..\Source\R.DirectX.5.0.A\DirectDraw.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\Source\R.DirectX.5.0.A\Module.hxx
 # End Source File
 # Begin Source File

@@ -75,11 +75,11 @@ namespace RendererModule
     // 0x60001830
     void SelectRendererDevice(void)
     {
-        if (RendererDeviceIndex < DEFAULT_RENDERER_DEVICE_INDEX && State.Lambdas.AcquireWindow != NULL)
+        if (RendererDeviceIndex < DEFAULT_DEVICE_INDEX && State.Lambdas.AcquireWindow != NULL)
         {
             const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME);
 
-            SelectDevice(value == NULL ? DEFAULT_RENDERER_DEVICE_INDEX : atoi(value));
+            SelectDevice(value == NULL ? DEFAULT_DEVICE_INDEX : atoi(value));
         }
     }
 
@@ -202,7 +202,7 @@ namespace RendererModule
         State.Devices.Count = 0;
         State.Device.Identifier = NULL;
 
-        u32 indx = DEFAULT_RENDERER_DEVICE_INDEX;
+        u32 indx = DEFAULT_DEVICE_INDEX;
         DirectDrawEnumerateA(EnumerateRendererDevices, &indx);
 
         return State.Devices.Count;
@@ -229,7 +229,7 @@ namespace RendererModule
         strncpy(State.Devices.Names[State.Devices.Count], name, MAX_DEVICE_NAME_LENGTH);
 
         // NOTE: Additional extra check to prevent writes outside of the array bounds.
-        if (MAX_RENDERER_DEVICE_COUNT <= (State.Devices.Count + 1)) { return FALSE; }
+        if (MAX_DEVICE_COUNT <= (State.Devices.Count + 1)) { return FALSE; }
 
         State.Devices.Count = State.Devices.Count + 1;
 
@@ -444,7 +444,7 @@ namespace RendererModule
             else
             {
                 const u32 index = *(u32*)context;
-                if ((MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT - 1) < index) { return DDENUMRET_CANCEL; }
+                if ((MAX_DEVICE_CAPABILITIES_COUNT - 1) < index) { return DDENUMRET_CANCEL; }
 
                 indx = index;
 
@@ -555,7 +555,7 @@ namespace RendererModule
                 }
 
                 ZeroMemory(ModuleDescriptor.Capabilities.Capabilities,
-                    MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
+                    MAX_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
 
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Width = GRAPHICS_RESOLUTION_640;
                 ModuleDescriptor.Capabilities.Capabilities[RENDERER_RESOLUTION_MODE_640_480_16].Height = GRAPHICS_RESOLUTION_480;
@@ -1471,7 +1471,7 @@ namespace RendererModule
 
             const HRESULT result = tex->Surface1->SetSurfaceDesc(&tex->Descriptor, 0);
 
-            if (result != DD_OK) { Message("error on set text sys surface  %8x\n", result);  return FALSE; }
+            if (result != DD_OK) { Message("error on set text sys surface %8x\n", result);  return FALSE; }
 
             if (State.Scene.IsActive)
             {
@@ -1489,15 +1489,15 @@ namespace RendererModule
             tex->Texture2->GetHandle(State.DX.Device, &tex->Handle);
         }
 
-        if (palette == NULL || tex->Unk06 == NULL) { return TRUE; } // TODO
+        if (palette == NULL || tex->Options == 0) { return TRUE; }
 
         PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
 
         for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
         {
-            entries[x].peRed = (u8)((palette[x] >> 16) & 0xff);
-            entries[x].peGreen = (u8)((palette[x] >> 8) & 0xff);
-            entries[x].peBlue = (u8)((palette[x] >> 0) & 0xff);
+            entries[x].peRed = (u8)RGBA_GETRED(palette[x]);
+            entries[x].peGreen = (u8)RGBA_GETGREEN(palette[x]);
+            entries[x].peBlue = (u8)RGBA_GETBLUE(palette[x]);
             entries[x].peFlags = 0;
         }
 

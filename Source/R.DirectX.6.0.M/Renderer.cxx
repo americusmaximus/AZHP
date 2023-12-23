@@ -85,12 +85,12 @@ namespace RendererModule
     // 0x60001830
     void SelectRendererDevice(void)
     {
-        if (RendererDeviceIndex < DEFAULT_RENDERER_DEVICE_INDEX
+        if (RendererDeviceIndex < DEFAULT_DEVICE_INDEX
             && (State.Lambdas.Lambdas.AcquireWindow != NULL || State.Window.HWND != NULL))
         {
             const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME);
 
-            SelectDevice(value == NULL ? DEFAULT_RENDERER_DEVICE_INDEX : atoi(value));
+            SelectDevice(value == NULL ? DEFAULT_DEVICE_INDEX : atoi(value));
         }
     }
 
@@ -180,7 +180,7 @@ namespace RendererModule
         State.Devices.Count = 0;
         State.Device.Identifier = NULL;
 
-        u32 indx = DEFAULT_RENDERER_DEVICE_INDEX;
+        u32 indx = DEFAULT_DEVICE_INDEX;
         DirectDrawEnumerateA(EnumerateRendererDevices, &indx);
 
         return State.Devices.Count;
@@ -207,7 +207,7 @@ namespace RendererModule
         strncpy(State.Devices.Names[State.Devices.Count], name, MAX_DEVICE_NAME_LENGTH);
 
         // NOTE: Additional extra check to prevent writes outside of the array bounds.
-        if (MAX_RENDERER_DEVICE_COUNT <= (State.Devices.Count + 1)) { return FALSE; }
+        if (MAX_DEVICE_COUNT <= (State.Devices.Count + 1)) { return FALSE; }
 
         State.Devices.Count = State.Devices.Count + 1;
 
@@ -473,7 +473,7 @@ namespace RendererModule
     void InitializeRendererDeviceCapabilities(void)
     {
         ZeroMemory(ModuleDescriptor.Capabilities.Capabilities,
-            MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
+            MAX_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
 
 
         ModuleDescriptor.Capabilities.Count = 0;
@@ -579,7 +579,7 @@ namespace RendererModule
     // 0x6000e54c
     BOOL InitializeRendererDeviceCapabilities(RendererModuleDescriptorDeviceCapabilities* caps)
     {
-        if (ModuleDescriptor.Capabilities.Count < MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT)
+        if (ModuleDescriptor.Capabilities.Count < MAX_DEVICE_CAPABILITIES_COUNT)
         {
             CopyMemory(&ModuleDescriptorDeviceCapabilities[ModuleDescriptor.Capabilities.Count], caps,
                 sizeof(RendererModuleDescriptorDeviceCapabilities));
@@ -699,7 +699,7 @@ namespace RendererModule
 
                         State.Settings.MaxAvailableMemory = result == DD_OK
                             ? height * pitch + total
-                            : MIN_RENDERER_DEVICE_AVAIABLE_VIDEO_MEMORY;
+                            : MIN_DEVICE_AVAIABLE_VIDEO_MEMORY;
                     }
 
                     {
@@ -2069,15 +2069,15 @@ namespace RendererModule
             tex->Surface2->Blt(NULL, tex->Surface1, NULL, DDBLT_WAIT, NULL);
         }
 
-        if (palette != NULL && tex->Unk06 != NULL) // TODO
+        if (palette != NULL && tex->Options != 0)
         {
             PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
 
             for (u32 x = 0; x < MAX_TEXTURE_PALETTE_COLOR_COUNT; x++)
             {
-                entries[x].peRed = (u8)((palette[x] >> 16) & 0xff);
-                entries[x].peGreen = (u8)((palette[x] >> 8) & 0xff);
-                entries[x].peBlue = (u8)((palette[x] >> 0) & 0xff);
+                entries[x].peRed = (u8)RGBA_GETRED(palette[x]);
+                entries[x].peGreen = (u8)RGBA_GETGREEN(palette[x]);
+                entries[x].peBlue = (u8)RGBA_GETBLUE(palette[x]);
                 entries[x].peFlags = 0;
             }
 

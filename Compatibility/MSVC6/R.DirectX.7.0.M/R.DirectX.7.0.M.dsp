@@ -112,10 +112,22 @@ SOURCE=..\..\..\Source\R.DirectX.7.0.M\Module.cxx
 
 SOURCE=..\..\..\Source\R.DirectX.7.0.M\Renderer.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Source\R.DirectX.7.0.M\RendererValues.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Source\R.DirectX.7.0.M\Settings.cxx
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\..\Source\R.DirectX.7.0.M\DirectDraw.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\Source\R.DirectX.7.0.M\Module.hxx
@@ -127,6 +139,14 @@ SOURCE=..\..\..\Source\R.DirectX.7.0.M\Renderer.hxx
 # Begin Source File
 
 SOURCE=..\..\..\Source\R.DirectX.7.0.M\Renderer.Module.Watcom.def
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Source\R.DirectX.7.0.M\RendererValues.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\Source\R.DirectX.7.0.M\Settings.hxx
 # End Source File
 # End Group
 # Begin Group "Resource Files"

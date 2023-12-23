@@ -28,64 +28,32 @@ SOFTWARE.
 #include "RendererModule.Export.hxx"
 #endif
 
-#define DIRECTDRAW_VERSION 0x500
-#include <ddraw.h>
-
-#ifdef __WATCOMC__
-#undef PURE
-#define PURE
-#endif
-
-#define DIRECT3D_VERSION 0x500
-#include <d3d.h>
-
-#define DDGDI_NONE 0
-#define DDEDM_NONE 0
-#define D3DDP_NONE 0
-#define D3DVBCAPS_NONE 0
-#define D3DVBOPTIMIZE_NONE 0
-#define DDSDM_NONE 0
-#define D3DCOLOR_NONE 0
-
-#define D3DRENDERSTATE_FOGSTART (D3DRENDERSTATETYPE)36
-#define D3DRENDERSTATE_FOGEND (D3DRENDERSTATETYPE)37
-#define D3DRENDERSTATE_FOGDENSITY (D3DRENDERSTATETYPE)38
-
-#define DEFAULT_RENDERER_VERTEX_COUNT 253
-#define MAX_RENDERER_VERTEX_COUNT 253
-#define MAX_RENDERER_SMALL_INDEX_COUNT 104
-#define MAX_RENDERER_INDEX_COUNT 8096
+#include "DirectDraw.hxx"
 
 #define DEPTH_BIT_MASK_32_BIT 0x100
 #define DEPTH_BIT_MASK_24_BIT 0x200
 #define DEPTH_BIT_MASK_16_BIT 0x400
 #define DEPTH_BIT_MASK_8_BIT 0x800
 
+#define DEFAULT_FOG_COLOR 0x00FFFFFF
+#define DEFAULT_FOG_DINSITY (0.5f)
 #define INVALID_TEXTURE_FORMAT_COUNT (-1)
 #define INVALID_TEXTURE_FORMAT_INDEX (-1)
-
-#define MAX_TEXTURE_FORMAT_COUNT 128 /* ORIGINAL: 12 */
-
-#define MAX_RENDERER_DEVICE_COUNT 16 /* ORIGINAL: 10 */
-
-#define MAX_DEVICE_NAME_LENGTH 32
-
-#define MAX_RENDERER_MODULE_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 32 */
-#define MAX_USABLE_TEXTURE_FORMAT_COUNT 11
-#define MAX_OTHER_USABLE_TEXTURE_FORMAT_COUNT 12
-
 #define MAX_ACTIVE_SURFACE_COUNT 8
-
-#define MIN_RENDERER_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
-
-#define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
-
+#define MAX_DEVICE_CAPABILITIES_COUNT 128 /* ORIGINAL: 32 */
+#define MAX_DEVICE_COUNT 16 /* ORIGINAL: 10 */
+#define MAX_DEVICE_NAME_LENGTH 32
 #define MAX_INPUT_FOG_ALPHA_COUNT 64
-#define MAX_OUTPUT_FOG_ALPHA_VALUE 255
+#define MAX_LARGE_INDEX_COUNT 8096
+#define MAX_OTHER_USABLE_TEXTURE_FORMAT_COUNT 12
 #define MAX_OUTPUT_FOG_ALPHA_COUNT 256
-
-#define DEFAULT_FOG_DINSITY (0.5f)
-#define DEFAULT_FOG_COLOR 0x00FFFFFF
+#define MAX_OUTPUT_FOG_ALPHA_VALUE 255
+#define MAX_SMALL_INDEX_COUNT 104
+#define MAX_TEXTURE_FORMAT_COUNT 128 /* ORIGINAL: 12 */
+#define MAX_TEXTURE_PALETTE_COLOR_COUNT 256
+#define MAX_USABLE_TEXTURE_FORMAT_COUNT 11
+#define MAX_VERTEX_COUNT 253
+#define MIN_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
 
 namespace Renderer
 {
@@ -93,27 +61,20 @@ namespace Renderer
     {
         u32 Width;
         u32 Height;
-
         u32 UnknownFormatIndexValue; // TODO
         s32 FormatIndex; // TODO
         s32 FormatIndexValue; // TODO
-
-        void* Unk06; // TODO
-
+        u32 Options;
         D3DTEXTUREHANDLE Handle;
         RendererTexture* Previous;
         u32 MemoryType;
-
-        s32 Unk10; // TODO
-
+        BOOL Is16Bit;
         IDirectDrawSurface3* Surface1;
         IDirect3DTexture2* Texture1;
         IDirectDrawSurface3* Surface2;
         IDirect3DTexture2* Texture2;
         IDirectDrawPalette* Palette;
-
         DDSURFACEDESC Descriptor;
-
         u32 Colors;
     };
 }
@@ -208,9 +169,9 @@ namespace RendererModule
         {
             u32 Count; // 0x60010ef0
 
-            GUID* Indexes[MAX_RENDERER_DEVICE_COUNT]; // 0x60012860
-            GUID Identifiers[MAX_RENDERER_DEVICE_COUNT]; // 0x60012680
-            char Names[MAX_RENDERER_DEVICE_COUNT][MAX_DEVICE_NAME_LENGTH]; // 0x60012720
+            GUID* Indexes[MAX_DEVICE_COUNT]; // 0x60012860
+            GUID Identifiers[MAX_DEVICE_COUNT]; // 0x60012680
+            char Names[MAX_DEVICE_COUNT][MAX_DEVICE_NAME_LENGTH]; // 0x60012720
         } Devices;
 
         RendererModuleLambdaContainer Lambdas; // 0x60012888
@@ -245,16 +206,16 @@ namespace RendererModule
             {
                 u32 Count; // 0x60010f6c
 
-                u16 Indexes[MAX_RENDERER_INDEX_COUNT]; // 0x60014b90
+                u16 Indexes[MAX_LARGE_INDEX_COUNT]; // 0x60014b90
 
-                u16 Small[MAX_RENDERER_SMALL_INDEX_COUNT]; // 0x600125b0
+                u16 Small[MAX_SMALL_INDEX_COUNT]; // 0x600125b0
             } Indexes;
 
             struct
             {
                 u32 Count; // 0x60010f68
 
-                Renderer::RTLVX Vertexes[MAX_RENDERER_VERTEX_COUNT]; // 0x6001d5d8
+                Renderer::RTLVX Vertexes[MAX_VERTEX_COUNT]; // 0x6001d5d8
             } Vertexes;
         } Data;
 
