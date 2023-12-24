@@ -2263,7 +2263,7 @@ namespace RendererModule
             const HRESULT result = State.DX.Active.Surfaces.Active.Main->Blt(&dst,
                 State.DX.Active.Surfaces.Active.Back, &src, RendererBlitOptions, NULL);
 
-            if (result == DD_OK) { return RENDERER_MODULE_SUCCESS; }
+            if (result != DD_OK) { return RENDERER_MODULE_FAILURE; }
         }
 
         return RENDERER_MODULE_SUCCESS;
@@ -3172,7 +3172,7 @@ namespace RendererModule
         return State.DX.Active.IsInit;
     }
     
-    // 0x60005dc0
+    // 0x60009500
     void ReleaseRendererDevice(void)
     {
         if (AcquireRendererDeviceState() && State.Scene.IsActive)
