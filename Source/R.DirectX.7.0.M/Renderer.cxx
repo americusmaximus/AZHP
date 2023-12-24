@@ -2816,7 +2816,7 @@ namespace RendererModule
                 ZeroMemory(&desc.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
 
                 desc.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
-                desc.ddpfPixelFormat.dwFlags = 0x80000;
+                desc.ddpfPixelFormat.dwFlags = DDPF_BUMPDUDV;
                 desc.ddpfPixelFormat.dwRGBBitCount = GRAPHICS_BITS_PER_PIXEL_24;
                 desc.ddpfPixelFormat.dwRBitMask = 0xff;
                 desc.ddpfPixelFormat.dwGBitMask = 0xff00;
@@ -2827,7 +2827,7 @@ namespace RendererModule
                 ZeroMemory(&desc.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
 
                 desc.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
-                desc.ddpfPixelFormat.dwFlags = 0x80000;
+                desc.ddpfPixelFormat.dwFlags = DDPF_BUMPDUDV;
                 desc.ddpfPixelFormat.dwRGBBitCount = GRAPHICS_BITS_PER_PIXEL_16;
                 desc.ddpfPixelFormat.dwRBitMask = 0x1f;
                 desc.ddpfPixelFormat.dwGBitMask = 0x3e0;
@@ -2909,7 +2909,7 @@ namespace RendererModule
                 ZeroMemory(&desc.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
 
                 desc.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
-                desc.ddpfPixelFormat.dwFlags = 0x80000;
+                desc.ddpfPixelFormat.dwFlags = DDPF_BUMPDUDV;
                 desc.ddpfPixelFormat.dwRGBBitCount = GRAPHICS_BITS_PER_PIXEL_24;
                 desc.ddpfPixelFormat.dwRBitMask = 0xff;
                 desc.ddpfPixelFormat.dwGBitMask = 0xff00;
@@ -2920,7 +2920,7 @@ namespace RendererModule
                 ZeroMemory(&desc.ddpfPixelFormat, sizeof(DDPIXELFORMAT));
 
                 desc.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
-                desc.ddpfPixelFormat.dwFlags = 0x80000;
+                desc.ddpfPixelFormat.dwFlags = DDPF_BUMPDUDV;
                 desc.ddpfPixelFormat.dwRGBBitCount = GRAPHICS_BITS_PER_PIXEL_16;
                 desc.ddpfPixelFormat.dwRBitMask = 0x1f;
                 desc.ddpfPixelFormat.dwGBitMask = 0x3e0;
