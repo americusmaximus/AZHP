@@ -145,7 +145,7 @@ namespace RendererModule
         u32 DXTT; // Type
         u32 DXTN; // Name
     };
-
+    
     struct TextureStage
     {
         s32 Unk01; // TODO
@@ -299,7 +299,6 @@ namespace RendererModule
                 u32 MaxTextureWidth; // 0x6005ab64
                 u32 MinTextureHeight; // 0x6005ab68
                 u32 MaxTextureHeight; // 0x6005ab6c
-
                 u32 MultipleTextureWidth; // 0x6005ab70
                 BOOL IsPowerOfTwoTexturesWidth; // 0x6005ab74
                 u32 MultipleTextureHeight; // 0x6005ab78
