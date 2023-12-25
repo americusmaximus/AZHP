@@ -36,6 +36,8 @@ The original game requires the sound system to be present, no graceful error han
 One more thing regarding the callbacks, some are required to be called during the `Serve` call, without it the game goes into endless loop when player attempts to start a race.
 
 ### Renderer Modules
+The renderer modules were implemented with minor changes, such as omission of write-only variables, making calls to functions when result is not used, as well as addition of configuration file and reading values from it, which is useful in a few cases.
+
 #### DirectX 5
 The original game shipped with two DirectX 5 renderers with slightly different design and capabilities. I added all of them as well as the patched version from the modern patch for completeness. Unfortunately DirectX 5 is so far away in hte past that I was not able to make this renderer work without some tweaks here and there, and it will require major changes in the game itself so that 16-bit rendering is not used. On my test environments I ran into an error where SetDisplayMode fails to set resolution in 16-bit mode, this error leads to renderer not creating surfaces, which leads to inability to create a Direct3D device from which one cannot recover gracefuly. Having said all this, it is great that other renderers are available and do work. Here is the outline of DirectX 5 renderers:
 
@@ -50,7 +52,7 @@ The original game had no DirectX 6 renderer, thus the one you see here is a rend
 The original game had no DirectX 7 renderer, thus the one you see here is a renderer from the modern patch, which in its turn is based on file `d3da.dll` version: 2001.01.18.1651 (8193.1.24.5713) that came with Need For Speed: High Stakes in 2001 with the patch 4.50. See [AutoZone High Stakes](https://github.com/americusmaximus/AZHS) DirectX 7 A renderer details for additional information.
 
 
-## Other Similar Projects
+## Similar Projects
 ### Successors
 1. [AutoZone High Stakes](https://github.com/americusmaximus/AZHS)
 2. [AutoZone Motor City Online](https://github.com/americusmaximus/AZMCO)
