@@ -390,7 +390,7 @@ namespace RendererModule
     // a.k.a. THRASH_init
     DLLAPI u32 STDCALLAPI Init(void)
     {
-        RendererState = FALSE;
+        RendererState = STATE_INACTIVE;
 
         InitializeSettings();
 
@@ -1535,7 +1535,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_STENCIL_STATE:
         {
-            if (!State.Device.Capabilities.IsStencilBuffer) { return RENDERER_MODULE_FAILURE; }
+            if (!State.Device.Capabilities.IsStencilBufferAvailable) { return RENDERER_MODULE_FAILURE; }
 
             switch ((u32)value)
             {
@@ -1547,7 +1547,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_STENCIL_FUNCTION:
         {
-            if (!State.Device.Capabilities.IsStencilBuffer) { return RENDERER_MODULE_FAILURE; }
+            if (!State.Device.Capabilities.IsStencilBufferAvailable) { return RENDERER_MODULE_FAILURE; }
 
             switch ((u32)value)
             {
@@ -1565,7 +1565,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_STENCIL_FAIL_STATE:
         {
-            if (!State.Device.Capabilities.IsStencilBuffer) { return RENDERER_MODULE_FAILURE; }
+            if (!State.Device.Capabilities.IsStencilBufferAvailable) { return RENDERER_MODULE_FAILURE; }
 
             switch ((u32)value)
             {
@@ -1583,7 +1583,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_STENCIL_DEPTH_FAIL_STATE:
         {
-            if (!State.Device.Capabilities.IsStencilBuffer) { return RENDERER_MODULE_FAILURE; }
+            if (!State.Device.Capabilities.IsStencilBufferAvailable) { return RENDERER_MODULE_FAILURE; }
 
             switch ((u32)value)
             {
@@ -1601,7 +1601,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_STENCIL_PASS_STATE:
         {
-            if (!State.Device.Capabilities.IsStencilBuffer) { return RENDERER_MODULE_FAILURE; }
+            if (!State.Device.Capabilities.IsStencilBufferAvailable) { return RENDERER_MODULE_FAILURE; }
 
             switch ((u32)value)
             {
@@ -1856,7 +1856,7 @@ namespace RendererModule
             result->IsAnisotropyAvailable = State.Device.Capabilities.IsAnisotropyAvailable;
             result->IsGammaAvailable = State.Device.Capabilities.IsGammaAvailable;
             result->IsSpecularGouraudBlending = State.Device.Capabilities.IsSpecularGouraudBlending;
-            result->IsStencilBufferAvailable = State.Device.Capabilities.IsStencilBuffer;
+            result->IsStencilBufferAvailable = State.Device.Capabilities.IsStencilBufferAvailable;
             result->IsSpecularBlending = State.Device.Capabilities.IsSpecularBlending;
             result->Unk29 = DAT_6005ab50;
             result->IsTextureIndependentUVs = State.Device.Capabilities.IsTextureIndependentUVs;
@@ -2288,7 +2288,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_INITIALIZE_VERTEX_BUFFER:
         {
-            const RendererModuleVertexBuffer* input = (RendererModuleVertexBuffer*)value;
+            RendererModuleVertexBuffer* input = (RendererModuleVertexBuffer*)value;
 
             D3DDEVICEDESC7 caps;
             ZeroMemory(&caps, sizeof(D3DDEVICEDESC7));
@@ -2551,13 +2551,13 @@ namespace RendererModule
 
     // 0x60008e70
     // a.k.a. THRASH_talloc
-    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 p4, const u32 options)
+    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state)
     {
         if (State.DX.Active.Instance != NULL)
         {
             if (State.DX.Active.Instance->TestCooperativeLevel() == DD_OK)
             {
-                return AllocateRendererTexture(width, height, format, p4, options, FALSE);
+                return AllocateRendererTexture(width, height, format, options, state, FALSE);
             }
         }
 
@@ -2655,7 +2655,7 @@ namespace RendererModule
     // 0x60008f60
     // a.k.a. THRASH_tupdaterect
     // NOTE: Never being called by the application.
-    DLLAPI RendererTexture* STDCALLAPI UpdateTextureRectangle(RendererTexture* tex, const u32* pixels, const u32* palette, const s32 x, const s32 y, const s32 width, const s32 height, const s32 size, const s32 level)
+    DLLAPI RendererTexture* STDCALLAPI UpdateTextureRectangle(RendererTexture* tex, const u32* pixels, const u32* palette, const s32 x, const s32 y, const s32 width, const s32 height, const s32 size, const s32)
     {
         if (tex != NULL && pixels != NULL && 0 < width && 0 < height)
         {
