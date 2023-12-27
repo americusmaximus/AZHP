@@ -91,8 +91,10 @@ namespace RendererModule
     }
 
     // 0x6000d580
-    void InitializeVertexes(void* vertexes, const u32 count)
+    void InitializeVertexes(RVX* vertexes, const u32 count)
     {
+        if (!SettingsState.VertexOffset) { return; }
+
         for (u32 x = 0; x < count; x++)
         {
             f32x3* xyz = (f32x3*)((addr)vertexes + (addr)(x * RendererVertexSize));
@@ -553,7 +555,7 @@ namespace RendererModule
 
             ModuleDescriptor.Capabilities.Count = 0;
 
-            State.DX.Instance->EnumDisplayModes(DDEDM_NONE, NULL, 0, EnumerateRendererDeviceModes);
+            State.DX.Instance->EnumDisplayModes(DDEDM_NONE, NULL, &ModuleDescriptor.Capabilities.Count, EnumerateRendererDeviceModes);
 
             ModuleDescriptor.Capabilities.Count = ModuleDescriptor.Capabilities.Count + 1;
         }
@@ -564,44 +566,52 @@ namespace RendererModule
     // 0x600025ec
     HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC2 desc, LPVOID context)
     {
-        if ((MAX_DEVICE_CAPABILITIES_COUNT - 1) < ModuleDescriptor.Capabilities.Count) { return DDENUMRET_CANCEL; }
-
         const u32 format = AcquirePixelFormat(&desc->ddpfPixelFormat);
 
+        const u32 bits = desc->ddpfPixelFormat.dwRGBBitCount;
+
         if (format != RENDERER_PIXEL_FORMAT_NONE
-            && (GRAPHICS_RESOLUTION_640 - 1) < desc->dwWidth && (GRAPHICS_RESOLUTION_480 - 1) < desc->dwHeight)
+            && bits != GRAPHICS_BITS_PER_PIXEL_8 && bits != GRAPHICS_BITS_PER_PIXEL_24
+            && (GRAPHICS_RESOLUTION_512 - 1) < desc->dwWidth)
         {
-            const u32 bits = desc->ddpfPixelFormat.dwRGBBitCount;
+            const u32 bytes = bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1) ? 2 : (bits >> 3);
 
-            if (bits != GRAPHICS_BITS_PER_PIXEL_16 && bits != GRAPHICS_BITS_PER_PIXEL_32) { return DDENUMRET_OK; }
+            const u32 width = desc->dwWidth;
+            const u32 height = desc->dwHeight;
+            const u32 count = State.Settings.MaxAvailableMemory / (height * width * bytes);
 
-            const u32 mask = (bits == GRAPHICS_BITS_PER_PIXEL_16) ? DEPTH_BIT_MASK_16_BIT : DEPTH_BIT_MASK_32_BIT;
+            u32 indx = 0;
 
-            if (State.Device.Capabilities.RendererDeviceDepthBits & mask)
+            if (width == GRAPHICS_RESOLUTION_640 && height == GRAPHICS_RESOLUTION_480 && bits == GRAPHICS_BITS_PER_PIXEL_16) { indx = 1; }
+            else if (width == GRAPHICS_RESOLUTION_800 && height == GRAPHICS_RESOLUTION_600 && bits == GRAPHICS_BITS_PER_PIXEL_16) { indx = 2; }
+            else
             {
-                const u32 bytes = ((bits < GRAPHICS_BITS_PER_PIXEL_16) ? GRAPHICS_BITS_PER_PIXEL_16 : bits) >> 3;
+                indx = *(u32*)context;
 
-                const u32 count = State.Settings.MaxAvailableMemory / (desc->dwHeight * desc->dwWidth * bytes);
+                if ((MAX_DEVICE_CAPABILITIES_COUNT - 1) < indx) { return DDENUMRET_CANCEL; }
 
-                ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].Width = desc->dwWidth;
-                ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].Height = desc->dwHeight;
-                ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].Bits =
-                    format == RENDERER_PIXEL_FORMAT_R5G5B5 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
-                ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].IsActive = TRUE;
-
-                if (count < 4) // TODO
-                {
-                    ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].Unk03 = count;
-                    ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].Unk04 = count - 1;
-                }
-                else
-                {
-                    ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].Unk03 = 3;
-                    ModuleDescriptor.Capabilities.Capabilities[ModuleDescriptor.Capabilities.Count].Unk04 = 3;
-                }
-
-                ModuleDescriptor.Capabilities.Count = ModuleDescriptor.Capabilities.Count + 1;
+                *(u32*)context = indx + 1;
             }
+
+            ModuleDescriptor.Capabilities.Capabilities[indx].Width = width;
+            ModuleDescriptor.Capabilities.Capabilities[indx].Height = height;
+            ModuleDescriptor.Capabilities.Capabilities[indx].Bits =
+                format == RENDERER_PIXEL_FORMAT_R5G5B5 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
+
+            ModuleDescriptor.Capabilities.Capabilities[indx].Format = format;
+
+            if (count < 4) // TODO
+            {
+                ModuleDescriptor.Capabilities.Capabilities[indx].Unk03 = count;
+                ModuleDescriptor.Capabilities.Capabilities[indx].Unk04 = count - 1;
+            }
+            else
+            {
+                ModuleDescriptor.Capabilities.Capabilities[indx].Unk03 = 3;
+                ModuleDescriptor.Capabilities.Capabilities[indx].Unk04 = 3;
+            }
+
+            ModuleDescriptor.Capabilities.Capabilities[indx].IsActive = TRUE;
         }
 
         return DDENUMRET_OK;
@@ -1593,7 +1603,7 @@ namespace RendererModule
         {
             if (!State.Scene.IsActive) { BeginRendererScene(); }
 
-            InitializeVertexes(State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count);
+            InitializeVertexes((RVX*)State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count);
 
             State.DX.Device->DrawIndexedPrimitive(RendererPrimitiveType, RendererVertexType,
                 State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count,

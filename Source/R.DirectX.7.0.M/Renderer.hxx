@@ -527,7 +527,7 @@ namespace RendererModule
     void InitializeRendererState(void);
     void InitializeRenderState55(void); // TODO
     void InitializeTextureStateStates(void);
-    void InitializeVertexes(void* vertexes, const u32 count);
+    void InitializeVertexes(Renderer::RVX* vertexes, const u32 count);
     void InitializeViewPort(void);
     void ReleaseRendererDevice(void);
     void ReleaseRendererDeviceSurfaces(void);

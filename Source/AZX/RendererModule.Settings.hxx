@@ -29,6 +29,10 @@ SOFTWARE.
 #define RENDERER_MODULE_SETTINGS_SECTION_DX7_NAME "DX7"
 #define RENDERER_MODULE_SETTINGS_SECTION_DX8_NAME "DX8"
 
+// Indicates whether the hardware accelerated device should be picked first, despite the command from the game.
+// DEFAULT: FALSE
+#define RENDERER_MODULE_SETTINGS_ACCELERATE_GRAPHICS_PROPERTY_NAME "Accelerate"
+
 // Indicates whether flat shading is active/enabled.
 // In practice means whether to overwrite the vertex color with white color or not.
 // In my case enabling this leads to disappearance of transparency in the game.
@@ -40,6 +44,7 @@ SOFTWARE.
 // DEFAULT: TRUE
 #define RENDERER_MODULE_SETTINGS_VERTEX_BUFFER_PROPERTY_NAME "VertexBuffer"
 
-// Indicates whether the hardware accelerated device should be picked first, despite the command from the game.
-// DEFAULT: FALSE
-#define RENDERER_MODULE_SETTINGS_ACCELERATE_GRAPHICS_PROPERTY_NAME "Accelerate"
+// Indicates whether vertexes X and Y coordinates must be offset by -0.5.
+// This change comes from the Modern Patch.
+// DEFAULT: TRUE
+#define RENDERER_MODULE_SETTINGS_VERTEX_OFFSET_PROPERTY_NAME "VertexOffset"

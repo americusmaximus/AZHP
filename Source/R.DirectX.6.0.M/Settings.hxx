@@ -30,6 +30,7 @@ namespace Settings
     {
         BOOL Accelerate;
         BOOL FlatShading;
+        BOOL VertexOffset;
     };
 
     extern SettingsContainer SettingsState;

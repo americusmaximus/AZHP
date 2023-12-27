@@ -71,8 +71,10 @@ namespace RendererModule
     }
 
     // 0x6000e514
-    void InitializeVertexes(void* vertexes, const u32 count)
+    void InitializeVertexes(RVX* vertexes, const u32 count)
     {
+        if (!SettingsState.VertexOffset) { return; }
+
         for (u32 x = 0; x < count; x++)
         {
             f32x3* xyz = (f32x3*)((addr)vertexes + (addr)(x * sizeof(RTLVX)));
@@ -148,7 +150,7 @@ namespace RendererModule
             State.Scene.IsActive = TRUE;
         }
 
-        InitializeVertexes(State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count);
+        InitializeVertexes((RVX*)State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count);
 
         const HRESULT result = State.DX.Device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX,
             State.Data.Vertexes.Vertexes, State.Data.Vertexes.Count,
@@ -475,10 +477,9 @@ namespace RendererModule
         ZeroMemory(ModuleDescriptor.Capabilities.Capabilities,
             MAX_DEVICE_CAPABILITIES_COUNT * sizeof(RendererModuleDescriptorDeviceCapabilities));
 
-
         ModuleDescriptor.Capabilities.Count = 0;
 
-        State.DX.Instance->EnumDisplayModes(DDEDM_NONE, NULL, 0, EnumerateRendererDeviceModes);
+        State.DX.Instance->EnumDisplayModes(DDEDM_NONE, NULL, &ModuleDescriptor.Capabilities.Count, EnumerateRendererDeviceModes);
 
         ModuleDescriptor.Capabilities.Count = ModuleDescriptor.Capabilities.Count + 1;
     }
@@ -513,40 +514,50 @@ namespace RendererModule
     // 0x60001c90
     HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC2 desc, LPVOID context)
     {
-        RendererModuleDescriptorDeviceCapabilities caps;
-        ZeroMemory(&caps, sizeof(RendererModuleDescriptorDeviceCapabilities));
+        const u32 format = AcquirePixelFormat(&desc->ddpfPixelFormat);
 
-        caps.Format = AcquirePixelFormat(&desc->ddpfPixelFormat);
-
-        if (caps.Format != RENDERER_PIXEL_FORMAT_NONE)
+        if (format != RENDERER_PIXEL_FORMAT_NONE)
         {
-            caps.Width = desc->dwWidth;
-            caps.Height = desc->dwHeight;
+            const u32 bits = desc->ddpfPixelFormat.dwRGBBitCount;
+            const u32 bytes = bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1) ? 2 : (bits >> 3);
 
-            if ((GRAPHICS_RESOLUTION_640 - 1) < caps.Width && (GRAPHICS_RESOLUTION_480 - 1) < caps.Height)
+            const u32 width = desc->dwWidth;
+            const u32 height = desc->dwHeight;
+            const u32 count = State.Settings.MaxAvailableMemory / (height * width * bytes);
+
+            u32 indx = 0;
+
+            if (width == GRAPHICS_RESOLUTION_640 && height == GRAPHICS_RESOLUTION_480 && bits == GRAPHICS_BITS_PER_PIXEL_16) { indx = 1; }
+            else if (width == GRAPHICS_RESOLUTION_800 && height == GRAPHICS_RESOLUTION_600 && bits == GRAPHICS_BITS_PER_PIXEL_16) { indx = 2; }
+            else
             {
-                caps.Bits = caps.Format == RENDERER_PIXEL_FORMAT_R5G5B5
-                    ? (GRAPHICS_BITS_PER_PIXEL_16 - 1)
-                    : desc->ddpfPixelFormat.dwRGBBitCount;
+                const u32 index = *(u32*)context;
+                if ((MAX_DEVICE_CAPABILITIES_COUNT - 1) < index) { return DDENUMRET_CANCEL; }
 
-                caps.IsActive = TRUE;
+                indx = index;
 
-                const u32 bytes = caps.Bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1) ? 2 : (caps.Bits >> 3);
-
-                caps.Unk03 = State.Settings.MaxAvailableMemory / (bytes * caps.Width * caps.Height);
-
-                if (caps.Unk03 < 4) // TODO
-                {
-                    caps.Unk04 = caps.Unk03 - 1;
-                }
-                else
-                {
-                    caps.Unk03 = 3;
-                    caps.Unk04 = 3;
-                }
-
-                InitializeRendererDeviceCapabilities(&caps);
+                *(u32*)context = index + 1;
             }
+
+            ModuleDescriptor.Capabilities.Capabilities[indx].Width = width;
+            ModuleDescriptor.Capabilities.Capabilities[indx].Height = height;
+            ModuleDescriptor.Capabilities.Capabilities[indx].Bits =
+                format == RENDERER_PIXEL_FORMAT_R5G5B5 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
+
+            ModuleDescriptor.Capabilities.Capabilities[indx].Format = format;
+
+            if (count < 4) // TODO
+            {
+                ModuleDescriptor.Capabilities.Capabilities[indx].Unk03 = count;
+                ModuleDescriptor.Capabilities.Capabilities[indx].Unk04 = count - 1;
+            }
+            else
+            {
+                ModuleDescriptor.Capabilities.Capabilities[indx].Unk03 = 3;
+                ModuleDescriptor.Capabilities.Capabilities[indx].Unk04 = 3;
+            }
+
+            ModuleDescriptor.Capabilities.Capabilities[indx].IsActive = TRUE;
         }
 
         return DDENUMRET_OK;
@@ -574,22 +585,6 @@ namespace RendererModule
         }
 
         return RENDERER_PIXEL_FORMAT_NONE;
-    }
-
-    // 0x6000e54c
-    BOOL InitializeRendererDeviceCapabilities(RendererModuleDescriptorDeviceCapabilities* caps)
-    {
-        if (ModuleDescriptor.Capabilities.Count < MAX_DEVICE_CAPABILITIES_COUNT)
-        {
-            CopyMemory(&ModuleDescriptorDeviceCapabilities[ModuleDescriptor.Capabilities.Count], caps,
-                sizeof(RendererModuleDescriptorDeviceCapabilities));
-
-            ModuleDescriptor.Capabilities.Count = ModuleDescriptor.Capabilities.Count + 1;
-
-            return TRUE;
-        }
-
-        return FALSE;
     }
 
     // 0x60001df0
@@ -2268,7 +2263,7 @@ namespace RendererModule
             vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
         }
 
-        InitializeVertexes(vertexes, count);
+        InitializeVertexes((RVX*)vertexes, count);
 
         return State.DX.Device->DrawPrimitive(D3DPT_LINESTRIP, D3DFVF_TLVERTEX,
             vertexes, count, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
@@ -2296,7 +2291,7 @@ namespace RendererModule
             vertexes[x].XYZ.Z = RendererDepthBias + vertexes[x].XYZ.Z;
         }
 
-        InitializeVertexes(vertexes, count);
+        InitializeVertexes((RVX*)vertexes, count);
 
         return State.DX.Device->DrawPrimitive(D3DPT_POINTLIST, D3DFVF_TLVERTEX,
             vertexes, count, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
@@ -2516,7 +2511,7 @@ namespace RendererModule
             State.Scene.IsActive = TRUE;
         }
 
-        InitializeVertexes(vertexes, vertexCount);
+        InitializeVertexes((RVX*)vertexes, vertexCount);
 
         return State.DX.Device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX,
             vertexes, vertexCount, State.Data.Indexes.Large, indexCount, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
@@ -2571,7 +2566,7 @@ namespace RendererModule
             State.Scene.IsActive = TRUE;
         }
 
-        InitializeVertexes(vertexes, max + 1);
+        InitializeVertexes((RVX*)vertexes, max + 1);
 
         return State.DX.Device->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX,
             vertexes, max + 1, State.Data.Indexes.Large, indexCount + 2, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP) == DD_OK;
