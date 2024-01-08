@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ namespace RendererModule
     DLLAPI RendererModuleDescriptor* STDCALLAPI AcquireDescriptor(void)
     {
         ModuleDescriptor.Signature = RENDERER_MODULE_SIGNATURE_D3D5;
-        ModuleDescriptor.Unk1 = 128;
+        ModuleDescriptor.Size = sizeof(RendererModuleDescriptor);
         ModuleDescriptor.Version = RENDERER_MODULE_VERSION_104;
         ModuleDescriptor.MinimumTextureWidth = 8;
         ModuleDescriptor.MaximumTextureWidth = 256;

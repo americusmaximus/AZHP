@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -60,6 +60,7 @@ SOFTWARE.
 #define RENDERER_MODULE_MESSAGE_SEVERITY_MESSAGE 2
 
 #define MAX_RENDERER_MODULE_DEVICE_NAME_LENGTH 32
+#define MAX_RENDERER_MODULE_DEVICE_LONG_NAME_LENGTH 80
 
 #define RENDERER_MODULE_RASTER_OPERATION_CAPABILITIES_NONE 0
 #define RENDERER_MODULE_RASTER_OPERATION_CAPABILITIES_XOR 1
@@ -730,7 +731,7 @@ namespace RendererModule
     struct RendererModuleDescriptor
     {
         u32 Signature;
-        s32 Unk1; // TODO
+        s32 Size;
         u32 Version;
         u32 Caps;
         u32 MinimumTextureWidth;
@@ -761,11 +762,51 @@ namespace RendererModule
         u32 VideoMemorySize;
         u32 TotalMemorySize;
 
-        // DirectX 6.0
+        const char* Author;
+
+        u32 DXV;
+    };
+
+    // INHERITANCE: RendererModuleDescriptor
+    struct RendererModuleDescriptor2
+    {
+        u32 Signature;
+        s32 Size;
+        u32 Version;
+        u32 Caps;
+        u32 MinimumTextureWidth;
+        u32 MaximumTextureWidth;
+        u32 MultipleTextureWidth;
+        u32 MinimumTextureHeight;
+        u32 MaximumTextureHeight;
+        u32 MultipleTextureHeight;
+        u32 ClipAlign;
+
+        s32 Unk4; // TODO
+
+        s32* TextureFormatStates; // TODO
+
+        s32 Unk5; // TODO
+        s32* Unk6; // TODO
+
+        struct
+        {
+            u32 Count;
+            RendererModuleDescriptorDeviceCapabilities* Capabilities;
+        } Capabilities;
+
+        u32 MaximumSimultaneousTextures;
+        s32 Unk7; // TODO
+        char Name[MAX_RENDERER_MODULE_DEVICE_NAME_LENGTH];
+        u32 SubType;
+        u32 VideoMemorySize;
+        u32 TotalMemorySize;
 
         const char* Author;
 
         u32 DXV;
+
+        char DeviceName[MAX_RENDERER_MODULE_DEVICE_LONG_NAME_LENGTH];
     };
 
     // NOTE: D3DLIGHTTYPE
