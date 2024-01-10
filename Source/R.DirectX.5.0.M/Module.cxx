@@ -46,11 +46,11 @@ namespace RendererModule
         ModuleDescriptor.MaximumTextureHeight = 256;
         ModuleDescriptor.MultipleTextureHeight = 1;
         ModuleDescriptor.ClipAlign = 0;
-        ModuleDescriptor.Unk4 = 9; // TODO
+        ModuleDescriptor.ActiveTextureFormatStatesCount = MAX_ACTIVE_USABLE_TEXTURE_FORMAT_COUNT;
         ModuleDescriptor.TextureFormatStates = RendererTextureFormatStates;
-        ModuleDescriptor.Unk5 = 4;
+        ModuleDescriptor.ActiveUnknownValuesCount = MAX_ACTIVE_UNKNOWN_COUNT;
+        ModuleDescriptor.UnknownValues = UnknownArray06;
         ModuleDescriptor.Capabilities.Capabilities = ModuleDescriptorDeviceCapabilities;
-        ModuleDescriptor.Unk6 = UnknownArray06;
 
         SelectRendererDevice();
 

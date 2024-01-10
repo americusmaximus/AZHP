@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ namespace RendererModuleValues
 
     extern s32 RendererTextureFormatStates[MAX_USABLE_TEXTURE_FORMAT_COUNT]; // 0x6000fd88
 
-    extern s32 UnknownArray06[6]; // 0x6000fdb4 // TODO
+    extern s32 UnknownArray06[MAX_UNKNOWN_COUNT]; // 0x6000fdb4 // TODO
 
     extern u32 UnknownFormatValues[MAX_OTHER_USABLE_TEXTURE_FORMAT_COUNT]; // 0x6000fee4
 
