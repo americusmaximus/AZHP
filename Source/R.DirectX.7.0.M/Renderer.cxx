@@ -3259,12 +3259,12 @@ namespace RendererModule
     // 0x60001980
     void ReleaseRendererWindows(void)
     {
-        for (u32 x = 0; x < State.Window.Count + WINDOW_OFFSET; x++)
+        for (u32 x = 0; x < State.Window.Count + MIN_WINDOW_INDEX; x++)
         {
-            if (State.Windows[x + WINDOW_OFFSET].Surface != NULL)
+            if (State.Windows[x + MIN_WINDOW_INDEX].Surface != NULL)
             {
-                State.Windows[x + WINDOW_OFFSET].Surface->Release();
-                State.Windows[x + WINDOW_OFFSET].Surface = NULL;
+                State.Windows[x + MIN_WINDOW_INDEX].Surface->Release();
+                State.Windows[x + MIN_WINDOW_INDEX].Surface = NULL;
             }
         }
 

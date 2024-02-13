@@ -1,18 +1,18 @@
 LIBRARY
 EXPORTS
-    _iSNDdirectcaps = AcquireCapabilities
-    _iSNDdirectcreate3dbuf = CreateSoundBuffer
-    _iSNDdirectplay3d = PlaySoundBuffer
-    _iSNDdirectpos3d = PositionSoundBuffer
-    _iSNDdirectrate = RateSoundBuffer
-    _iSNDdirectrecordpacket = PacketRecording
-    _iSNDdirectrecordstart = StartRecording
-    _iSNDdirectrecordstop = StopRecording
-    _iSNDdirectremovebuf = RemoveSoundBuffer
-    _iSNDdirectserve = Serve
-    _iSNDdirectsetfunctions = SelectLambdas
-    _iSNDdirectstart = Start
-    _iSNDdirectstop = Stop
-    _iSNDdirectstopbuf = StopSoundBuffer
-    _iSNDdirectvol = VolumeSoundBuffer
-    _iSNDdllversion = AcquireVersion
+    _iSNDdirectcaps = AcquireCapabilities           @3
+    _iSNDdirectcreate3dbuf = CreateSoundBuffer      @13
+    _iSNDdirectplay3d = PlaySoundBuffer             @15
+    _iSNDdirectpos3d = PositionSoundBuffer          @11
+    _iSNDdirectrate = RateSoundBuffer               @12
+    _iSNDdirectrecordpacket = PacketRecording       @7
+    _iSNDdirectrecordstart = StartRecording         @6
+    _iSNDdirectrecordstop = StopRecording           @8
+    _iSNDdirectremovebuf = RemoveSoundBuffer        @14
+    _iSNDdirectserve = Serve                        @9
+    _iSNDdirectsetfunctions = SelectLambdas         @2
+    _iSNDdirectstart = Start                        @4
+    _iSNDdirectstop = Stop                          @5
+    _iSNDdirectstopbuf = StopSoundBuffer            @16
+    _iSNDdirectvol = VolumeSoundBuffer              @10
+    _iSNDdllversion = AcquireVersion                @1
