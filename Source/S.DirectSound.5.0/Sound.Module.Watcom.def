@@ -12,7 +12,7 @@ EXPORTS
     _iSNDdirectserve#0 = Serve                      @9
     _iSNDdirectsetfunctions#32 = SelectLambdas      @2
     _iSNDdirectstart#8 = Start                      @4
-    _iSNDdirectstop#0 = Stop                        @5   
+    _iSNDdirectstop#0 = Stop                        @5
     _iSNDdirectstopbuf#4 = StopSoundBuffer          @16
     _iSNDdirectvol#8 = VolumeSoundBuffer            @10
     _iSNDdllversion#0 = AcquireVersion              @1
