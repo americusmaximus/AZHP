@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +38,7 @@ SOFTWARE.
 #define GRAPHICS_RESOLUTION_1024 1024
 #define GRAPHICS_RESOLUTION_1200 1200
 #define GRAPHICS_RESOLUTION_1280 1280
+#define GRAPHICS_RESOLUTION_1536 1536
 #define GRAPHICS_RESOLUTION_1600 1600
 #define GRAPHICS_RESOLUTION_2048 2048
 
