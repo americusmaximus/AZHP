@@ -1,4 +1,5 @@
 # AutoZone Hot Pursuit
+![Auto Zone](./Extras/Logo.png)
 
 ## Project
 AZHP is an open source implementation of Electronic Arts' [Need For Speed: Hot Pursuit](https://en.wikipedia.org/wiki/Need_for_Speed_III:_Hot_Pursuit) from 1998 and the Modern Patch v1.6.1.
