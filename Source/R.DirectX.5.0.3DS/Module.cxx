@@ -330,9 +330,9 @@ namespace RendererModule
 
         for (u32 xx = 0; xx < height; xx++)
         {
-            const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
+            const addr offset = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
 
-            CopyMemory(&pixels[xx * length], (void*)((addr)state->Data + address), length);
+            CopyMemory((void*)((addr)pixels + (addr)(xx * length)), (void*)((addr)state->Data + (addr)offset), length);
         }
 
         return UnlockGameWindow(state);
@@ -822,9 +822,9 @@ namespace RendererModule
 
         for (u32 xx = 0; xx < height; xx++)
         {
-            const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
+            const addr offset = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
 
-            CopyMemory((void*)((addr)state->Data + address), &pixels[xx * length], length);
+            CopyMemory((void*)((addr)state->Data + (addr)offset), (void*)((addr)pixels + (addr)(xx * length)), length);
         }
 
         return UnlockGameWindow(state);

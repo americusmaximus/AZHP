@@ -2762,7 +2762,7 @@ namespace RendererModule
         {
             const addr offset = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
 
-            CopyMemory((void*)((addr)state->Data + offset), &pixels[xx * length], length);
+            CopyMemory((void*)((addr)state->Data + (addr)offset), (void*)((addr)pixels + (addr)(xx * length)), length);
         }
 
         return UnlockGameWindow(state);
