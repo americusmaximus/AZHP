@@ -246,7 +246,7 @@ namespace RendererModule
     // a.k.a. THRASH_drawquad
     DLLAPI void STDCALLAPI DrawQuad(RVX* a, RVX* b, RVX* c, RVX* d)
     {
-        if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); }
+        if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); } // TODO
     }
 
     // 0x60001af0
@@ -297,7 +297,7 @@ namespace RendererModule
     // a.k.a. THRASH_drawtri
     DLLAPI void STDCALLAPI DrawTriangle(RVX* a, RVX* b, RVX* c)
     {
-        if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle(a, b, c); }
+        if (State.Settings.Cull == 1 || ((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle(a, b, c); } // TODO
     }
 
     // 0x60001cf0
@@ -553,9 +553,9 @@ namespace RendererModule
 
         for (u32 xx = 0; xx < height; xx++)
         {
-            const addr offset = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
+            const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
 
-            CopyMemory(&pixels[xx * length], (void*)((addr)state->Data + (addr)offset), length);
+            CopyMemory((void*)((addr)state->Data + address), &pixels[xx * length], length);
         }
 
         return UnlockGameWindow(state);
@@ -2760,9 +2760,9 @@ namespace RendererModule
 
         for (u32 xx = 0; xx < height; xx++)
         {
-            const addr offset = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
+            const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
 
-            CopyMemory((void*)((addr)state->Data + (addr)offset), &pixels[xx * length], length);
+            CopyMemory((void*)((addr)state->Data + address), &pixels[xx * length], length);
         }
 
         return UnlockGameWindow(state);

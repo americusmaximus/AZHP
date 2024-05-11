@@ -1721,7 +1721,7 @@ namespace RendererModule
     }
 
     // 0x60007230
-    s32 InitializeRendererTextureDetails(RendererTexture* tex)
+    s32 InitializeRendererTextureDetails(RendererTexture* tex) // TODO returns -1, 0, 1, where 1 is success, -1 is total failure and no further allocations allowed
     {
         DDSURFACEDESC2 desc;
         CopyMemory(&desc, &State.Textures.Formats.Formats[tex->FormatIndex].Descriptor, sizeof(DDSURFACEDESC2));
@@ -1779,7 +1779,7 @@ namespace RendererModule
             {
                 const HRESULT result = State.DX.Active.Instance->CreateSurface(&desc, &surf, NULL);
 
-                if (result != DD_OK) { return (result != DDERR_INVALIDPIXELFORMAT) - 1; }
+                if (result != DD_OK) { return (result != DDERR_INVALIDPIXELFORMAT) - 1; } // TODO
             }
 
             IDirectDrawSurface4* surface = NULL;
@@ -1787,7 +1787,7 @@ namespace RendererModule
             {
                 if (surf != NULL) { surf->Release(); }
 
-                return INITIALIZE_TEXTURE_DETAIL_FAIL;
+                return 0; // TODO
             }
 
             surf->Release();
@@ -1797,7 +1797,7 @@ namespace RendererModule
             {
                 if (surface != NULL) { surface->Release(); }
 
-                return INITIALIZE_TEXTURE_DETAIL_FAIL;
+                return 0; // TODO
             }
 
             tex->Surface1 = surface;
@@ -1812,7 +1812,7 @@ namespace RendererModule
                 if (surface != NULL) { surface->Release(); }
                 if (texture != NULL) { texture->Release(); }
 
-                return INITIALIZE_TEXTURE_DETAIL_FAIL;
+                return 0; // TODO
             }
         }
 
@@ -1875,7 +1875,7 @@ namespace RendererModule
                     if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
                     if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
 
-                    return (result != DDERR_INVALIDPIXELFORMAT) - 1;
+                    return (result != DDERR_INVALIDPIXELFORMAT) - 1; // TODO
                 }
             }
 
@@ -1888,7 +1888,7 @@ namespace RendererModule
                 if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
                 if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
 
-                return INITIALIZE_TEXTURE_DETAIL_FAIL;
+                return 0; // TODO
             }
 
             surf->Release();
@@ -1909,7 +1909,7 @@ namespace RendererModule
                     if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
                     if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
 
-                    return INITIALIZE_TEXTURE_DETAIL_FAIL;
+                    return 0; // TODO
                 }
 
                 if (surface->SetPalette(palette) != DD_OK)
@@ -1921,7 +1921,7 @@ namespace RendererModule
 
                     if (palette != NULL) { palette->Release(); }
 
-                    return INITIALIZE_TEXTURE_DETAIL_FAIL;
+                    return 0; // TODO
                 }
 
                 tex->Palette = palette;
@@ -1931,7 +1931,7 @@ namespace RendererModule
                 tex->Colors = 16;
 
                 PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
-                ZeroMemory(entries, MAX_TEXTURE_PALETTE_COLOR_COUNT * sizeof(PALETTEENTRY));
+                ZeroMemory(entries, sizeof(PALETTEENTRY));
 
                 if (State.DX.Active.Instance->CreatePalette(DDPCAPS_4BIT, entries, &palette, NULL) != DD_OK)
                 {
@@ -1940,7 +1940,7 @@ namespace RendererModule
                     if (tex->Surface1 != NULL) { tex->Surface1->Release(); }
                     if (tex->Texture1 != NULL) { tex->Texture1->Release(); }
 
-                    return INITIALIZE_TEXTURE_DETAIL_FAIL;
+                    return 0; // TODO
                 }
 
                 if (surface->SetPalette(palette) != DD_OK)
@@ -1952,7 +1952,7 @@ namespace RendererModule
 
                     if (palette != NULL) { palette->Release(); }
 
-                    return INITIALIZE_TEXTURE_DETAIL_FAIL;
+                    return 0; // TODO
                 }
 
                 tex->Palette = palette;
@@ -1974,7 +1974,7 @@ namespace RendererModule
 
                 if (palette != NULL) { palette->Release(); }
 
-                return INITIALIZE_TEXTURE_DETAIL_FAIL;
+                return 0; // TODO
             }
 
             if (surface->Blt(NULL, tex->Surface1, NULL, DDBLT_WAIT, NULL) != DD_OK)
@@ -1988,7 +1988,7 @@ namespace RendererModule
 
                 if (palette != NULL) { palette->Release(); }
 
-                return INITIALIZE_TEXTURE_DETAIL_FAIL;
+                return 0; // TODO
             }
 
             ZeroMemory(&desc, sizeof(DDSURFACEDESC2));
@@ -2016,10 +2016,10 @@ namespace RendererModule
             tex->Surface2 = surface;
             tex->Texture2 = texture;
 
-            return INITIALIZE_TEXTURE_DETAIL_OK;
+            return 1; // TODO
         }
 
-        return INITIALIZE_TEXTURE_DETAIL_FAIL;
+        return 0; // TODO
     }
 
     // 0x60006890
@@ -2405,7 +2405,7 @@ namespace RendererModule
             RTLVX* c = &vertexes[indexes[x * 4 + 2]];
             RTLVX* d = &vertexes[indexes[x * 4 + 3]];
 
-            if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); }
+            if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad(a, b, c, d); } // TODO
         }
     }
 
@@ -2528,7 +2528,7 @@ namespace RendererModule
             RTLVX* b = &vertexes[indexes[x * 3 + 1]];
             RTLVX* c = &vertexes[indexes[x * 3 + 2]];
 
-            if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle(a, b, c); }
+            if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle(a, b, c); } // TODO
         }
     }
 

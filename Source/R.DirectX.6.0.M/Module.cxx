@@ -155,7 +155,7 @@ namespace RendererModule
     // a.k.a. THRASH_drawquad
     DLLAPI void STDCALLAPI DrawQuad(RVX* a, RVX* b, RVX* c, RVX* d)
     {
-        if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d); }
+        if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderQuad((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d); } // TODO
     }
 
     // 0x600015d0
@@ -169,7 +169,7 @@ namespace RendererModule
     // a.k.a. THRASH_drawtri
     DLLAPI void STDCALLAPI DrawTriangle(RVX* a, RVX* b, RVX* c)
     {
-        if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle((RTLVX*)a, (RTLVX*)b, (RTLVX*)c); }
+        if (((u32)AcquireNormal((f32x3*)a, (f32x3*)b, (f32x3*)c) & 0x80000000) != State.Settings.Cull) { RenderTriangle((RTLVX*)a, (RTLVX*)b, (RTLVX*)c); }  // TODO
     }
 
     // 0x60001760
@@ -385,9 +385,9 @@ namespace RendererModule
 
         for (u32 xx = 0; xx < height; xx++)
         {
-            const addr offset = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
+            const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
 
-            CopyMemory(&pixels[xx * length], (void*)((addr)state->Data + (addr)offset), length);
+            CopyMemory(&pixels[xx * length], (void*)((addr)state->Data + address), length);
         }
 
         return UnlockGameWindow(state);
@@ -1177,11 +1177,11 @@ namespace RendererModule
 
         const s32 result = InitializeRendererTextureDetails(tex);
 
-        if (result != INITIALIZE_TEXTURE_DETAIL_OK)
+        if (result < 1) // TODO
         {
             ReleaseRendererTexture(tex);
 
-            if (result != INITIALIZE_TEXTURE_DETAIL_ERROR) { State.Textures.Illegal = TRUE; }
+            if (result != -1) { State.Textures.Illegal = TRUE; } // TODO
 
             return NULL;
         }
@@ -1280,9 +1280,9 @@ namespace RendererModule
 
         for (u32 xx = 0; xx < height; xx++)
         {
-            const addr offset = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
+            const addr address = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
 
-            CopyMemory((void*)((addr)state->Data + (addr)offset), &pixels[xx * length], length);
+            CopyMemory((void*)((addr)state->Data + address), &pixels[xx * length], length);
         }
 
         return UnlockGameWindow(state);
