@@ -58,6 +58,10 @@ SOFTWARE.
 #define RENDERER_CULL_MODE_NONE                 0x00000001
 #define RENDERER_CULL_MODE_COUNTER_CLOCK_WISE   0x80000000
 
+#define RENDERER_INITIALIZE_TEXTURE_DETAILS_OK      1
+#define RENDERER_INITIALIZE_TEXTURE_DETAILS_ERROR   0
+#define RENDERER_INITIALIZE_TEXTURE_DETAILS_INVALID (-1)
+
 #if !defined(__WATCOMC__) && _MSC_VER <= 1200
 inline void LOGERROR(...) { }
 inline void LOGWARNING(...) { }
@@ -294,7 +298,6 @@ namespace RendererModule
     BOOL AcquireRendererDeviceTrilinearInterpolationCapabilities(void);
     BOOL BeginRendererScene(void);
     BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context);
-    BOOL InitializeRendererDeviceCapabilities(RendererModuleDescriptorDeviceCapabilities* caps);
     BOOL InitializeRendererDeviceDepthSurfaces(const u32 width, const u32 height);
     BOOL RenderLines(Renderer::RTLVX* vertexes, const u32 count);
     BOOL RenderPoints(Renderer::RTLVX* vertexes, const u32 count);
