@@ -32,13 +32,20 @@ SOFTWARE.
 
 #define DEFAULT_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x200000 (2 MB) */
 #define DEFAULT_RENDERER_MODE (-1)
-#define DEFAULT_RENDERER_SURFACE_STRIDE 1280
+#define DEFAULT_RENDERER_SURFACE_STRIDE (GRAPHICS_RESOLUTION_640 * sizeof(u16))
 #define MAX_ACTIVE_SURFACE_COUNT 8
 #define MAX_ACTIVE_UNKNOWN_COUNT 4
 #define MAX_ACTIVE_USABLE_TEXTURE_FORMAT_COUNT 9
+#define MAX_UNKNOWN_COLOR_ARAY_COUNT 16
 #define MAX_UNKNOWN_COUNT (MAX_ACTIVE_UNKNOWN_COUNT + 2)
 #define MAX_USABLE_TEXTURE_FORMAT_COUNT (MAX_ACTIVE_USABLE_TEXTURE_FORMAT_COUNT + 2)
 #define MIN_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x8000 (32 KB) */
+#define RENDERER_SURFACE_ALIGNMENT_MASK 0xffffff00
+#define RENDERER_SURFACE_SIZE_MOFIFIER 256
+
+#define RENDERER_CULL_MODE_CLOCK_WISE           0x00000000
+#define RENDERER_CULL_MODE_NONE                 0x00000001
+#define RENDERER_CULL_MODE_COUNTER_CLOCK_WISE   0x80000000
 
 namespace Renderer
 {
@@ -65,7 +72,7 @@ namespace RendererModule
 
             struct
             {
-                u32 Bits; // 0x600400d0
+                u32 Bits; // 0x600400cc
 
                 IDirectDrawSurface* Main; // 0x6003e064
                 IDirectDrawSurface* Back; // 0x6003e068
@@ -105,6 +112,14 @@ namespace RendererModule
 
             struct
             {
+                u32* Unknown4; // 0x60041348
+                u32* Unknown3; // 0x6004134c
+                u32* Unknown2; // 0x60041350
+                u32* Unknown1; // 0x60041354
+            } Colors;
+
+            struct
+            {
                 void* Surface; // 0x6003e0fc
                 void* Allocated; // 0x6003e100
             } Surface;
@@ -140,7 +155,7 @@ namespace RendererModule
         {
             u32 Width; // 0x600400c4
             u32 Height; // 0x600400c8
-            u32 Bits; // 0x600400cc
+            u32 Bits; // 0x600400d0
 
             u32 Stride; // 0x600400e0
 

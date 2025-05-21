@@ -62,7 +62,7 @@ namespace Renderer
         u32 UnknownFormatIndexValue; // TODO
         s32 FormatIndex; // TODO
         s32 FormatIndexValue; // TODO
-        BOOL Options;
+        BOOL IsPalette;
         D3DTEXTUREHANDLE Handle;
         RendererTexture* Previous;
         u32 MemoryType;

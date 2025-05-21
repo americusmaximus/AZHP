@@ -273,7 +273,7 @@ namespace RendererModule
         if (AcquireRendererDeviceState() && State.Scene.IsActive)
         {
             FlushGameWindow();
-            SyncGameWindow(0);
+            SyncGameWindow(RENDERER_MODULE_SYNC_NORMAL);
             Idle();
 
             State.Scene.IsActive = FALSE;
@@ -2062,7 +2062,7 @@ namespace RendererModule
             tex->Surface2->Blt(NULL, tex->Surface1, NULL, DDBLT_WAIT, NULL);
         }
 
-        if (palette != NULL && tex->Options != 0)
+        if (palette != NULL && tex->IsPalette)
         {
             PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
 

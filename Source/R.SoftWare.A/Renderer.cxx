@@ -55,9 +55,9 @@ namespace RendererModule
     // 0x60002420
     BOOL CALLBACK EnumerateRendererDevices(GUID* uid, LPSTR name, LPSTR description, LPVOID context)
     {
-        s32* indx = (s32*)context;
+        const s32 indx = *(s32*)context;
 
-        if (*indx == RendererDeviceIndex)
+        if (indx == RendererDeviceIndex)
         {
             State.Device.ID = uid;
 
@@ -68,12 +68,12 @@ namespace RendererModule
                 State.Device.Value = *uid;
             }
 
-            *indx = INVALID_DEVICE_INDEX;
+            *(s32*)context = INVALID_DEVICE_INDEX;
 
             return FALSE;
         }
 
-        *indx = *indx + 1;
+        *(s32*)context = indx + 1;
 
         return TRUE;
     }
@@ -130,19 +130,12 @@ namespace RendererModule
     // 0x60002580
     u32 STDCALLAPI InitializeRendererDeviceExecute(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result)
     {
-        s32 indx = DEFAULT_DEVICE_INDEX;
-
         {
-            GUID* id = NULL;
-
             const char* value = getenv(RENDERER_MODULE_DISPLAY_ENVIRONMENT_PROPERTY_NAME);
 
             if (value == NULL)
             {
-                indx = DEFAULT_DEVICE_INDEX;
-                id = State.Device.ID;
-
-                if (id == NULL) { SelectDevice(indx); }
+                if (State.Device.ID == NULL) { SelectDevice(DEFAULT_DEVICE_INDEX); }
             }
             else
             {
@@ -158,7 +151,7 @@ namespace RendererModule
 
         IDirectDraw* instance = NULL;
 
-        State.DX.Code = DirectDrawCreate(0, &instance, 0);
+        State.DX.Code = DirectDrawCreate(NULL, &instance, NULL);
 
         if (State.DX.Code == DD_OK)
         {
@@ -174,14 +167,14 @@ namespace RendererModule
 
                 if (State.DX.Code == DD_OK)
                 {
-                    DWORD available = 0;
+                    DWORD free = 0;
                     DWORD total = 0;
 
                     DDSCAPS caps = { DDSCAPS_VIDEOMEMORY };
 
                     State.Settings.MaxAvailableMemory =
-                        State.DX.Instance->GetAvailableVidMem(&caps, &total, &available) == DD_OK
-                        ? available : DEFAULT_DEVICE_AVAIABLE_VIDEO_MEMORY;
+                        State.DX.Instance->GetAvailableVidMem(&caps, &total, &free) == DD_OK
+                        ? free : DEFAULT_DEVICE_AVAIABLE_VIDEO_MEMORY;
 
                     DDCAPS hal;
                     ZeroMemory(&hal, sizeof(DDCAPS));
@@ -245,11 +238,10 @@ namespace RendererModule
         State.Window.Width = ModuleDescriptor.Capabilities.Capabilities[wp].Width;
         State.Window.Height = ModuleDescriptor.Capabilities.Capabilities[wp].Height;
 
-        State.DX.Surfaces.Bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1)
-            ? GRAPHICS_BITS_PER_PIXEL_16 : ModuleDescriptor.Capabilities.Capabilities[wp].Bits;
-
         State.DX.Bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits;
-        State.Window.Bits = State.DX.Bits;
+        State.DX.Surfaces.Bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits;
+        State.Window.Bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1)
+            ? GRAPHICS_BITS_PER_PIXEL_16 : ModuleDescriptor.Capabilities.Capabilities[wp].Bits;
 
         SelectRendererColorMasks(State.DX.Bits);
 
@@ -435,13 +427,58 @@ namespace RendererModule
     // 0x600040c0
     void SelectRendererColorMasks(const u32 bits)
     {
-        // TODO NOT IMPLEMENTED
+        if (bits == GRAPHICS_BITS_PER_PIXEL_16)
+        {
+            RedRendererColorMask = 0xf800;
+            GreenRendererColorMask = 0x7e0;
+            BlueRendererColorMask = 0x1f;
+            NonGreenRendererColorMask = 0xf81f;
+
+            State.Renderer.Colors.Unknown1 = Unknown16BitColors1;
+            State.Renderer.Colors.Unknown2 = Unknown16BitColors2;
+            State.Renderer.Colors.Unknown3 = Unknown16BitColors3;
+            State.Renderer.Colors.Unknown4 = Unknown16BitColors4;
+        }
+        else
+        {
+            RedRendererColorMask = 0x7c00;
+            GreenRendererColorMask = 0x3e0;
+            BlueRendererColorMask = 0x1f;
+            NonGreenRendererColorMask = 0x7c1f;
+
+            State.Renderer.Colors.Unknown1 = Unknown32BitColors1;
+            State.Renderer.Colors.Unknown2 = Unknown32BitColors2;
+            State.Renderer.Colors.Unknown3 = Unknown32BitColors3;
+            State.Renderer.Colors.Unknown4 = Unknown32BitColors4;
+        }
     }
 
     // 0x60004cd0
     void SelectRendererSettings(const u32 width, const u32 height, const u32 bits)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.Renderer.Surface.Allocated != NULL) { free(State.Renderer.Surface.Allocated); }
+
+        RendererSurfaceStride = width * (bits >> 3);
+
+        State.Renderer.Settings.Length = RendererSurfaceStride * height;
+
+        State.Renderer.Settings.Width = width;
+        State.Renderer.Settings.Height = height;
+
+        ClipGameWindow(0, 0, width, height);
+
+        State.Renderer.Surface.Allocated = malloc(State.Renderer.Settings.Length + RENDERER_SURFACE_SIZE_MOFIFIER);
+
+        State.Renderer.Surface.Surface = (void*)(((addr)State.Renderer.Surface.Allocated & RENDERER_SURFACE_ALIGNMENT_MASK) + RENDERER_SURFACE_SIZE_MOFIFIER);
+
+        State.Renderer.Active.Stride = RendererSurfaceStride;
+
+        State.Renderer.Active.Length = State.Renderer.Settings.Length;
+
+        State.Renderer.Active.Width = State.Renderer.Settings.Width;
+        State.Renderer.Active.Height = State.Renderer.Settings.Height;
+
+        State.Renderer.Active.Surface = State.Renderer.Surface.Surface;
     }
 
     // 0x60004d80

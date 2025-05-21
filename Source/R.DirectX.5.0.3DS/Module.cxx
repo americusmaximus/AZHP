@@ -308,13 +308,13 @@ namespace RendererModule
 
     // 0x60001170
     // a.k.a. THRASH_pageflip
-    DLLAPI u32 STDCALLAPI ToggleGameWindow(void)
+    DLLAPI void STDCALLAPI ToggleGameWindow(void)
     {
         if (State.Scene.IsActive) { EndRendererScene(); }
 
         if (State.Lock.IsActive) { Error("D3D pageflip called in while locked\n"); }
 
-        return ToggleRenderer();
+        ToggleRenderer();
     }
 
     // 0x600024b0
@@ -653,7 +653,7 @@ namespace RendererModule
             if (State.Scene.IsActive)
             {
                 FlushGameWindow();
-                SyncGameWindow(0);
+                SyncGameWindow(RENDERER_MODULE_SYNC_NORMAL);
                 Idle();
 
                 State.Scene.IsActive = FALSE;
@@ -688,7 +688,7 @@ namespace RendererModule
 
     // 0x60002dd0
     // a.k.a. THRASH_talloc
-    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state)
+    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const BOOL palette, const u32 state)
     {
         if (State.Textures.Formats.Indexes[format] < 0)
         {
@@ -717,7 +717,7 @@ namespace RendererModule
         tex->Surface2 = NULL;
         tex->Texture2 = NULL;
         tex->Palette = NULL;
-        tex->Options = options;
+        tex->IsPalette = palette;
         tex->Colors = 0;
 
         if (InitializeRendererTextureDetails(tex))
@@ -744,7 +744,7 @@ namespace RendererModule
         if (State.Scene.IsActive)
         {
             FlushGameWindow();
-            SyncGameWindow(0);
+            SyncGameWindow(RENDERER_MODULE_SYNC_NORMAL);
             Idle();
 
             State.Scene.IsActive = FALSE;

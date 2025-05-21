@@ -363,13 +363,13 @@ namespace RendererModule
 
     // 0x60001190
     // a.k.a. THRASH_pageflip
-    DLLAPI u32 STDCALLAPI ToggleGameWindow(void)
+    DLLAPI void STDCALLAPI ToggleGameWindow(void)
     {
         if (State.Scene.IsActive) { EndRendererScene(); }
 
         if (State.Lock.IsActive) { LOGERROR("D3D pageflip called in while locked\n"); }
 
-        return ToggleRenderer();
+        ToggleRenderer();
     }
 
     // 0x60002f60
@@ -1149,7 +1149,7 @@ namespace RendererModule
 
     // 0x60004130
     // a.k.a. THRASH_talloc
-    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32)
+    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const BOOL palette, const u32)
     {
         if (State.Textures.Illegal) { return NULL; }
 
@@ -1166,7 +1166,7 @@ namespace RendererModule
 
         tex->Is16Bit = (format == RENDERER_PIXEL_FORMAT_R5G5B5 || format == RENDERER_PIXEL_FORMAT_R4G4B4);
 
-        tex->Options = options;
+        tex->IsPalette = palette;
         tex->MemoryType = RENDERER_MODULE_TEXTURE_LOCATION_SYSTEM_MEMORY;
 
         tex->Surface1 = NULL;
@@ -1201,7 +1201,7 @@ namespace RendererModule
         if (State.Scene.IsActive)
         {
             FlushGameWindow();
-            SyncGameWindow(0);
+            SyncGameWindow(RENDERER_MODULE_SYNC_NORMAL);
             Idle();
 
             State.Scene.IsActive = FALSE;

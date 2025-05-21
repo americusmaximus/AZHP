@@ -187,10 +187,7 @@ namespace RendererModule
 
     // 0x60003480
     // a.k.a. THRASH_flushwindow
-    DLLAPI u32 STDCALLAPI FlushGameWindow(void)
-    {
-        return RENDERER_MODULE_SUCCESS;
-    }
+    DLLAPI u32 STDCALLAPI FlushGameWindow(void) { return RENDERER_MODULE_SUCCESS; }
 
     // 0x60003480
     // a.k.a. THRASH_idle
@@ -202,15 +199,12 @@ namespace RendererModule
     {
         // TODO NOT IMPLEMENTED
 
-        return 1;
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60002f50
     // a.k.a. THRASH_is
-    DLLAPI u32 STDCALLAPI Is(void)
-    {
-        return RENDERER_MODULE_SW_ACCELERATION_AVAILABLE;
-    }
+    DLLAPI u32 STDCALLAPI Is(void) { return RENDERER_MODULE_SW_ACCELERATION_AVAILABLE; }
 
     // 0x60003530
     // a.k.a. THRASH_lockwindow
@@ -221,7 +215,7 @@ namespace RendererModule
             State.Lock.State.Data = AcquireRendererSurface();
             State.Lock.State.Stride = RendererSurfaceStride;
 
-            State.Lock.State.Format = State.Window.Bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1)
+            State.Lock.State.Format = State.DX.Surfaces.Bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1)
                 ? RENDERER_PIXEL_FORMAT_R5G5B5 : RENDERER_PIXEL_FORMAT_R5G6B5;
 
             State.Lock.State.Width = State.Window.Width;
@@ -254,7 +248,7 @@ namespace RendererModule
 
             if (State.DX.Code == DD_OK)
             {
-                State.Lock.State.Data = (void*)((addr)desc.lpSurface + (addr)(rect.left * 2 + rect.top * desc.lPitch));
+                State.Lock.State.Data = (void*)((addr)desc.lpSurface + (addr)(rect.left * sizeof(u16) + rect.top * desc.lPitch));
 
                 State.Lock.State.Width = State.Window.Width;
                 State.Lock.State.Height = State.Window.Height;
@@ -279,11 +273,9 @@ namespace RendererModule
 
     // 0x60003750
     // a.k.a. THRASH_pageflip
-    DLLAPI u32 STDCALLAPI ToggleGameWindow(void)
+    DLLAPI void STDCALLAPI ToggleGameWindow(void)
     {
         // TODO NOT IMPLEMENTED
-
-        return RENDERER_MODULE_FAILURE;
     }
 
     // 0x60002f60
@@ -303,9 +295,7 @@ namespace RendererModule
 
         RendererVideoMode = DEFAULT_RENDERER_MODE;
 
-        if (ReleaseRendererWindow() == DD_OK) { return RENDERER_MODULE_SUCCESS; }
-
-        return RENDERER_MODULE_FAILURE;
+        return ReleaseRendererWindow() == DD_OK;
     }
 
     // 0x60002c20
@@ -318,9 +308,7 @@ namespace RendererModule
 
         DirectDrawEnumerateA(EnumerateRendererDevices, &index);
 
-        if (index == INVALID_DEVICE_INDEX) { return RENDERER_MODULE_SUCCESS; }
-
-        return RENDERER_MODULE_FAILURE;
+        return index == INVALID_DEVICE_INDEX;
     }
 
     // 0x600030c0
@@ -360,7 +348,7 @@ namespace RendererModule
 
         SelectRendererSettings(State.Window.Width, State.Window.Height, State.DX.Surfaces.Bits);
 
-        SelectGameWindow(1);
+        SelectGameWindow(1); // TODO
 
         RendererModuleWindowLock* lock = LockGameWindow();
 
@@ -368,19 +356,19 @@ namespace RendererModule
         {
             switch (lock->Format)
             {
-            case RENDERER_PIXEL_FORMAT_P8: { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_8; break; }
+            case RENDERER_PIXEL_FORMAT_P8: { State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_8; break; }
             case RENDERER_PIXEL_FORMAT_R5G5B5:
-            case RENDERER_PIXEL_FORMAT_A1R5G5B5: { State.Window.Bits = (GRAPHICS_BITS_PER_PIXEL_16 - 1); break; }
-            case RENDERER_PIXEL_FORMAT_R8G8B8: { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_24; break; }
-            case RENDERER_PIXEL_FORMAT_A8R8G8B8: { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_32; break; }
-            default: { State.Window.Bits = GRAPHICS_BITS_PER_PIXEL_16; break; }
+            case RENDERER_PIXEL_FORMAT_A1R5G5B5: { State.DX.Surfaces.Bits = (GRAPHICS_BITS_PER_PIXEL_16 - 1); break; }
+            case RENDERER_PIXEL_FORMAT_R8G8B8: { State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_24; break; }
+            case RENDERER_PIXEL_FORMAT_A8R8G8B8: { State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_32; break; }
+            default: { State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_16; break; }
             }
 
             UnlockGameWindow(NULL);
 
-            State.DX.Bits = State.Window.Bits;
+            State.DX.Bits = State.DX.Surfaces.Bits;
 
-            SelectRendererColorMasks(State.Window.Bits);
+            SelectRendererColorMasks(State.DX.Surfaces.Bits);
         }
 
         return State.DX.Code == DD_OK ? RENDERER_MODULE_SUCCESS : RENDERER_MODULE_FAILURE;
@@ -388,14 +376,11 @@ namespace RendererModule
 
     // 0x60003460
     // a.k.a. THRASH_sync
-    DLLAPI u32 STDCALLAPI SyncGameWindow(const u32)
-    {
-        return RENDERER_MODULE_FAILURE;
-    }
+    DLLAPI u32 STDCALLAPI SyncGameWindow(const u32) { return RENDERER_MODULE_FAILURE; }
 
     // 0x60003c50
     // a.k.a. THRASH_talloc
-    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const u32 options, const u32 state)
+    DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const BOOL palette, const u32 state)
     {
         // TODO NOT IMPLEMENTED
 
@@ -424,24 +409,23 @@ namespace RendererModule
     // a.k.a. THRASH_unlockwindow
     DLLAPI u32 STDCALLAPI UnlockGameWindow(const RendererModuleWindowLock* state)
     {
-        if (State.DX.Surfaces.Window != State.DX.Surfaces.Active[2])
+        if (State.DX.Surfaces.Window == State.DX.Surfaces.Active[2]) { return RENDERER_MODULE_SUCCESS; }
+
+        if (State.DX.Surfaces.Window != State.DX.Surfaces.Active[1]) { return RENDERER_MODULE_FAILURE; }
+
+        if (!State.Lock.IsActive || State.Lock.Surface == NULL)
         {
-            if (State.DX.Surfaces.Window != State.DX.Surfaces.Active[1]) { return RENDERER_MODULE_FAILURE; }
+            Message("SOFTTRI_unlockwindow - ATTEMPTING TO UNLOCK WINDOW THAT ISN`T LOCKED.\n");
 
-            if (!State.Lock.IsActive || State.Lock.Surface == NULL)
-            {
-                Message("SOFTTRI_unlockwindow - ATTEMPTING TO UNLOCK WINDOW THAT ISN`T LOCKED.\n");
-
-                return RENDERER_MODULE_SUCCESS;
-            }
-
-            State.Lock.Surface->Unlock(state == NULL ? NULL : state->Data);
-
-            State.Lock.Surface = NULL;
-            State.Lock.IsActive = FALSE;
-
-            State.Lambdas.Lambdas.LockWindow(FALSE);
+            return RENDERER_MODULE_SUCCESS;
         }
+
+        State.Lock.Surface->Unlock(state == NULL ? NULL : state->Data);
+
+        State.Lock.Surface = NULL;
+        State.Lock.IsActive = FALSE;
+
+        State.Lambdas.Lambdas.LockWindow(FALSE);
 
         return RENDERER_MODULE_SUCCESS;
     }
@@ -461,7 +445,7 @@ namespace RendererModule
             State.Renderer.Settings.Width = State.Renderer.Active.Width;
             State.Renderer.Settings.Height = State.Renderer.Active.Height;
 
-            State.Window.Bits = State.DX.Bits;
+            State.DX.Surfaces.Bits = State.DX.Bits;
 
             SelectRendererColorMasks(State.DX.Bits);
         }

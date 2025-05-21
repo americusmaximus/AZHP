@@ -631,7 +631,7 @@ namespace RendererModule
         if (State.DX.Active.IsInit && State.Scene.IsActive)
         {
             FlushGameWindow();
-            SyncGameWindow(0);
+            SyncGameWindow(RENDERER_MODULE_SYNC_NORMAL);
             Idle();
 
             State.Scene.IsActive = FALSE;
@@ -1712,7 +1712,7 @@ namespace RendererModule
             tex->Texture2->GetHandle(State.DX.Device, &tex->Handle);
         }
 
-        if (palette == NULL || tex->Options == 0) { return TRUE; }
+        if (palette == NULL || !tex->IsPalette) { return TRUE; }
 
         PALETTEENTRY entries[MAX_TEXTURE_PALETTE_COLOR_COUNT];
 
