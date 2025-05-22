@@ -729,9 +729,9 @@ namespace RendererModule
         {
             const RendererPacket* packet = &State.Data.Packets.Packets[x];
 
-            State.DX.Device->DrawPrimitive(packet->PrimitiveType, State.Data.Vertexes.StartIndex, packet->PrimitiveCount);
+            State.DX.Device->DrawPrimitive(packet->Type, State.Data.Vertexes.StartIndex, packet->Count);
 
-            State.Data.Vertexes.StartIndex = State.Data.Vertexes.StartIndex + packet->StartIndex;
+            State.Data.Vertexes.StartIndex = State.Data.Vertexes.StartIndex + packet->Size;
         }
 
         State.Data.Packets.Count = 0;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 - 2024 Americus Maximus
+Copyright (c) 2023 - 2025 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -543,7 +543,7 @@ namespace RendererModule
     // a.k.a. THRASH_readrect
     DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* pixels)
     {
-        RendererModuleWindowLock* state = RendererLock(LOCK_READ);
+        const RendererModuleWindowLock* state = RendererLock(LOCK_READ);
 
         if (state == NULL) { return RENDERER_MODULE_FAILURE; }
 

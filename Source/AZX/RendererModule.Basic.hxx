@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 - 2024 Americus Maximus
+Copyright (c) 2023 - 2025 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@ SOFTWARE.
 
 #include "Basic.hxx"
 #include "Native.Basic.hxx"
+
+#define ACTIVATE_RENDERER_TEXTURE_CONVERSION TRUE /* Convert paletted textures */
 
 #define RENDERER_MODULE_FAILURE FALSE
 #define RENDERER_MODULE_SUCCESS TRUE
@@ -460,8 +462,11 @@ SOFTWARE.
 #define RENDERER_MODULE_STATE_SELECT_TOGGLE_ACTIVE_STATE 418
 #define RENDERER_MODULE_STATE_TEST_COOPERATIVE_LEVEL 419
 #define RENDERER_MODULE_STATE_SELECT_ACCELERATION_TYPE 420
+#define RENDERER_MODULE_STATE_SELECT_TOGGLE_RENDERER_LAMBDA_DX8 420
 #define RENDERER_MODULE_STATE_SELECT_TRANSFORM_WORLD 421
+#define RENDERER_MODULE_STATE_SELECT_TOGGLE_RENDERER_WAIT_LAMBDA_DX8 421
 #define RENDERER_MODULE_STATE_SELECT_TRANSFORM_VIEW 422
+#define RENDERER_MODULE_STATE_SELECT_TOGGLE_RENDERER_WAIT_LAMBDA_VALUE_DX8 422
 #define RENDERER_MODULE_STATE_SELECT_TRANSFORM_PROJECTION 423
 #define RENDERER_MODULE_STATE_SELECT_TRANSFORM_MULTIPLY_WORLD 424
 #define RENDERER_MODULE_STATE_SELECT_TRANSFORM_MULTIPLY_VIEW 425
@@ -521,6 +526,10 @@ SOFTWARE.
 #define RENDERER_MODULE_SYNC_NORMAL 0
 #define RENDERER_MODULE_SYNC_VBLANK 2
 
+#define RENDERER_MODULE_PALETTE_NONE    0
+#define RENDERER_MODULE_PALETTE_ACTIVE  1
+#define RENDERER_MODULE_PALETTE_ACQUIRE 4
+
 typedef const HWND(STDCALLAPI* RENDERERMODULEACQUIREWINDOWLAMBDA)(void);
 typedef const u32(STDCALLAPI* RENDERERMODULEEXECUTECALLBACK)(const void*, const HWND hwnd, const u32 msg, const u32 wp, const u32 lp, HRESULT* result); // TODO
 typedef const u32(STDCALLAPI* RENDERERMODULERELEASEMEMORYLAMBDA)(const void*);
@@ -530,6 +539,9 @@ typedef const void(STDCALLAPI* RENDERERMODULELOGLAMBDA)(const u32 severity, cons
 typedef const void(STDCALLAPI* RENDERERMODULESELECTINSTANCELAMBDA)(const void*);
 typedef const void(STDCALLAPI* RENDERERMODULESELECTSTATELAMBDA)(const u32, void*);
 typedef void* (STDCALLAPI* RENDERERMODULEALLOCATEMEMORYLAMBDA)(const u32 size);
+
+typedef const void(STDCALLAPI* RENDERERMODULETOGGLERENDERERLAMBDA)(const BOOL state);
+typedef const void(STDCALLAPI* RENDERERMODULETOGGLERENDERERWAITLAMBDA)(void*);
 
 namespace RendererModule
 {
@@ -754,7 +766,7 @@ namespace RendererModule
         u32 MultipleTextureHeight;
         u32 ClipAlign;
         u32 ActiveTextureFormatStatesCount;
-        s32* TextureFormatStates; // TODO
+        s32* TextureFormatStates;
 
         u32 ActiveUnknownValuesCount; // TODO
         s32* UnknownValues; // TODO
@@ -793,7 +805,7 @@ namespace RendererModule
         u32 ClipAlign;
 
         u32 ActiveTextureFormatStatesCount;
-        s32* TextureFormatStates; // TODO
+        s32* TextureFormatStates;
 
         u32 ActiveUnknownValuesCount; // TODO
         s32* UnknownValues; // TODO

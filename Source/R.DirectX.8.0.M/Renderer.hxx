@@ -70,9 +70,9 @@ namespace RendererModule
 
     struct RendererPacket
     {
-        D3DPRIMITIVETYPE PrimitiveType;
-        u32 PrimitiveCount;
-        u32 StartIndex;
+        D3DPRIMITIVETYPE Type;
+        u32 Count;
+        u32 Size;
     };
 
     struct TextureStage

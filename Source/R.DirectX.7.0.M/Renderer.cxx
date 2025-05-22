@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 - 2024 Americus Maximus
+Copyright (c) 2023 - 2025 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -1419,7 +1419,7 @@ namespace RendererModule
     {
         State.DX.Device->BeginScene();
 
-        SelectRendererTransforms(1.0, 65535.0);
+        SelectRendererTransforms(1.0f, 65535.0f);
 
         State.DX.Device->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, FALSE);
         State.DX.Device->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
