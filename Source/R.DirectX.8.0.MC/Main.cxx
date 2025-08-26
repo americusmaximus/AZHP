@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 - 2025 Americus Maximus
+Copyright (c) 2023 - 2024 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,27 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma once
+#include "Native.Basic.hxx"
 
-#include "Basic.hxx"
-
-#define GRAPHICS_BITS_PER_PIXEL_8 8
-#define GRAPHICS_BITS_PER_PIXEL_16 16
-#define GRAPHICS_BITS_PER_PIXEL_24 24
-#define GRAPHICS_BITS_PER_PIXEL_32 32
-
-#define GRAPHICS_RESOLUTION_480 480
-#define GRAPHICS_RESOLUTION_512 512
-#define GRAPHICS_RESOLUTION_600 600
-#define GRAPHICS_RESOLUTION_640 640
-#define GRAPHICS_RESOLUTION_768 768
-#define GRAPHICS_RESOLUTION_800 800
-#define GRAPHICS_RESOLUTION_1024 1024
-#define GRAPHICS_RESOLUTION_1200 1200
-#define GRAPHICS_RESOLUTION_1280 1280
-#define GRAPHICS_RESOLUTION_1536 1536
-#define GRAPHICS_RESOLUTION_1600 1600
-#define GRAPHICS_RESOLUTION_2048 2048
-
-#define GRAPCHICS_COLOR_BLACK 0x00000000
-#define GRAPCHICS_COLOR_WHITE 0xFFFFFFFF
+BOOL APIENTRY Main(HMODULE, DWORD, LPVOID) { return TRUE; }
