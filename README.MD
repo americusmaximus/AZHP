@@ -59,7 +59,7 @@ The original game had no DirectX 7 renderer, thus the one you see here is a rend
 2. [AutoZone Motor City Online](https://github.com/americusmaximus/AZMCO)
 
 ## Tools
-1. (Vivianne)[https://github.com/TheXDS/Vivianne] - a tool for viewing car models from .viv files.
+1. [Vivianne](https://github.com/TheXDS/Vivianne) - a tool for viewing car models from .viv files.
 
 ## Thanks
 1. [My Abandonware](https://www.myabandonware.com/) for providing [Need For Speed: Hot Pursuit](https://www.myabandonware.com/game/need-for-speed-iii-hot-pursuit-a4b).
