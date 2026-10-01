@@ -541,9 +541,28 @@ namespace RendererModule
     // a.k.a. THRASH_tupdate
     DLLAPI RendererTexture* STDCALLAPI UpdateTexture(RendererTexture* tex, const u32* pixels, const u32* palette)
     {
-        // TODO NOT IMPLEMENTED
+        tex->Format2 = tex->Format1;
 
-        return NULL;
+        switch (tex->Format1)
+        {
+        case RENDERER_PIXEL_FORMAT_P8:
+        {
+            // TODO NOT IMPLEMENTED
+
+            break;
+        }
+        case RENDERER_PIXEL_FORMAT_R5G5B5:
+        case RENDERER_PIXEL_FORMAT_R5G6B5:
+        {
+            // TODO NOT IMPLEMENTED
+        }
+        case RENDERER_PIXEL_FORMAT_R4G4B4:
+        {
+            // TODO NOT IMPLEMENTED
+        }
+        }
+
+        return tex;
     }
 
     // 0x600036d0
