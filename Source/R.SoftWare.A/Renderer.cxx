@@ -39,8 +39,8 @@ namespace RendererModule
 {
     RendererModuleState State;
 
-    // 0x60034f90
     // 0x60002e20
+    // 0x60034f90
     // NOTE: In the original renderer the method does not perform any meaningful actions.
     // I combined message and error methods, because error method does not halt the execution as expected.
     void Message(const char* format, ...) { }
@@ -48,22 +48,23 @@ namespace RendererModule
     // 0x60001010
     void CopyViewPortSurface(void* surface)
     {
-        const u32 offset = State.ViewPort.Y0 * RendererSurfaceStride + ALIGNVIEWPORT(State.ViewPort.X0) * sizeof(u16);
+        const u32 offset =
+            State.ViewPort.Y0 * RendererSurfaceStride + ALIGNVIEWPORT(State.ViewPort.X0) * sizeof(u16);
 
         const void* src = (void*)((addr)State.Renderer.Surface.Surface + offset);
         void* dst = (void*)((addr)surface + offset);
 
         for (u32 y = 0; y < State.ViewPort.Height; y++)
         {
-            CopyMemory(dst, src, State.ViewPort.Width);
+            CopyMemory(dst, src, State.ViewPort.Width * sizeof(u16));
 
             src = (void*)((addr)src + RendererSurfaceStride);
             dst = (void*)((addr)dst + State.Window.Stride);
         }
     }
 
-    // 0x60004d90
     // 0x60001090
+    // 0x60004d90
     u32 RendererClearGameWindow(void)
     {
         const u32 color = OptimizedClearColor;
@@ -91,7 +92,7 @@ namespace RendererModule
 
         if (indx == RendererDeviceIndex)
         {
-            State.Device.ID = uid;
+            State.Device.ID = NULL;
 
             if (uid != NULL)
             {
@@ -113,7 +114,7 @@ namespace RendererModule
     // 0x60002480
     HRESULT CALLBACK EnumerateRendererDeviceModes(LPDDSURFACEDESC desc, LPVOID context)
     {
-        u32 bits = desc->ddpfPixelFormat.dwRGBBitCount == (GRAPHICS_BITS_PER_PIXEL_16 - 1)
+        u32 bits = desc->ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_15
             ? GRAPHICS_BITS_PER_PIXEL_16 : desc->ddpfPixelFormat.dwRGBBitCount;
 
         const u32 format = AcquirePixelFormat(&desc->ddpfPixelFormat);
@@ -149,7 +150,7 @@ namespace RendererModule
 
             caps->Width = width;
             caps->Height = height;
-            caps->Bits = format == RENDERER_PIXEL_FORMAT_R5G5B5 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
+            caps->Bits = format == RENDERER_PIXEL_FORMAT_R5G5B5 ? GRAPHICS_BITS_PER_PIXEL_15 : bits;
             caps->Format = format;
             caps->Unk03 = 2;
             caps->Unk04 = 0;
@@ -199,8 +200,7 @@ namespace RendererModule
 
                 if (State.DX.Code == DD_OK)
                 {
-                    DWORD free = 0;
-                    DWORD total = 0;
+                    DWORD free = 0, total = 0;
 
                     DDSCAPS caps = { DDSCAPS_VIDEOMEMORY };
 
@@ -272,7 +272,7 @@ namespace RendererModule
 
         State.DX.Bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits;
         State.DX.Surfaces.Bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits;
-        State.Window.Bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1)
+        State.Window.Bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits == GRAPHICS_BITS_PER_PIXEL_15
             ? GRAPHICS_BITS_PER_PIXEL_16 : ModuleDescriptor.Capabilities.Capabilities[wp].Bits;
 
         SelectRendererColorMasks(State.DX.Bits);
@@ -492,12 +492,12 @@ namespace RendererModule
         const u32 g = color >> 8 & 0xff;
         const u32 r = (color >> 0x10 & 0xff) >> 3;
 
-        if (State.DX.Surfaces.Bits = 16)
+        if (State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_16)
         {
-            return b | (g >> 2) << 5 | r << 0xb;
+            return b | (g >> 2) << 5 | r << 11;
         }
 
-        if (State.DX.Surfaces.Bits == 15) {
+        if (State.DX.Surfaces.Bits == GRAPHICS_BITS_PER_PIXEL_15) {
             return b | (g >> 3) << 5 | r << 10;
         }
 
@@ -528,9 +528,9 @@ namespace RendererModule
 
         ClipGameWindow(0, 0, width, height);
 
-        State.Renderer.Surface.Allocated = malloc(State.Renderer.Settings.Length + RENDERER_SURFACE_SIZE_MOFIFIER);
+        State.Renderer.Surface.Allocated = malloc(State.Renderer.Settings.Length + RENDERER_SURFACE_SIZE_MODIFIER);
 
-        State.Renderer.Surface.Surface = (void*)(((addr)State.Renderer.Surface.Allocated & RENDERER_SURFACE_ALIGNMENT_MASK) + RENDERER_SURFACE_SIZE_MOFIFIER);
+        State.Renderer.Surface.Surface = (void*)(((addr)State.Renderer.Surface.Allocated & RENDERER_SURFACE_ALIGNMENT_MASK) + RENDERER_SURFACE_SIZE_MODIFIER);
 
         State.Renderer.Active.Stride = RendererSurfaceStride;
 

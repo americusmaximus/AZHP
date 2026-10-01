@@ -36,12 +36,12 @@ SOFTWARE.
 #define MAX_ACTIVE_SURFACE_COUNT 8
 #define MAX_ACTIVE_UNKNOWN_COUNT 4
 #define MAX_ACTIVE_USABLE_TEXTURE_FORMAT_COUNT 9
-#define MAX_UNKNOWN_COLOR_ARAY_COUNT 16
+#define MAX_UNKNOWN_COLOR_ARRAY_COUNT 16
 #define MAX_UNKNOWN_COUNT (MAX_ACTIVE_UNKNOWN_COUNT + 2)
 #define MAX_USABLE_TEXTURE_FORMAT_COUNT (MAX_ACTIVE_USABLE_TEXTURE_FORMAT_COUNT + 2)
 #define MIN_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x8000 (32 KB) */
-#define RENDERER_SURFACE_ALIGNMENT_MASK 0xffffff00
-#define RENDERER_SURFACE_SIZE_MOFIFIER 256
+#define RENDERER_SURFACE_ALIGNMENT_MASK 0xFFFFFF00
+#define RENDERER_SURFACE_SIZE_MODIFIER 256
 
 #define RENDERER_CULL_MODE_CLOCK_WISE           0x00000000
 #define RENDERER_CULL_MODE_NONE                 0x00000001
@@ -54,7 +54,8 @@ namespace Renderer
         u32 Width;                      // 0x00
         u32 Height;                     // 0x04
         u16* Surface;                   // 0x08
-        // TODO
+        u32 Unk0x0C;                    // 0x0C
+        u32 Unk0x10;                    // 0x10
         u32 Bits;                       // 0x14
         u32 Stride;                     // 0x18
         u32 Format1;                    // 0x1C
@@ -71,21 +72,21 @@ namespace RendererModule
     {
         struct
         {
-            GUID* ID; // 0x6003e098
+            GUID* ID;   // 0x6003e098
             GUID Value; // 0x60040090
         } Device;
 
         struct
         {
-            u32 Bits; // 0x600400c0
+            u32 Bits;       // 0x600400c0
 
-            HRESULT Code; // 0x6003e04c
+            HRESULT Code;   // 0x6003e04c
 
             IDirectDraw2* Instance; // 0x6003e060
 
             struct
             {
-                u32 Bits; // 0x600400cc
+                u32 Bits;   // 0x600400cc
 
                 IDirectDrawSurface* Main; // 0x6003e064
                 IDirectDrawSurface* Back; // 0x6003e068
@@ -103,56 +104,55 @@ namespace RendererModule
 
         struct
         {
-            BOOL IsActive; // 0x6003e0b0
-
-            IDirectDrawSurface2* Surface; // 0x6003e0b4
+            BOOL IsActive;                  // 0x6003e0b0
+            IDirectDrawSurface2* Surface;   // 0x6003e0b4
 
             RendererModuleWindowLock State; // 0x600400e4
         } Lock;
 
-        HANDLE Mutex; // 0x6003e090
+        HANDLE Mutex;               // 0x6003e090
 
         struct
         {
             struct
             {
-                u32 Stride; // 0x6003e104
-                u32 Length; // 0x6003e108
-                u32 Width; // 0x6003e10c
-                u32 Height; // 0x6003e110
-                void* Surface; // 0x6003e114
+                u32 Stride;         // 0x6003e104
+                u32 Length;         // 0x6003e108
+                u32 Width;          // 0x6003e10c
+                u32 Height;         // 0x6003e110
+                void* Surface;      // 0x6003e114
             } Active;
 
             struct
             {
-                u32* Unknown4; // 0x60041348
-                u32* Unknown3; // 0x6004134c
-                u32* Unknown2; // 0x60041350
-                u32* Unknown1; // 0x60041354
+                u32* Unknown4;      // 0x60041348
+                u32* Unknown3;      // 0x6004134c
+                u32* Unknown2;      // 0x60041350
+                u32* Unknown1;      // 0x60041354
 
-                u16 UnknownValue1; // 0x60041358
-                u16 UnknownValue2; // 0x6004135a
-                u16 UnknownValue3; // 0x6004135c
+                u16 UnknownValue1;  // 0x60041358
+                u16 UnknownValue2;  // 0x6004135a
+                u16 UnknownValue3;  // 0x6004135c
             } Colors;
 
             struct
             {
-                void* Surface; // 0x6003e0fc
-                void* Allocated; // 0x6003e100
+                void* Surface;      // 0x6003e0fc
+                void* Allocated;    // 0x6003e100
             } Surface;
 
             struct
             {
                 u32 Length; // 0x6003e0f0
-                u32 Width; // 0x6003e0f4
+                u32 Width;  // 0x6003e0f4
                 u32 Height; // 0x6003e0f8
             } Settings;
         } Renderer;
 
         struct
         {
-            u32 CooperativeLevel; // 0x6003e050
-            BOOL IsWindowMode; // 0x6003e054
+            u32 CooperativeLevel;   // 0x6003e050
+            BOOL IsWindowMode;      // 0x6003e054
 
             u32 MaxAvailableMemory; // 0x6003e05c
         } Settings;
@@ -162,8 +162,8 @@ namespace RendererModule
             u32 X0;     // 0x6003e0b8
             u32 Y0;     // 0x6003e0bc
             u32 Width;  // 0x6003e0c0
-            u32 Height; // 0x6003e0c8
-            u32 X1;     // 0x6003e0c4
+            u32 Height; // 0x6003e0c4
+            u32 X1;     // 0x6003e0c8
             u32 Y1;     // 0x6003e0cc
         } ViewPort;
 
@@ -173,13 +173,13 @@ namespace RendererModule
 
         struct
         {
-            u32 Width; // 0x600400c4
+            u32 Width;  // 0x600400c4
             u32 Height; // 0x600400c8
-            u32 Bits; // 0x600400d0
+            u32 Bits;   // 0x600400d0
 
             u32 Stride; // 0x600400e0
 
-            HWND HWND; // 0x6003e048
+            HWND HWND;  // 0x6003e048
         } Window;
     };
 

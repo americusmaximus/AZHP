@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 - 2025 Americus Maximus
+Copyright (c) 2023 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -240,7 +240,7 @@ namespace RendererModule
         if (format != RENDERER_PIXEL_FORMAT_NONE)
         {
             const u32 bits = desc->ddpfPixelFormat.dwRGBBitCount;
-            const u32 bytes = bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1) ? 2 : (bits >> 3);
+            const u32 bytes = bits == GRAPHICS_BITS_PER_PIXEL_15 ? 2 : (bits >> 3);
 
             const u32 width = desc->dwWidth;
             const u32 height = desc->dwHeight;
@@ -264,7 +264,7 @@ namespace RendererModule
             ModuleDescriptor.Capabilities.Capabilities[indx].Width = width;
             ModuleDescriptor.Capabilities.Capabilities[indx].Height = height;
             ModuleDescriptor.Capabilities.Capabilities[indx].Bits =
-                format == RENDERER_PIXEL_FORMAT_R5G5B5 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
+                format == RENDERER_PIXEL_FORMAT_R5G5B5 ? GRAPHICS_BITS_PER_PIXEL_15 : bits;
             ModuleDescriptor.Capabilities.Capabilities[indx].Unk03 = count;
             ModuleDescriptor.Capabilities.Capabilities[indx].Unk04 = count - 1;
         }
@@ -534,7 +534,7 @@ namespace RendererModule
         State.Window.Width = ModuleDescriptor.Capabilities.Capabilities[wp].Width;
         State.Window.Height = ModuleDescriptor.Capabilities.Capabilities[wp].Height;
 
-        const u32 bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1)
+        const u32 bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits == GRAPHICS_BITS_PER_PIXEL_15
             ? GRAPHICS_BITS_PER_PIXEL_16 : ModuleDescriptor.Capabilities.Capabilities[wp].Bits;
 
         State.DX.Code = DD_OK;

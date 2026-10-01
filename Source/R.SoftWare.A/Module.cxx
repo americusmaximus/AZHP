@@ -230,7 +230,7 @@ namespace RendererModule
             State.Lock.State.Data = AcquireRendererSurface();
             State.Lock.State.Stride = RendererSurfaceStride;
 
-            State.Lock.State.Format = State.DX.Surfaces.Bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1)
+            State.Lock.State.Format = State.DX.Surfaces.Bits == GRAPHICS_BITS_PER_PIXEL_15
                 ? RENDERER_PIXEL_FORMAT_R5G5B5 : RENDERER_PIXEL_FORMAT_R5G6B5;
 
             State.Lock.State.Width = State.Window.Width;
@@ -341,9 +341,23 @@ namespace RendererModule
     // a.k.a. THRASH_readrect
     DLLAPI u32 STDCALLAPI ReadRectangle(const u32 x, const u32 y, const u32 width, const u32 height, u32* pixels)
     {
-        // TODO NOT IMPLEMENTED
+        const RendererModuleWindowLock* state = LockGameWindow();
 
-        return RENDERER_MODULE_FAILURE;
+        if (state == NULL) { return RENDERER_MODULE_FAILURE; }
+
+        const u32 multiplier = state->Format == RENDERER_PIXEL_FORMAT_R8G8B8
+            ? (GRAPHICS_BITS_PER_PIXEL_32 >> 3) : (GRAPHICS_BITS_PER_PIXEL_16 >> 3);
+
+        const u32 length = multiplier * width;
+
+        for (u32 xx = 0; xx < height; xx++)
+        {
+            const addr offset = (xx * state->Stride) + (state->Stride * y) + (multiplier * x);
+
+            CopyMemory(&pixels[xx * length], (void*)((addr)state->Data + (addr)offset), length);
+        }
+
+        return UnlockGameWindow(state);
     }
 
     // 0x60002bf0
@@ -417,7 +431,7 @@ namespace RendererModule
             {
             case RENDERER_PIXEL_FORMAT_P8: { State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_8; break; }
             case RENDERER_PIXEL_FORMAT_R5G5B5:
-            case RENDERER_PIXEL_FORMAT_A1R5G5B5: { State.DX.Surfaces.Bits = (GRAPHICS_BITS_PER_PIXEL_16 - 1); break; }
+            case RENDERER_PIXEL_FORMAT_A1R5G5B5: { State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_15; break; }
             case RENDERER_PIXEL_FORMAT_R8G8B8: { State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_24; break; }
             case RENDERER_PIXEL_FORMAT_A8R8G8B8: { State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_32; break; }
             default: { State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_16; break; }
@@ -469,7 +483,6 @@ namespace RendererModule
             case RENDERER_PIXEL_FORMAT_R5G6B5:
             {
                 texture->Bits = GRAPHICS_BITS_PER_PIXEL_16;
-                texture->ColorDepth = TextureColorDepth;
                 texture->Stride = (texture->Bits >> 3) * width;
                 texture->Size = texture->Stride * height;
 
@@ -480,7 +493,6 @@ namespace RendererModule
             case RENDERER_PIXEL_FORMAT_R4G4B4:
             {
                 texture->Bits = GRAPHICS_BITS_PER_PIXEL_32;
-                texture->ColorDepth = TextureColorDepth;
                 texture->Stride = (texture->Bits >> 3) * width;
                 texture->Size = texture->Stride * height;
 

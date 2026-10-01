@@ -232,7 +232,7 @@ namespace RendererModule
             if (desc->dwWidth < GRAPHICS_RESOLUTION_640 || desc->dwHeight < GRAPHICS_RESOLUTION_480) { return DDENUMRET_OK; }
 
             const u32 bits = desc->ddpfPixelFormat.dwRGBBitCount;
-            const u32 bytes = bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1) ? 2 : (bits >> 3);
+            const u32 bytes = bits == GRAPHICS_BITS_PER_PIXEL_15 ? 2 : (bits >> 3);
 
             const u32 width = desc->dwWidth;
             const u32 height = desc->dwHeight;
@@ -252,7 +252,7 @@ namespace RendererModule
             ModuleDescriptor.Capabilities.Capabilities[indx].Width = width;
             ModuleDescriptor.Capabilities.Capabilities[indx].Height = height;
             ModuleDescriptor.Capabilities.Capabilities[indx].Bits =
-                format == RENDERER_PIXEL_FORMAT_R5G5B5 ? (GRAPHICS_BITS_PER_PIXEL_16 - 1) : bits;
+                format == RENDERER_PIXEL_FORMAT_R5G5B5 ? GRAPHICS_BITS_PER_PIXEL_15 : bits;
             ModuleDescriptor.Capabilities.Capabilities[indx].IsActive = TRUE;
 
             if (count < 4) // TODO
@@ -524,7 +524,7 @@ namespace RendererModule
         State.Window.Width = ModuleDescriptor.Capabilities.Capabilities[wp].Width;
         State.Window.Height = ModuleDescriptor.Capabilities.Capabilities[wp].Height;
 
-        const u32 bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits == (GRAPHICS_BITS_PER_PIXEL_16 - 1)
+        const u32 bits = ModuleDescriptor.Capabilities.Capabilities[wp].Bits == GRAPHICS_BITS_PER_PIXEL_15
             ? GRAPHICS_BITS_PER_PIXEL_16 : ModuleDescriptor.Capabilities.Capabilities[wp].Bits;
 
         State.DX.Code = DD_OK;
