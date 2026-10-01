@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 Americus Maximus
+Copyright (c) 2024 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -89,13 +89,12 @@ namespace RendererModule
         const u32 width = State.Renderer.Settings.Width < x1 ? State.Renderer.Settings.Width : x1;
         const u32 height = State.Renderer.Settings.Height < y1 ? State.Renderer.Settings.Height : y1;
 
-        State.ViewPort.X = x;
-        State.ViewPort.Y = y;
-
-        State.ViewPort.Left = width - x;
-        State.ViewPort.Right = width - 1;
-        State.ViewPort.Top = height - y;
-        State.ViewPort.Bottom = height - 1;
+        State.ViewPort.X0 = x;
+        State.ViewPort.Y0 = y;
+        State.ViewPort.Width = width - x;
+        State.ViewPort.X1 = width - 1;
+        State.ViewPort.Height = height - y;
+        State.ViewPort.Y1 = height - 1;
 
         return RENDERER_MODULE_SUCCESS;
     }
@@ -111,35 +110,51 @@ namespace RendererModule
     // a.k.a. THRASH_drawlinemesh
     DLLAPI void STDCALLAPI DrawLineMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawLine((RVX*)&vs[indexes[x * 2 + 0]], (RVX*)&vs[indexes[x * 2 + 1]]); }
     }
 
     // 0x60005230
     // a.k.a. THRASH_drawlinestrip
     DLLAPI void STDCALLAPI DrawLineStrip(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawLine((RVX*)&vs[x + 0], (RVX*)&vs[x + 1]); }
     }
 
     // 0x60005260
     // a.k.a. THRASH_drawpoint
     DLLAPI void STDCALLAPI DrawPoint(RVX* vertex)
     {
-        // TODO NOT IMPLEMENTED
+        const s32 x = (s32)((RTLVX*)vertex)->XYZ.X;
+        const s32 y = (s32)((RTLVX*)vertex)->XYZ.Y;
+        const u32 color = (s32)((RTLVX*)vertex)->Color;
+
+        CalculateVertexColor(x, y, color);
+
+        u16* pixels = (u16*)((addr)State.Renderer.Surface.Surface + RendererSurfaceStride * y);
+
+        pixels[x] = VertexColor;
     }
 
     // 0x600052b0
     // a.k.a. THRASH_drawpointmesh
     DLLAPI void STDCALLAPI DrawPointMesh(const u32 count, RVX* vertexes, const u32* indexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawPoint((RVX*)&vs[indexes[x]]); }
     }
 
     // 0x600052f0
     // a.k.a. THRASH_drawpointstrip
     DLLAPI void STDCALLAPI DrawPointStrip(const u32 count, RVX* vertexes)
     {
-        // TODO NOT IMPLEMENTED
+        const RTLVX* vs = (RTLVX*)vertexes;
+
+        for (u32 x = 0; x < count; x++) { DrawPoint((RVX*)&vs[x]); }
     }
 
     // 0x60004ea0
@@ -275,7 +290,51 @@ namespace RendererModule
     // a.k.a. THRASH_pageflip
     DLLAPI void STDCALLAPI ToggleGameWindow(void)
     {
-        // TODO NOT IMPLEMENTED
+        State.Lambdas.Lambdas.LockWindow(TRUE);
+
+        DDSURFACEDESC desc;
+        ZeroMemory(&desc, sizeof(DDSURFACEDESC));
+        desc.dwSize = sizeof(DDSURFACEDESC);
+
+        State.DX.Code = State.DX.Surfaces.Active[1]->Lock(NULL, &desc, DDLOCK_WAIT, NULL);
+
+        if (State.DX.Code == DD_OK)
+        {
+            State.Window.Stride = desc.lPitch;
+            if (!State.Settings.IsWindowMode)
+            {
+                CopyViewPortSurface(desc.lpSurface);
+            }
+            else
+            {
+                RECT rect;
+                GetClientRect(State.Window.HWND, &rect);
+
+                POINT point;
+                ZeroMemory(&point, sizeof(POINT));
+
+                ClientToScreen(State.Window.HWND, &point);
+                OffsetRect(&rect, point.x, point.y);
+
+                const void* src = AcquireRendererSurface();
+                void* dst = desc.lpSurface;
+
+                for (u32 y = 0; y < State.Renderer.Settings.Height; y++)
+                {
+                    CopyMemory(dst, src, RendererSurfaceStride);
+
+                    src = (void*)((addr)src + RendererSurfaceStride);
+                    dst = (void*)((addr)dst + desc.lPitch);
+                }
+            }
+
+            State.DX.Surfaces.Active[1]->Unlock(desc.lpSurface);
+            State.Lambdas.Lambdas.LockWindow(FALSE);
+        }
+        else
+        {
+            OutputDebugStringA("lock failed on writebuffer\n");
+        }
     }
 
     // 0x60002f60
@@ -382,18 +441,80 @@ namespace RendererModule
     // a.k.a. THRASH_talloc
     DLLAPI RendererTexture* STDCALLAPI AllocateTexture(const u32 width, const u32 height, const u32 format, const BOOL palette, const u32 state)
     {
-        // TODO NOT IMPLEMENTED
+        RendererTexture* texture = (RendererTexture*)malloc(sizeof(RendererTexture));
 
-        return NULL;
+        if (texture != NULL)
+        {
+            texture->Width = width;
+            texture->Height = height;
+            texture->Format1 = format;
+            texture->Format2 = format;
+
+            texture->Previous = State.Textures.Current;
+            State.Textures.Current = texture;
+
+            switch (format) {
+            case RENDERER_PIXEL_FORMAT_P8:
+            {
+                texture->Bits = GRAPHICS_BITS_PER_PIXEL_8;
+                texture->ColorDepth = TextureColorDepth;
+                texture->Stride = (texture->Bits >> 3) * width;
+                texture->Size = texture->Stride * height;
+                
+                // TODO NOT IMPLEMENTED
+
+                break;
+            }
+            case RENDERER_PIXEL_FORMAT_R5G5B5:
+            case RENDERER_PIXEL_FORMAT_R5G6B5:
+            {
+                texture->Bits = GRAPHICS_BITS_PER_PIXEL_16;
+                texture->ColorDepth = TextureColorDepth;
+                texture->Stride = (texture->Bits >> 3) * width;
+                texture->Size = texture->Stride * height;
+
+                // TODO NOT IMPLEMENTED
+
+                break;
+            }
+            case RENDERER_PIXEL_FORMAT_R4G4B4:
+            {
+                texture->Bits = GRAPHICS_BITS_PER_PIXEL_32;
+                texture->ColorDepth = TextureColorDepth;
+                texture->Stride = (texture->Bits >> 3) * width;
+                texture->Size = texture->Stride * height;
+
+                // TODO NOT IMPLEMENTED
+
+                break;
+            }
+            }
+        }
+
+        return texture;
     }
 
     // 0x60004080
     // a.k.a. THRASH_treset
     DLLAPI u32 STDCALLAPI ResetTextures(void)
     {
-        // TODO NOT IMPLEMENTED
+        while (State.Textures.Current != NULL)
+        {
+            if (State.Textures.Current->Surface != NULL)
+            {
+                free(State.Textures.Current->Surface);
+            }
 
-        return RENDERER_MODULE_FAILURE;
+            RendererTexture* prev = State.Textures.Current->Previous;
+
+            free(State.Textures.Current);
+
+            State.Textures.Current = prev;
+        }
+
+        State.Textures.Current = NULL;
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60003dc0

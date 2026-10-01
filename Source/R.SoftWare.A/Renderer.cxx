@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 Americus Maximus
+Copyright (c) 2024 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,8 @@ SOFTWARE.
 
 #define MAX_MESSAGE_BUFFER_LENGTH 512
 
+#define ALIGNVIEWPORT(X)    (X & 0xFFFFFFF0)
+
 using namespace Renderer;
 using namespace RendererModuleValues;
 
@@ -43,13 +45,43 @@ namespace RendererModule
     // I combined message and error methods, because error method does not halt the execution as expected.
     void Message(const char* format, ...) { }
 
+    // 0x60001010
+    void CopyViewPortSurface(void* surface)
+    {
+        const u32 offset = State.ViewPort.Y0 * RendererSurfaceStride + ALIGNVIEWPORT(State.ViewPort.X0) * sizeof(u16);
+
+        const void* src = (void*)((addr)State.Renderer.Surface.Surface + offset);
+        void* dst = (void*)((addr)surface + offset);
+
+        for (u32 y = 0; y < State.ViewPort.Height; y++)
+        {
+            CopyMemory(dst, src, State.ViewPort.Width);
+
+            src = (void*)((addr)src + RendererSurfaceStride);
+            dst = (void*)((addr)dst + State.Window.Stride);
+        }
+    }
+
     // 0x60004d90
     // 0x60001090
     u32 RendererClearGameWindow(void)
     {
-        // TODO NOT IMPLEMENTED
+        const u32 color = OptimizedClearColor;
+        const u32 offset = State.ViewPort.Y0 * RendererSurfaceStride + ALIGNVIEWPORT(State.ViewPort.X0) * sizeof(u16);
 
-        return RENDERER_MODULE_FAILURE;
+        u32* pixels = (u32*)((addr)State.Renderer.Surface.Surface + offset);
+
+        for (u32 y = 0; y < State.ViewPort.Height; y++)
+        {
+            for (u32 x = 0; x < State.ViewPort.Width; x++)
+            {
+                pixels[x] = color;
+            }
+
+            pixels = (u32*)((addr)pixels + RendererSurfaceStride);
+        }
+
+        return RENDERER_MODULE_SUCCESS;
     }
 
     // 0x60002420
@@ -451,6 +483,35 @@ namespace RendererModule
             State.Renderer.Colors.Unknown3 = Unknown32BitColors3;
             State.Renderer.Colors.Unknown4 = Unknown32BitColors4;
         }
+    }
+
+    // 0x60004bd0
+    u32 CalculateColor(u32 color, u32 fallback)
+    {
+        const u32 b = (color & 0xff) >> 3;
+        const u32 g = color >> 8 & 0xff;
+        const u32 r = (color >> 0x10 & 0xff) >> 3;
+
+        if (State.DX.Surfaces.Bits = 16)
+        {
+            return b | (g >> 2) << 5 | r << 0xb;
+        }
+
+        if (State.DX.Surfaces.Bits == 15) {
+            return b | (g >> 3) << 5 | r << 10;
+        }
+
+        return fallback;
+    }
+
+    // 0x60004c40
+    void CalculateVertexColor(s32 x, s32 y, u32 color)
+    {
+        VertexColor = CalculateColor(color, y);
+
+        State.Renderer.Colors.UnknownValue1 = State.Renderer.Colors.Unknown1[8] & ((VertexColor & 0xffff) >> 1);
+        State.Renderer.Colors.UnknownValue2 = State.Renderer.Colors.Unknown3[4] & ((VertexColor & 0xffff) >> 2);
+        State.Renderer.Colors.UnknownValue3 = State.Renderer.Colors.UnknownValue1 + State.Renderer.Colors.UnknownValue2;
     }
 
     // 0x60004cd0

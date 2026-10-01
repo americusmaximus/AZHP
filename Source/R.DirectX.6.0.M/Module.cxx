@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 - 2025 Americus Maximus
+Copyright (c) 2023 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -1215,7 +1215,11 @@ namespace RendererModule
             if (State.Textures.Current->Texture2 != NULL) { State.Textures.Current->Texture2->Release(); }
             if (State.Textures.Current->Palette != NULL) { State.Textures.Current->Palette->Release(); }
 
-            State.Textures.Current = State.Textures.Current->Previous;
+            RendererTexture* prev = State.Textures.Current->Previous;
+
+            ReleaseRendererTexture(State.Textures.Current);
+
+            State.Textures.Current = prev;
         }
 
         State.Textures.Current = NULL;

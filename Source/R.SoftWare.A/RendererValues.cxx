@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 Americus Maximus
+Copyright (c) 2024 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,8 @@ namespace RendererModuleValues
 
     s32 RendererVideoMode = DEFAULT_RENDERER_MODE;
 
+    u32 TextureColorDepth = 16;
+
     u32 RendererSurfaceStride = DEFAULT_RENDERER_SURFACE_STRIDE;
 
     u32 GreenRendererColorMask = 0x3E0;
@@ -40,6 +42,9 @@ namespace RendererModuleValues
     u32 NonGreenRendererColorMask = 0x7C1F;
 
     RendererModuleDescriptor ModuleDescriptor;
+
+    u16 VertexColor = 0x000F;
+    u32 OptimizedClearColor;
 
     s32 UnknownArray06[MAX_UNKNOWN_COUNT] =
     {

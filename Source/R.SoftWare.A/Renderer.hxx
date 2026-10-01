@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2024 Americus Maximus
+Copyright (c) 2024 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,20 @@ SOFTWARE.
 
 namespace Renderer
 {
-
+    struct RendererTexture
+    {
+        u32 Width;                      // 0x00
+        u32 Height;                     // 0x04
+        u16* Surface;                   // 0x08
+        // TODO
+        u32 Bits;                       // 0x14
+        u32 Stride;                     // 0x18
+        u32 Format1;                    // 0x1C
+        u32 Format2;                    // 0x20
+        u32 Size;                       // 0x24
+        u32 ColorDepth;                 // 0x28
+        RendererTexture* Previous;      // 0x2C
+    };
 }
 
 namespace RendererModule
@@ -116,6 +129,10 @@ namespace RendererModule
                 u32* Unknown3; // 0x6004134c
                 u32* Unknown2; // 0x60041350
                 u32* Unknown1; // 0x60041354
+
+                u16 UnknownValue1; // 0x60041358
+                u16 UnknownValue2; // 0x6004135a
+                u16 UnknownValue3; // 0x6004135c
             } Colors;
 
             struct
@@ -142,14 +159,17 @@ namespace RendererModule
 
         struct
         {
-            u32 X; // 0x6003e0b8
-            u32 Y; // 0x6003e0bc
-
-            u32 Left; // 0x6003e0c0
-            u32 Top; // 0x6003e0c8
-            u32 Right; // 0x6003e0c4
-            u32 Bottom; // 0x6003e0cc
+            u32 X0;     // 0x6003e0b8
+            u32 Y0;     // 0x6003e0bc
+            u32 Width;  // 0x6003e0c0
+            u32 Height; // 0x6003e0c8
+            u32 X1;     // 0x6003e0c4
+            u32 Y1;     // 0x6003e0cc
         } ViewPort;
+
+        struct {
+            Renderer::RendererTexture* Current; // 0x6003e0d0
+        } Textures;
 
         struct
         {
@@ -166,6 +186,11 @@ namespace RendererModule
     extern RendererModuleState State;
 
     void Message(const char* format, ...);
+
+    void CopyViewPortSurface(void* surface);
+
+    u32 CalculateColor(u32 color, u32 fallback);
+    void CalculateVertexColor(s32 x, s32 y, u32 color);
 
     u32 RendererClearGameWindow(void);
     void* AcquireRendererSurface(void);

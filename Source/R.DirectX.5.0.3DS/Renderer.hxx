@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 - 2025 Americus Maximus
+Copyright (c) 2023 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -52,23 +52,23 @@ namespace Renderer
 {
     struct RendererTexture
     {
-        u32 Width;
-        u32 Height;
-        u32 UnknownFormatIndexValue; // TODO
-        s32 FormatIndex; // TODO
-        s32 FormatIndexValue; // TODO
-        BOOL IsPalette;
-        D3DTEXTUREHANDLE Handle;
-        RendererTexture* Previous;
-        u32 MemoryType;
-        BOOL Is16Bit;
-        IDirectDrawSurface3* Surface1;
-        IDirect3DTexture2* Texture1;
-        IDirectDrawSurface3* Surface2;
-        IDirect3DTexture2* Texture2;
-        IDirectDrawPalette* Palette;
-        DDSURFACEDESC Descriptor;
-        u32 Colors;
+        u32 Width;                      // 0x00
+        u32 Height;                     // 0x04
+        u32 UnknownFormatIndexValue;    // 0x08 // TODO
+        s32 FormatIndex;                // 0x0C // TODO
+        s32 FormatIndexValue;           // 0x10 // TODO
+        BOOL IsPalette;                 // 0x14
+        D3DTEXTUREHANDLE Handle;        // 0x18
+        RendererTexture* Previous;      // 0x1C
+        u32 MemoryType;                 // 0x20
+        BOOL Is16Bit;                   // 0x24
+        IDirectDrawSurface3* Surface1;  // 0x28
+        IDirect3DTexture2* Texture1;    // 0x2C
+        IDirectDrawSurface3* Surface2;  // 0x30
+        IDirect3DTexture2* Texture2;    // 0x34
+        IDirectDrawPalette* Palette;    // 0x38
+        DDSURFACEDESC Descriptor;       // 0x3C
+        u32 Colors;                     // 0xA8
     };
 }
 
