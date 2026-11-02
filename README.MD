@@ -19,8 +19,8 @@ The original game was compiled by Watcom C/C++ compiler, it contains the followi
 
 Examination of the game files, indicates that three calling conventions were used.
 1. The game was compiled with Watcom compiler, and uses watcom calling convention internally and stdcall to call renderer and sound modules.
-2. The sound module was compiled with Watcom compiler, `eacsnd.dll`, uses watcom calling concention internally and exports methods with stdcall convention.
-3. The original DirectX 5 renderers were also compiled with Watcom compiler with watcom calling convention internally and stdcall for callbacks to the game itself.
+2. The sound module was compiled with Watcom compiler, `eacsnd.dll`, uses watcom calling convention internally and exports methods with stdcall convention.
+3. The original DirectX 5 renderers were also compiled with Watcom compiler with the Watcom calling convention internally and stdcall for callbacks to the game itself.
 
 ### Compatibility, Code Style & Standards
 In order to be able to run the code not only in the modern operating systems, but also in legacy environments, such as Windows XP, the code base has to abstain from usage of modern C++ language features.
@@ -40,11 +40,11 @@ One more thing regarding the callbacks, some are required to be called during th
 The renderer modules were implemented with minor changes, such as omission of write-only variables, making calls to functions when result is not used, as well as addition of configuration file and reading values from it, which is useful in a few cases.
 
 #### DirectX 5
-The original game shipped with two DirectX 5 renderers with slightly different design and capabilities. I added all of them as well as the patched version from the modern patch for completeness. Unfortunately DirectX 5 is so far away in hte past that I was not able to make this renderer work without some tweaks here and there, and it will require major changes in the game itself so that 16-bit rendering is not used. On my test environments I ran into an error where SetDisplayMode fails to set resolution in 16-bit mode, this error leads to renderer not creating surfaces, which leads to inability to create a Direct3D device from which one cannot recover gracefuly. Having said all this, it is great that other renderers are available and do work. Here is the outline of DirectX 5 renderers:
+The original game shipped with two DirectX 5 renderers with slightly different design and capabilities. I added all of them as well as the patched version from the modern patch for completeness. Unfortunately DirectX 5 is so far away in the past that I was not able to make this renderer work without some tweaks here and there, and it will require major changes in the game itself so that 16-bit rendering is not used. On my test environments I ran into an error where SetDisplayMode fails to set resolution in 16-bit mode, this error leads to renderer not creating surfaces, which leads to inability to create a Direct3D device from which one cannot recover gracefully. Having said all this, it is great that other renderers are available and do work. Here is the outline of DirectX 5 renderers:
 
-1. DirectX 5 3DS is a renderer based on the orignal unversioned file `d3da.dll` that came with the original game in 1998 and was located in `3dSetup` folder. Even though it was capable to render the game it was not intended to do so.
-2. DirectX 5 A is a renderer based on the orignal file `d3da.dll` version: 1998.08.10.1148 (6552.8.16.4424) that came with the original game in 1998.
-3. DirectX 5 M is a a renderer based on the DirectX 5 renderer `dx5a.dll` from the modern patch. Since the patch is a binarry patch to the `DirectX 5 A`, I untangled it as well, for completeness.
+1. DirectX 5 3DS is a renderer based on the original unversioned file `d3da.dll` that came with the original game in 1998 and was located in `3dSetup` folder. Even though it was capable to render the game it was not intended to do so.
+2. DirectX 5 A is a renderer based on the original file `d3da.dll` version: 1998.08.10.1148 (6552.8.16.4424) that came with the original game in 1998.
+3. DirectX 5 M is a a renderer based on the DirectX 5 renderer `dx5a.dll` from the modern patch. Since the patch is a binary patch to the `DirectX 5 A`, I untangled it as well, for completeness.
 
 #### DirectX 6
 The original game had no DirectX 6 renderer, thus the one you see here is a renderer from the modern patch, which in its turn is based on file `d3da.dll` version: 1999.01.15.1121 (6553.1.21.4385) that came with Need For Speed: High Stakes in 1999. See [AutoZone High Stakes](https://github.com/americusmaximus/AZHS) DirectX 6 3DS renderer details for additional information.
