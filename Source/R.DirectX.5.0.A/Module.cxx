@@ -752,6 +752,7 @@ namespace RendererModule
         if (tex != NULL) { return SelectRendererTexture(tex); }
 
         SelectRendererTexture(CurrentRendererTexture);
+
         return SelectRendererTexture(NULL);
     }
 

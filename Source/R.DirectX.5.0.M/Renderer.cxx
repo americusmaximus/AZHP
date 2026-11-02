@@ -1407,7 +1407,7 @@ namespace RendererModule
             {
                 if (result == DD_OK) { return RENDERER_MODULE_SUCCESS; }
 
-                Error("Flipping complex display surface failed. %8x\n ", result);
+                Error("D3D Flipping complex display surface failed err %8x \n", result);
 
                 return RENDERER_MODULE_FAILURE;
             }

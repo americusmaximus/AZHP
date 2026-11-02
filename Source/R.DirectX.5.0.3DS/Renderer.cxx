@@ -72,7 +72,7 @@ namespace RendererModule
         return TRUE;
     }
 
-    // 0x60001830
+    // 0x600016a0
     void SelectRendererDevice(void)
     {
         if (RendererDeviceIndex < DEFAULT_DEVICE_INDEX && State.Lambdas.AcquireWindow != NULL)
