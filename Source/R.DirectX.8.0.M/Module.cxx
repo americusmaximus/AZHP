@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2023 - 2024 Americus Maximus
+Copyright (c) 2023 - 2026 Americus Maximus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -384,7 +384,7 @@ namespace RendererModule
 
     // 0x600038b0
     // a.k.a. THRASH_setvideomode
-    DLLAPI u32 STDCALLAPI SelectVideoMode(const u32 mode, const u32 pending, const u32 depth)
+    DLLAPI u32 STDCALLAPI SelectVideoMode(const s32 mode, const u32 pending, const u32 depth)
     {
         // TODO NOT IMPLEMENTED
 

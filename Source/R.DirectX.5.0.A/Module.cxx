@@ -758,7 +758,7 @@ namespace RendererModule
 
     // 0x600024f0
     // a.k.a. THRASH_setvideomode
-    DLLAPI u32 STDCALLAPI SelectVideoMode(const u32 mode, const u32 pending, const u32 depth)
+    DLLAPI u32 STDCALLAPI SelectVideoMode(const s32 mode, const u32 pending, const u32 depth)
     {
         if (State.Scene.IsActive) { Error("D3D Setting videomode in 3d scene !!!!\n"); }
 
