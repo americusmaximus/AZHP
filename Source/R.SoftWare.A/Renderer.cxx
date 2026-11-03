@@ -652,6 +652,13 @@ namespace RendererModule
         }
     }
 
+    // 0x60004b10
+    void SelectIndexedRendererLambdas()
+    {
+        State.Renderer.Lambdas.Active =
+            &State.Renderer.Lambdas.Lambdas[State.Renderer.Lambdas.IndexGroup][State.Renderer.Lambdas.Index];
+    }
+
     // 0x60004bd0
     u32 CalculateColor(u32 color, u32 fallback)
     {
@@ -659,7 +666,7 @@ namespace RendererModule
         const u32 g = color >> 8 & 0xff;
         const u32 r = (color >> 0x10 & 0xff) >> 3;
 
-        if (State.DX.Surfaces.Bits = GRAPHICS_BITS_PER_PIXEL_16)
+        if (State.DX.Surfaces.Bits == GRAPHICS_BITS_PER_PIXEL_16)
         {
             return b | (g >> 2) << 5 | r << 11;
         }
