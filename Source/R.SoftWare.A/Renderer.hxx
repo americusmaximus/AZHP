@@ -193,7 +193,8 @@ namespace RendererModule
             u32 Y1;     // 0x6003e0cc
         } ViewPort;
 
-        struct {
+        struct
+        {
             Renderer::RendererTexture* Current; // 0x6003e0d0
 
             struct
@@ -211,6 +212,11 @@ namespace RendererModule
                 u32 Height;                 // 0x60040114
             } Selected;
         } Textures;
+
+        struct
+        {
+            RTLVX* Start;   // 0x60041374
+        } Vertexes;
 
         struct
         {
