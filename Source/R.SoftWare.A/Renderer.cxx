@@ -758,6 +758,9 @@ namespace RendererModule
         }
     }
 
+    // 0x60004520
+    void SetRendererUnknownMode4(const u32 mode, const u32 value) { }
+
     // 0x600047f0
     void SelectRendererLambdas()
     {
