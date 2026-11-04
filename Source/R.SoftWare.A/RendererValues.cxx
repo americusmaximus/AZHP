@@ -46,7 +46,6 @@ namespace RendererModuleValues
     RendererModuleDescriptor ModuleDescriptor;
 
     u16 VertexColor = 0x000F;
-    u32 OptimizedClearColor;
 
     u32 DAT_6003e124 = 15; // TODO
     u32 DAT_6003e128 = 15; // TODO

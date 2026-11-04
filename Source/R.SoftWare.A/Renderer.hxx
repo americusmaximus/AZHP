@@ -137,6 +137,10 @@ namespace RendererModule
                 void* Surface;      // 0x6003e114
             } Active;
 
+            u32 Material;           // 0x6003e11c   // Optimized (2 x 16-bit color)
+
+            u32 Materials[2];       // 0x60041340
+
             struct
             {
                 u32* Unknown4;      // 0x60041348
@@ -262,4 +266,9 @@ namespace RendererModule
     void SelectIndexedRendererLambdas();
     inline u32 AcquireNormal(const f32x3* a, const f32x3* b, const f32x3* c) { const s32 value = (s32)((b->X - a->X) * (c->Y - a->Y) - (c->X - a->X) * (b->Y - a->Y)); return *(u32*)&value; }
     void SelectRendererLambdas();
+    void SelectRendererMaterial(const u32 value);
+    void SetRendererShadeMode(const u32 mode);
+    void SetRendererUnknownMode1(const u32 mode);
+    void SetRendererUnknownMode2(const u32 mode);
+    void SetRendererUnknownMode3(const u32 mode);
 }

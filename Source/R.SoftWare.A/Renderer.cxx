@@ -67,7 +67,7 @@ namespace RendererModule
     // 0x60004d90
     u32 RendererClearGameWindow(void)
     {
-        const u32 color = OptimizedClearColor;
+        const u32 color = State.Renderer.Material;
         const u32 offset = State.ViewPort.Y0 * RendererSurfaceStride + ALIGNVIEWPORT(State.ViewPort.X0) * sizeof(u16);
 
         u32* pixels = (u32*)((addr)State.Renderer.Surface.Surface + offset);
@@ -623,6 +623,141 @@ namespace RendererModule
         }
     }
 
+    // 0x60004190
+    void SetRendererUnknownMode1(const u32 mode)
+    {
+        if (mode == 0) // TODO
+        {
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[0] = FUN_6001e4f0;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[1] = FUN_6001e4f0;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[2] = FUN_6001e4f0;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[3] = FUN_6001e4f0;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[4] = FUN_6001e4f0;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[5] = FUN_6001e4f0;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[6] = FUN_6001e4f0;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[7] = FUN_6001e4f0;
+
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[0] = FUN_6001ef50;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[1] = FUN_6001ef50;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[2] = FUN_6001ef50;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[3] = FUN_6001ef50;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[4] = FUN_6001ef50;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[5] = FUN_6001ef50;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[6] = FUN_6001ef50;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[7] = FUN_6001ef50;
+        }
+        else if (mode == 1) // TODO
+        {
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[0] = FUN_6001fa90;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[1] = FUN_6001fa90;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[2] = FUN_6001fa90;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[3] = FUN_6001fa90;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[4] = FUN_6001fa90;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[5] = FUN_6001fa90;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[6] = FUN_6001fa90;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[7] = FUN_6001fa90;
+
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[0] = FUN_600204f0;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[1] = FUN_600204f0;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[2] = FUN_600204f0;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[3] = FUN_600204f0;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[4] = FUN_600204f0;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[5] = FUN_600204f0;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[6] = FUN_600204f0;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[7] = FUN_600204f0;
+        }
+    }
+
+    // 0x60004280
+    void SetRendererUnknownMode2(const u32 mode)
+    {
+        if (mode == 0) // TODO
+        {
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[0] = FUN_6002fcb0;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[1] = FUN_60010460;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[2] = FUN_60010460;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[3] = FUN_6000ef00;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[4] = FUN_6000ef00;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[5] = FUN_6000d9b0;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[6] = FUN_6000d9b0;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[7] = FUN_6000c440;
+
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[0] = FUN_6002fcb0;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[1] = FUN_60010ec0;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[2] = FUN_60010ec0;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[3] = FUN_6000f960;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[4] = FUN_6000f960;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[5] = FUN_6000e410;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[6] = FUN_6000e410;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[7] = FUN_6000cea0;
+        }
+        else if (mode == 1) // TODO
+        {
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[0] = FUN_6002fcb0;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[1] = FUN_60025150;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[2] = FUN_60025150;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[3] = FUN_60023ba0;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[4] = FUN_60023ba0;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[5] = FUN_600225f0;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[6] = FUN_600225f0;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[7] = FUN_60021030;
+
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[0] = FUN_6002fcb0;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[1] = FUN_60025bb0;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[2] = FUN_60025bb0;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[3] = FUN_60024600;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[4] = FUN_60024600;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[5] = FUN_60023050;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[6] = FUN_60023050;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[7] = FUN_60021a90;
+        }
+    }
+
+    // 0x600043c0
+    void SetRendererUnknownMode3(const u32 mode)
+    {
+        if (mode == 0) // TODO
+        {
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[0] = FUN_6002fcb0;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[1] = FUN_6000af20;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[2] = FUN_6000af20;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[3] = FUN_600099d0;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[4] = FUN_600099d0;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[5] = FUN_60008490;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[6] = FUN_60008490;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = FUN_6002bce0;
+
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[0] = FUN_6002fcb0;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[1] = FUN_6000b980;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[2] = FUN_6000b980;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[3] = FUN_6000a430;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[4] = FUN_6000a430;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[5] = FUN_60008ef0;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[6] = FUN_60008ef0;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[7] = FUN_6002c6d0;
+        }
+        else if (mode == 1) // TODO
+        {
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[0] = FUN_6002fcb0;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[1] = FUN_6002a820;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[2] = FUN_6002a820;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[3] = FUN_60029270;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[4] = FUN_60029270;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[5] = FUN_60027cc0;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[6] = FUN_60027cc0;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = FUN_60026700;
+
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[0] = FUN_6002fcb0;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[1] = FUN_6002b280;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[2] = FUN_6002b280;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[3] = FUN_60029cd0;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[4] = FUN_60029cd0;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[5] = FUN_60028720;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[6] = FUN_60028720;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[7] = FUN_60027160;
+        }
+    }
+
     // 0x600047f0
     void SelectRendererLambdas()
     {
@@ -767,6 +902,41 @@ namespace RendererModule
         }
     }
 
+    // 0x600046f0
+    void SetRendererShadeMode(const u32 mode)
+    {
+        if (mode == RENDERER_MODULE_DEPTH_INACTIVE)
+        {
+            State.Renderer.Lambdas.Lambdas[0][0].Lambdas[7] = FUN_6002fcf0;
+            State.Renderer.Lambdas.Lambdas[0][1].Lambdas[7] = FUN_6002e770;
+            State.Renderer.Lambdas.Lambdas[0][2].Lambdas[7] = FUN_6002d1c0;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = FUN_6002bce0;
+
+            State.Renderer.Lambdas.Lambdas[1][0].Lambdas[7] = FUN_6002fcf0;
+            State.Renderer.Lambdas.Lambdas[1][1].Lambdas[7] = FUN_600179e0;
+            State.Renderer.Lambdas.Lambdas[1][2].Lambdas[7] = FUN_6002dc20;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[7] = FUN_6002c6d0;
+        }
+        else
+        {
+            State.Renderer.Lambdas.Lambdas[0][0].Lambdas[7] =
+                State.DX.Surfaces.Bits == GRAPHICS_BITS_PER_PIXEL_16
+                ? FUN_600327a0 : FUN_60031ac0;
+
+            State.Renderer.Lambdas.Lambdas[0][1].Lambdas[7] = FUN_6001c9e0;
+            State.Renderer.Lambdas.Lambdas[0][2].Lambdas[7] = FUN_6001afc0;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = FUN_60006920;
+
+            State.Renderer.Lambdas.Lambdas[1][0].Lambdas[7] =
+                State.DX.Surfaces.Bits == GRAPHICS_BITS_PER_PIXEL_16
+                ? FUN_600327a0 : FUN_60031ac0;
+
+            State.Renderer.Lambdas.Lambdas[1][1].Lambdas[7] = FUN_6001d670;
+            State.Renderer.Lambdas.Lambdas[1][2].Lambdas[7] = FUN_6001bc50;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[7] = FUN_60007620;
+        }
+    }
+
     // 0x60004b10
     void SelectIndexedRendererLambdas()
     {
@@ -801,6 +971,18 @@ namespace RendererModule
         State.Renderer.Colors.UnknownValue1 = State.Renderer.Colors.Unknown1[8] & ((VertexColor & 0xffff) >> 1);
         State.Renderer.Colors.UnknownValue2 = State.Renderer.Colors.Unknown3[4] & ((VertexColor & 0xffff) >> 2);
         State.Renderer.Colors.UnknownValue3 = State.Renderer.Colors.UnknownValue1 + State.Renderer.Colors.UnknownValue2;
+    }
+
+    // 0x60004ca0
+    void SelectRendererMaterial(const u32 value)
+    {
+        u32 color = CalculateColor(value, value);
+
+        color = color << 16 | color;
+
+        State.Renderer.Material = color;
+        State.Renderer.Materials[0] = color;
+        State.Renderer.Materials[1] = color;
     }
 
     // 0x60004cd0

@@ -51,7 +51,6 @@ namespace RendererModuleValues
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x60040010
 
     extern u16 VertexColor;                 // 0x6003e118
-    extern u32 OptimizedClearColor;         // 0x6003e11c
 
     extern u32 DAT_6003e124;                // 0x6003e124   // TODO
     extern u32 DAT_6003e128;                // 0x6003e128   // TODO

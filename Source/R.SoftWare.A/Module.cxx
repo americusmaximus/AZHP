@@ -521,7 +521,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_MATERIAL:
         {
-            SelectRendererMaterial(value);
+            SelectRendererMaterial((u32)value);
 
             return RENDERER_MODULE_SUCCESS;
         }
@@ -579,9 +579,9 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_SELECT_BLEND_STATE_ALTERNATIVE:
         {
-            FUN_60004190(value);
-            FUN_60004280(extraout_EDX);
-            FUN_600043c0(extraout_EDX_00);
+            SetRendererUnknownMode1((u32)value);
+            SetRendererUnknownMode2((u32)value);
+            SetRendererUnknownMode3((u32)value);
 
             return RENDERER_MODULE_SUCCESS;
         }
@@ -650,7 +650,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_706:
         {
-            State.Renderer.Lambdas.IndexGroup = (u32)(value) == 0 ? 0 : 1;
+            State.Renderer.Lambdas.IndexGroup = ((u32)value) == 0 ? 0 : 1;
             SelectIndexedRendererLambdas();
 
             return RENDERER_MODULE_SUCCESS;
