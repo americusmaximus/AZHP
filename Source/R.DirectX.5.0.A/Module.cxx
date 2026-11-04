@@ -278,7 +278,7 @@ namespace RendererModule
 
         if (State.Lock.Surface == State.DX.Active.Surfaces.Active.Depth)
         {
-            State.Lock.State.Format = desc.ddpfPixelFormat.dwRGBBitCount;
+            State.Lock.State.Format = desc.ddpfPixelFormat.dwRGBBitCount; // TODO
         }
         else if (desc.ddpfPixelFormat.dwRGBBitCount == GRAPHICS_BITS_PER_PIXEL_16)
         {

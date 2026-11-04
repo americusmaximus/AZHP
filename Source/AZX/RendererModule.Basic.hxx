@@ -508,6 +508,13 @@ SOFTWARE.
 #define RENDERER_MODULE_STATE_ACQUIRE_MODULATE_BLENDING_STATE 451
 #define RENDERER_MODULE_STATE_SELECT_CLIPPING_STATE_DX8 499
 
+#define RENDERER_MODULE_STATE_701 701
+#define RENDERER_MODULE_STATE_702 702
+#define RENDERER_MODULE_STATE_703 703
+#define RENDERER_MODULE_STATE_TEXTURE_PALETTE_COUNT 704
+#define RENDERER_MODULE_STATE_CURRENT_TEXTURE_PALETTE_COUNT 705
+#define RENDERER_MODULE_STATE_706 706
+
 #define RENDERER_MODULE_CAPS_NONE 0
 #define RENDERER_MODULE_CAPS_LINE_WIDTH 0x1
 #define RENDERER_MODULE_CAPS_TEXTURE_SQUARE 0x2
@@ -566,7 +573,7 @@ namespace RendererModule
         // I don't know how it worked originally, but but only IDirectDrawSurface4::Unlock accepts RECT as a parameter,
         // while the original renderers (DX6) passes the pointer to the data itself into Unlock.
         // This matches IDirectDrawSurface3::Unlock, but IDirectDrawSurface3 is never created anywhere,
-        // so unless interface names were not changed from  the previous renderer by mistake, it shouldn't be feasible.
+        // so unless interface names were not changed from the previous renderer by mistake, it shouldn't be feasible.
         // So, adding the new field here, to be able to unlock windowed surface.
         RECT Rect;
     };
