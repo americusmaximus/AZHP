@@ -632,7 +632,7 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_703:
         {
-            DAT_6003e0a8 = value;
+            State.UnknownQuadValue = (u32)value;
 
             return RENDERER_MODULE_SUCCESS;
         }
