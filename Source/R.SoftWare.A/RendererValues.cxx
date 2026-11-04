@@ -32,6 +32,8 @@ namespace RendererModuleValues
 
     s32 RendererVideoMode = DEFAULT_RENDERER_MODE;
 
+    s32 CullMode = RENDERER_CULL_MODE_COUNTER_CLOCK_WISE;
+
     s32 TexturePaletteCount = 16;
     s32 CurrentTexturePaletteCount = -1;
     u32 RendererSurfaceStride = DEFAULT_RENDERER_SURFACE_STRIDE;
@@ -45,6 +47,9 @@ namespace RendererModuleValues
 
     u16 VertexColor = 0x000F;
     u32 OptimizedClearColor;
+
+    u32 DAT_6003e124 = 15; // TODO
+    u32 DAT_6003e128 = 15; // TODO
 
     s32 UnknownArray06[MAX_UNKNOWN_COUNT] =
     {

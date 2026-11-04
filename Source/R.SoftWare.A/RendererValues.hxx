@@ -37,6 +37,8 @@ namespace RendererModuleValues
 
     extern s32 RendererVideoMode;           // 0x6003e09c
 
+    extern s32 CullMode;                    // 0x6003f0a4
+
     extern s32 TexturePaletteCount;         // 0x6003e0e4
     extern s32 CurrentTexturePaletteCount;  // 0x6003e0e8
     extern u32 RendererSurfaceStride;       // 0x6003e0ec
@@ -50,6 +52,9 @@ namespace RendererModuleValues
 
     extern u16 VertexColor;                 // 0x6003e118
     extern u32 OptimizedClearColor;         // 0x6003e11c
+
+    extern u32 DAT_6003e124;                // 0x6003e124   // TODO
+    extern u32 DAT_6003e128;                // 0x6003e128   // TODO
 
     extern u32 Unknown32BitColors1[MAX_UNKNOWN_COLOR_ARRAY_COUNT];  // 0x6003e13c
     extern u32 Unknown32BitColors2[MAX_UNKNOWN_COLOR_ARRAY_COUNT];  // 0x6003e1bc

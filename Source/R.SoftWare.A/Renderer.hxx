@@ -50,6 +50,7 @@ SOFTWARE.
 
 #define MAX_RENDERER_LAMBDA_GROUP_COUNT         2
 #define MAX_RENDERER_LAMBDA_GROUP_ITEM_COUNT    12
+#define MAX_RENDERER_LAMBDA_ITEM_COUNT          8
 
 namespace Renderer
 {
@@ -72,16 +73,13 @@ namespace Renderer
 
 namespace RendererModule
 {
+    typedef void(*RendererModuleRendererLambda)(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+
+    // Contains a list of lambdas to draw a triangle based on average alpha value of the triangle's vertexes.
+    // Alpha values are in the range of (0..255) >> 5, which results in a range of (0..7) for the lambdas.
     struct RendererModuleRendererLambdaContainer
     {
-        void* Unk00;
-        void* Unk01;
-        void* Unk02;
-        void* Unk03;
-        void* Unk04;
-        void* Unk05;
-        void* Unk06;
-        void* Unk07;
+        RendererModuleRendererLambda Lambdas[MAX_RENDERER_LAMBDA_ITEM_COUNT];
     };
 
     struct RendererModuleState
@@ -215,7 +213,7 @@ namespace RendererModule
 
         struct
         {
-            RTLVX* Start;   // 0x60041374
+            Renderer::RTLVX* Start;   // 0x60041374
         } Vertexes;
 
         struct
@@ -262,4 +260,5 @@ namespace RendererModule
     BOOL RendererSetTexturePixelsR5G5B5(u16* dst, const u16* src, const u32 count);
 
     void SelectIndexedRendererLambdas();
+    inline u32 AcquireNormal(const f32x3* a, const f32x3* b, const f32x3* c) { const s32 value = (s32)((b->X - a->X) * (c->Y - a->Y) - (c->X - a->X) * (b->Y - a->Y)); return *(u32*)&value; }
 }
