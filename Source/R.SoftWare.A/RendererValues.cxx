@@ -43,6 +43,8 @@ namespace RendererModuleValues
     u32 BlueRendererColorMask = 0x1F;
     u32 NonGreenRendererColorMask = 0x7C1F;
 
+    void* UnknownFunction = FUN_60033a90;
+
     RendererModuleDescriptor ModuleDescriptor;
 
     u16 VertexColor = 0x000F;

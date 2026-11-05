@@ -173,6 +173,8 @@ namespace RendererModule
 
                 u32 Index;      // 0x60040118
 
+                RendererModuleRendererLambdaContainer Configuration;    // 0x60040120
+
                 RendererModuleRendererLambdaContainer Lambdas[MAX_RENDERER_LAMBDA_GROUP_COUNT][MAX_RENDERER_LAMBDA_GROUP_ITEM_COUNT];   // 0x60041040
             } Lambdas;
         } Renderer;
@@ -274,4 +276,6 @@ namespace RendererModule
     void SetRendererUnknownMode2(const u32 mode);
     void SetRendererUnknownMode3(const u32 mode);
     void SetRendererUnknownMode4(const u32 mode, const u32 value);
+    void SetActiveRendererLambda(RendererModuleRendererLambda lambda);
+    void SetRendererUnknownFunction(void* lambda); // TODO
 }

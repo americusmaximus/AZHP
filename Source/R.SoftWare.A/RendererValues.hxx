@@ -48,6 +48,8 @@ namespace RendererModuleValues
     extern u32 BlueRendererColorMask;       // 0x6003e344
     extern u32 NonGreenRendererColorMask;   // 0x6003e348
 
+    extern void* UnknownFunction;           // 0x6003e35c
+
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x60040010
 
     extern u16 VertexColor;                 // 0x6003e118

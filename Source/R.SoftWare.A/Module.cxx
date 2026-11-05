@@ -587,8 +587,8 @@ namespace RendererModule
         }
         case RENDERER_MODULE_STATE_701:
         {
-            FUN_60033a80(value);
-            FUN_60004b90(FUN_60033af0);
+            SetRendererUnknownFunction(value);
+            SetActiveRendererLambda(FUN_60033af0);
 
             return RENDERER_MODULE_SUCCESS;
         }
