@@ -1213,7 +1213,7 @@ namespace RendererModule
     }
 
     // 0x6000519c
-    u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1)
+    u32 ClearRendererViewPort(const s32 x0, const s32 y0, const s32 x1, const s32 y1)
     {
         D3DRECT rect;
 

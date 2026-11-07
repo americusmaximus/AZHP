@@ -437,10 +437,10 @@ namespace RendererModule
 
         struct
         {
-            u32 X0; // 0x60018238
-            u32 Y0; // 0x6001823c
-            u32 X1; // 0x60018240
-            u32 Y1; // 0x60018244
+            s32 X0; // 0x60018238
+            s32 Y0; // 0x6001823c
+            s32 X1; // 0x60018240
+            s32 Y1; // 0x60018244
         } ViewPort;
 
         struct
@@ -507,7 +507,7 @@ namespace RendererModule
     u32 AcquireDirectDrawDeviceCount(GUID** uids, HMONITOR** monitors, const char* section);
     u32 AcquirePixelFormat(const DDPIXELFORMAT* format);
     u32 AcquireRendererDeviceCount(void);
-    u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1, const BOOL window);
+    u32 ClearRendererViewPort(const s32 x0, const s32 y0, const s32 x1, const s32 y1, const BOOL window);
     u32 DisposeRendererTexture(Renderer::RendererTexture* tex);
     u32 InitializeRendererDevice(void);
     u32 InitializeRendererDeviceAcceleration(void);

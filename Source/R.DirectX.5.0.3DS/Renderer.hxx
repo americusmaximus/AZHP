@@ -224,10 +224,10 @@ namespace RendererModule
 
         struct
         {
-            u32 X0; // 0x6000fdd8
-            u32 Y0; // 0x6000fddc
-            u32 X1; // 0x6000fde0
-            u32 Y1; // 0x6000fde4
+            s32 X0; // 0x6000fdd8
+            s32 Y0; // 0x6000fddc
+            s32 X1; // 0x6000fde0
+            s32 Y1; // 0x6000fde4
         } ViewPort;
 
         struct
@@ -261,7 +261,7 @@ namespace RendererModule
     u32 AcquirePixelFormat(const DDPIXELFORMAT* format);
     u32 AcquireRendererDeviceCount(void);
     u32 AttemptRenderScene(void);
-    u32 ClearRendererViewPort(const u32 x0, const u32 y0, const u32 x1, const u32 y1);
+    u32 ClearRendererViewPort(const s32 x0, const s32 y0, const s32 x1, const s32 y1);
     u32 EndRendererScene(void);
     u32 InitializeRendererDevice(void);
     u32 InitializeRendererDeviceAcceleration(void);

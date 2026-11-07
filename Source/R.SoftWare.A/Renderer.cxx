@@ -771,7 +771,7 @@ namespace RendererModule
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[4] = FUN_60030250;
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[5] = FUN_60030d10;
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[6] = FUN_60030d10;
-        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[7] = FUN_6002fcf0;
+        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[7] = DrawTriangleVertexColor;
 
         State.Renderer.Lambdas.Lambdas[0][1].Lambdas[0] = FUN_60016f80;
         State.Renderer.Lambdas.Lambdas[0][1].Lambdas[1] = FUN_60016f80;
@@ -825,7 +825,7 @@ namespace RendererModule
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[4] = FUN_60030250;
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[5] = FUN_60030d10;
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[6] = FUN_60030d10;
-        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[7] = FUN_6002fcf0;
+        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[7] = DrawTriangleVertexColor;
 
         State.Renderer.Lambdas.Lambdas[1][1].Lambdas[0] = FUN_600179e0;
         State.Renderer.Lambdas.Lambdas[1][1].Lambdas[1] = FUN_600179e0;
@@ -910,12 +910,12 @@ namespace RendererModule
     {
         if (mode == RENDERER_MODULE_DEPTH_INACTIVE)
         {
-            State.Renderer.Lambdas.Lambdas[0][0].Lambdas[7] = FUN_6002fcf0;
+            State.Renderer.Lambdas.Lambdas[0][0].Lambdas[7] = DrawTriangleVertexColor;
             State.Renderer.Lambdas.Lambdas[0][1].Lambdas[7] = FUN_6002e770;
             State.Renderer.Lambdas.Lambdas[0][2].Lambdas[7] = FUN_6002d1c0;
             State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = FUN_6002bce0;
 
-            State.Renderer.Lambdas.Lambdas[1][0].Lambdas[7] = FUN_6002fcf0;
+            State.Renderer.Lambdas.Lambdas[1][0].Lambdas[7] = DrawTriangleVertexColor;
             State.Renderer.Lambdas.Lambdas[1][1].Lambdas[7] = FUN_600179e0;
             State.Renderer.Lambdas.Lambdas[1][2].Lambdas[7] = FUN_6002dc20;
             State.Renderer.Lambdas.Lambdas[1][4].Lambdas[7] = FUN_6002c6d0;

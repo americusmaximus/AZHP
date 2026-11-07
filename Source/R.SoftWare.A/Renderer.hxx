@@ -189,13 +189,15 @@ namespace RendererModule
 
         struct
         {
-            u32 X0;     // 0x6003e0b8
-            u32 Y0;     // 0x6003e0bc
+            s32 X0;     // 0x6003e0b8
+            s32 Y0;     // 0x6003e0bc
             u32 Width;  // 0x6003e0c0
             u32 Height; // 0x6003e0c4
-            u32 X1;     // 0x6003e0c8
-            u32 Y1;     // 0x6003e0cc
+            s32 X1;     // 0x6003e0c8
+            s32 Y1;     // 0x6003e0cc
         } ViewPort;
+
+        // TODO Seems like viewport is signed - verify..
 
         struct
         {
@@ -278,4 +280,6 @@ namespace RendererModule
     void SetRendererUnknownMode4(const u32 mode, const u32 value);
     void SetActiveRendererLambda(RendererModuleRendererLambda lambda);
     void SetRendererUnknownFunction(void* lambda); // TODO
+
+    void DrawTriangleVertexColor(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
 }
