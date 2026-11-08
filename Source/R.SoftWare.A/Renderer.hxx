@@ -282,4 +282,6 @@ namespace RendererModule
     void SetRendererUnknownFunction(void* lambda); // TODO
 
     void DrawTriangleVertexColor(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleUnknownMask1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleUnknownMask2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
 }

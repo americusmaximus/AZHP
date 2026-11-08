@@ -767,10 +767,10 @@ namespace RendererModule
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[0] = FUN_6002fcb0;
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[1] = FUN_600307b0;
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[2] = FUN_600307b0;
-        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[3] = FUN_60030250;
-        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[4] = FUN_60030250;
-        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[5] = FUN_60030d10;
-        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[6] = FUN_60030d10;
+        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[3] = DrawTriangleUnknownMask2;
+        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[4] = DrawTriangleUnknownMask2;
+        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[5] = DrawTriangleUnknownMask1;
+        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[6] = DrawTriangleUnknownMask1;
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[7] = DrawTriangleVertexColor;
 
         State.Renderer.Lambdas.Lambdas[0][1].Lambdas[0] = FUN_60016f80;
@@ -821,10 +821,10 @@ namespace RendererModule
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[0] = FUN_6002fcb0;
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[1] = FUN_600307b0;
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[2] = FUN_600307b0;
-        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[3] = FUN_60030250;
-        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[4] = FUN_60030250;
-        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[5] = FUN_60030d10;
-        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[6] = FUN_60030d10;
+        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[3] = DrawTriangleUnknownMask2;
+        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[4] = DrawTriangleUnknownMask2;
+        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[5] = DrawTriangleUnknownMask1;
+        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[6] = DrawTriangleUnknownMask1;
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[7] = DrawTriangleVertexColor;
 
         State.Renderer.Lambdas.Lambdas[1][1].Lambdas[0] = FUN_600179e0;
