@@ -40,6 +40,9 @@ using namespace RendererModuleValues;
 
 namespace RendererModule
 {
+    // 0x6002fcb0
+    void DrawTriangleNone(RTLVX* a, RTLVX* b, RTLVX* c) { }
+
     // 0x6002fcc0
     void DrawHorizontalLineCurrentVertexColor(u16* start, const u16* end)
     {
