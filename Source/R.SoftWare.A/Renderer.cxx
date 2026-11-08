@@ -765,8 +765,8 @@ namespace RendererModule
     void SelectRendererLambdas()
     {
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[0] = FUN_6002fcb0;
-        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[1] = FUN_600307b0;
-        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[2] = FUN_600307b0;
+        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[1] = DrawTriangleUnknownMask3;
+        State.Renderer.Lambdas.Lambdas[0][0].Lambdas[2] = DrawTriangleUnknownMask3;
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[3] = DrawTriangleUnknownMask2;
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[4] = DrawTriangleUnknownMask2;
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[5] = DrawTriangleUnknownMask1;
@@ -819,8 +819,8 @@ namespace RendererModule
         State.Renderer.Lambdas.Lambdas[0][7].Lambdas[7] = FUN_6001e4f0;
 
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[0] = FUN_6002fcb0;
-        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[1] = FUN_600307b0;
-        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[2] = FUN_600307b0;
+        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[1] = DrawTriangleUnknownMask3;
+        State.Renderer.Lambdas.Lambdas[1][0].Lambdas[2] = DrawTriangleUnknownMask3;
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[3] = DrawTriangleUnknownMask2;
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[4] = DrawTriangleUnknownMask2;
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[5] = DrawTriangleUnknownMask1;
