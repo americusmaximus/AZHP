@@ -25,8 +25,6 @@ SOFTWARE.
 #include "Basic.hxx"
 #include "Native.Basic.hxx"
 
-#define ACTIVATE_RENDERER_TEXTURE_CONVERSION TRUE /* Convert paletted textures */
-
 #define RENDERER_MODULE_FAILURE FALSE
 #define RENDERER_MODULE_SUCCESS TRUE
 

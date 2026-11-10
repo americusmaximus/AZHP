@@ -582,7 +582,7 @@ namespace RendererModule
             f32 multiplier = 0.0f;
             const u32* pal = palette;
 
-            for (u32 x = 0; x < tex->PaletteCount; x++)
+            for (s32 x = 0; x < tex->PaletteCount; x++)
             {
                 for (u32 xx = 0; xx < RENDERER_PALETTE_COLOR_COUNT; xx++)
                 {

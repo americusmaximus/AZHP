@@ -136,7 +136,7 @@ namespace RendererModule
         if (longEdgeSlope * upperHeight + begin->XYZ.X <= end->XYZ.X)
         {
             // --- Sub-case A: Long edge is on the left ---
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 // Apply subpixel adjustments and fixed-point conversion for span bounds
                 s32 x0 = ADJUSTPIXELUP(longEdgeX);
@@ -157,7 +157,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
 
             // --- Transition to Phase 2: Middle to Bottom Vertex ---
@@ -175,7 +174,7 @@ namespace RendererModule
             // -------------------------------------------------------------
             // STEP 6: PHASE 2 - Bottom Half Rasterization (Middle to Bottom)
             // -------------------------------------------------------------
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(longEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(lowerShortEdgeX);
@@ -193,13 +192,12 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
         }
         else
         {
             // --- Sub-case B: Long edge is on the right (mirror logic) ---
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(upperShortEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
@@ -217,7 +215,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
 
             // Transition to lower half for right-side long edge
@@ -232,7 +229,7 @@ namespace RendererModule
 
             f32 lowerShortEdgeX = ((f32)y0 - end->XYZ.Y) * shortEdgeSlope + end->XYZ.X;
 
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(lowerShortEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
@@ -250,7 +247,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
         }
     }
@@ -348,7 +344,7 @@ namespace RendererModule
         if (longEdgeSlope * upperHeight + begin->XYZ.X <= end->XYZ.X)
         {
             // --- Sub-case A: Long edge is on the left ---
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 // Apply subpixel adjustments and fixed-point conversion for span bounds
                 s32 x0 = ADJUSTPIXELUP(longEdgeX);
@@ -369,7 +365,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
 
             // --- Transition to Phase 2: Middle to Bottom Vertex ---
@@ -387,7 +382,7 @@ namespace RendererModule
             // -------------------------------------------------------------
             // STEP 6: PHASE 2 - Bottom Half Rasterization (Middle to Bottom)
             // -------------------------------------------------------------
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(longEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(lowerShortEdgeX);
@@ -405,13 +400,12 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
         }
         else
         {
             // --- Sub-case B: Long edge is on the right (mirror logic) ---
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(upperShortEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
@@ -429,7 +423,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
 
             // Transition to lower half for right-side long edge
@@ -444,7 +437,7 @@ namespace RendererModule
 
             f32 lowerShortEdgeX = ((f32)y0 - end->XYZ.Y) * shortEdgeSlope + end->XYZ.X;
 
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(lowerShortEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
@@ -462,7 +455,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
         }
     }
@@ -561,7 +553,7 @@ namespace RendererModule
         if (longEdgeSlope * upperHeight + begin->XYZ.X <= end->XYZ.X)
         {
             // --- Sub-case A: Long edge is on the left ---
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 // Apply subpixel adjustments and fixed-point conversion for span bounds
                 s32 x0 = ADJUSTPIXELUP(longEdgeX);
@@ -582,7 +574,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
 
             // --- Transition to Phase 2: Middle to Bottom Vertex ---
@@ -600,7 +591,7 @@ namespace RendererModule
             // -------------------------------------------------------------
             // STEP 6: PHASE 2 - Bottom Half Rasterization (Middle to Bottom)
             // -------------------------------------------------------------
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(longEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(lowerShortEdgeX);
@@ -618,13 +609,12 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
         }
         else
         {
             // --- Sub-case B: Long edge is on the right (mirror logic) ---
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(upperShortEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
@@ -642,7 +632,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
 
             // Transition to lower half for right-side long edge
@@ -657,7 +646,7 @@ namespace RendererModule
 
             f32 lowerShortEdgeX = ((f32)y0 - end->XYZ.Y) * shortEdgeSlope + end->XYZ.X;
 
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(lowerShortEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
@@ -675,7 +664,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
         }
     }
@@ -773,7 +761,7 @@ namespace RendererModule
         if (longEdgeSlope * upperHeight + begin->XYZ.X <= end->XYZ.X)
         {
             // --- Sub-case A: Long edge is on the left ---
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 // Apply subpixel adjustments and fixed-point conversion for span bounds
                 s32 x0 = ADJUSTPIXELUP(longEdgeX);
@@ -794,7 +782,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
 
             // --- Transition to Phase 2: Middle to Bottom Vertex ---
@@ -812,7 +799,7 @@ namespace RendererModule
             // -------------------------------------------------------------
             // STEP 6: PHASE 2 - Bottom Half Rasterization (Middle to Bottom)
             // -------------------------------------------------------------
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(longEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(lowerShortEdgeX);
@@ -830,13 +817,12 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
         }
         else
         {
             // --- Sub-case B: Long edge is on the right (mirror logic) ---
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(upperShortEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
@@ -854,7 +840,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
 
             // Transition to lower half for right-side long edge
@@ -869,7 +854,7 @@ namespace RendererModule
 
             f32 lowerShortEdgeX = ((f32)y0 - end->XYZ.Y) * shortEdgeSlope + end->XYZ.X;
 
-            while (y0 <= y1)
+            for (; y0 <= y1; y0++)
             {
                 s32 x0 = ADJUSTPIXELUP(lowerShortEdgeX);
                 s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
@@ -887,7 +872,6 @@ namespace RendererModule
 
                 // Advance surface pointer by 1 row stride
                 surface += State.Renderer.Settings.Width * sizeof(u16);
-                y0++;
             }
         }
     }

@@ -774,6 +774,8 @@ namespace RendererModule
             texture->Previous = State.Textures.Current;
             State.Textures.Current = texture;
 
+            texture->PaletteCount = 0;
+
             switch (format) {
             case RENDERER_PIXEL_FORMAT_P8:
             {
