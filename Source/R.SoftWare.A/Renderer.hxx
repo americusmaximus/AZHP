@@ -217,6 +217,9 @@ namespace RendererModule
                 f32 WidthSquaredAsFloat;    // 0x60040110
                 u32 Height;                 // 0x60040114
             } Selected;
+
+            u32 V;                          // 0x6004136c
+            u32 U;                          // 0x60041370
         } Textures;
 
         struct
@@ -286,4 +289,7 @@ namespace RendererModule
     void DrawTriangleUnknownMask1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
     void DrawTriangleUnknownMask2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
     void DrawTriangleUnknownMask3(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+
+    void DrawTriangleTextureBlend1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleTextureBlend2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
 }
