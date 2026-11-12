@@ -27,16 +27,27 @@ SOFTWARE.
 using namespace Renderer;
 using namespace RendererModuleValues;
 
-// NOTE. Pixel Adjustment logic in the original renderer differs from one here.
-// The original logic performs double-precision addition of a horizontal pixel coordinate
-// with value of 1.0307922E+11, then reads the low 4 bytes as if it is an integer.
-// Adjustment up then adds 0xFFFF and shifts the new value to the right by 16.
-// Adjustment down decreases the lower 4 bytes of a double by 1 and then shifts to the right by 16.
-// I couldn't find an elegant way to implement the same without using inline assembly,
-// therefore, quick and dirty aproach will serve just fine, for now.
+#define ADJUSTPIXELUP(X)    (s32)(X + 0.5f)
+#define ADJUSTPIXELDOWN(X)  (s32)(X - 0.5f)
 
-#define ADJUSTPIXELUP(X)    (s32)((X + .5f))
-#define ADJUSTPIXELDOWN(X)  (s32)((X - .5f))
+#define VALUE_103_079_215_104 (f64)+1.0307921510400000E+0011
+#define VALUE_206_158_430_208 (f64)+2.0615843020800000E+0011
+
+#define CALCULATE_WITH_103_079_215_104(RESULT, X)               \
+    DrawTriangleValue = ((f64)(X) + VALUE_103_079_215_104);     \
+    RESULT = ((u32*)&DrawTriangleValue)[0];
+
+#define CALCULATE_WITH_103_079_215_104_UP(RESULT, X)            \
+    DrawTriangleValue = ((f64)(X) + VALUE_103_079_215_104);     \
+    RESULT = (((u32*)&DrawTriangleValue)[0] + 0xFFFF) >> 16;
+
+#define CALCULATE_WITH_103_079_215_104_DOWN(RESULT, X)          \
+    DrawTriangleValue = ((f64)(X) + VALUE_103_079_215_104);     \
+    RESULT = (((u32*)&DrawTriangleValue)[0] - 1) >> 16;
+
+#define CALCULATE_WITH_206_158_430_208(RESULT, X)               \
+    DrawTriangleValue = ((f64)(X) + VALUE_206_158_430_208);     \
+    RESULT = ((u32*)&DrawTriangleValue)[0];
 
 namespace RendererModule
 {
@@ -139,8 +150,8 @@ namespace RendererModule
             for (; y0 <= y1; y0++)
             {
                 // Apply subpixel adjustments and fixed-point conversion for span bounds
-                s32 x0 = ADJUSTPIXELUP(longEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(upperShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, longEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, upperShortEdgeX);
 
                 // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
@@ -176,9 +187,11 @@ namespace RendererModule
             // -------------------------------------------------------------
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(longEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(lowerShortEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, longEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, lowerShortEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 
@@ -199,9 +212,11 @@ namespace RendererModule
             // --- Sub-case B: Long edge is on the right (mirror logic) ---
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(upperShortEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, upperShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, longEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 
@@ -231,9 +246,11 @@ namespace RendererModule
 
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(lowerShortEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, lowerShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, longEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 
@@ -347,8 +364,8 @@ namespace RendererModule
             for (; y0 <= y1; y0++)
             {
                 // Apply subpixel adjustments and fixed-point conversion for span bounds
-                s32 x0 = ADJUSTPIXELUP(longEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(upperShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, longEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, upperShortEdgeX);
 
                 // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
@@ -384,9 +401,11 @@ namespace RendererModule
             // -------------------------------------------------------------
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(longEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(lowerShortEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, longEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, lowerShortEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 
@@ -407,9 +426,11 @@ namespace RendererModule
             // --- Sub-case B: Long edge is on the right (mirror logic) ---
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(upperShortEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, upperShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, longEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 
@@ -439,9 +460,11 @@ namespace RendererModule
 
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(lowerShortEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, lowerShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, longEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 
@@ -556,8 +579,8 @@ namespace RendererModule
             for (; y0 <= y1; y0++)
             {
                 // Apply subpixel adjustments and fixed-point conversion for span bounds
-                s32 x0 = ADJUSTPIXELUP(longEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(upperShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, longEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, upperShortEdgeX);
 
                 // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
@@ -593,9 +616,11 @@ namespace RendererModule
             // -------------------------------------------------------------
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(longEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(lowerShortEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, longEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, lowerShortEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 
@@ -616,9 +641,11 @@ namespace RendererModule
             // --- Sub-case B: Long edge is on the right (mirror logic) ---
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(upperShortEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, upperShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, longEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 
@@ -648,9 +675,11 @@ namespace RendererModule
 
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(lowerShortEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, lowerShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, longEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 
@@ -764,8 +793,8 @@ namespace RendererModule
             for (; y0 <= y1; y0++)
             {
                 // Apply subpixel adjustments and fixed-point conversion for span bounds
-                s32 x0 = ADJUSTPIXELUP(longEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(upperShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, longEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, upperShortEdgeX);
 
                 // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
@@ -801,9 +830,11 @@ namespace RendererModule
             // -------------------------------------------------------------
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(longEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(lowerShortEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, longEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, lowerShortEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 
@@ -824,9 +855,11 @@ namespace RendererModule
             // --- Sub-case B: Long edge is on the right (mirror logic) ---
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(upperShortEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, upperShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, longEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 
@@ -856,9 +889,11 @@ namespace RendererModule
 
             for (; y0 <= y1; y0++)
             {
-                s32 x0 = ADJUSTPIXELUP(lowerShortEdgeX);
-                s32 x1 = ADJUSTPIXELDOWN(longEdgeX);
+                // Apply subpixel adjustments and fixed-point conversion for span bounds
+                CALCULATE_WITH_103_079_215_104_UP(s32 x0, lowerShortEdgeX);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 x1, longEdgeX);
 
+                // Horizontal viewport clipping (X0 to X1)
                 if (x0 < State.ViewPort.X0) { x0 = State.ViewPort.X0; }
                 if (State.ViewPort.X1 < x1) { x1 = State.ViewPort.X1; }
 

@@ -52,6 +52,8 @@ namespace RendererModuleValues
 
     extern RendererModule::RendererModuleDescriptor ModuleDescriptor; // 0x60040010
 
+    extern f64 DrawTriangleValue;           // 0x60041360
+
     extern u16 VertexColor;                 // 0x6003e118
 
     extern u32 DAT_6003e124;                // 0x6003e124   // TODO

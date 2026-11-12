@@ -47,6 +47,8 @@ namespace RendererModuleValues
 
     RendererModuleDescriptor ModuleDescriptor;
 
+    f64 DrawTriangleValue;
+
     u16 VertexColor = 0x000F;
 
     u32 DAT_6003e124 = 15; // TODO
