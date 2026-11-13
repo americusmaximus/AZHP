@@ -47,10 +47,10 @@ The original game shipped with two DirectX 5 renderers with slightly different d
 3. DirectX 5 M is a a renderer based on the DirectX 5 renderer `dx5a.dll` from the modern patch. Since the patch is a binary patch to the `DirectX 5 A`, I untangled it as well, for completeness.
 
 #### DirectX 6
-The original game had no DirectX 6 renderer, thus the one you see here is a renderer from the modern patch, which in its turn is based on file `d3da.dll` version: 1999.01.15.1121 (6553.1.21.4385) that came with Need For Speed: High Stakes in 1999. See [AutoZone High Stakes](https://github.com/americusmaximus/AZHS) DirectX 6 3DS renderer details for additional information.
+The original game had no DirectX 6 renderer, thus the one you see here is a renderer from the modern patch, which in its turn is based on file `d3da.dll` version: 1999.01.15.1121 (6553.1.21.4385) that came with Need For Speed: High Stakes in 1999. See [AutoZone High Stakes](https://github.com/americusmaximus/AZHS) `DirectX 6 3DS` renderer details for additional information.
 
 #### DirectX 7
-The original game had no DirectX 7 renderer, thus the one you see here is a renderer from the modern patch, which in its turn is based on file `d3da.dll` version: 2001.01.18.1651 (8193.1.24.5713) that came with Need For Speed: High Stakes in 2001 with the patch 4.50. See [AutoZone High Stakes](https://github.com/americusmaximus/AZHS) DirectX 7 A renderer details for additional information.
+The original game had no DirectX 7 renderer, thus the one you see here is a renderer from the modern patch, which in its turn is based on file `d3da.dll` version: 2001.01.18.1651 (8193.1.24.5713) that came with Need For Speed: High Stakes in 2001 with the patch 4.50. See [AutoZone High Stakes](https://github.com/americusmaximus/AZHS) `DirectX 7 A` renderer details for additional information.
 
 
 ## Similar Projects
