@@ -2202,6 +2202,250 @@ namespace RendererModule
             *start = (u16)r | (u16)g | (u16)b;
         }
     }
+    
+    // 0x600225f0
+    void DrawTriangleTextureBlendColorMask3Version2(RTLVX* a, RTLVX* b, RTLVX* c)
+    {
+        // Local vertex pointers for sorting (Top, Mid, Bottom)
+        RTLVX* vTop = a;
+        RTLVX* vMid = b;
+        RTLVX* vBottom = c;
+
+        // -------------------------------------------------------------
+        // STEP 1: Sort Vertices Vertically by Y-Coordinate (Ascending)
+        // -------------------------------------------------------------
+        if (vMid->XYZ.Y < vTop->XYZ.Y)
+        {
+            State.Vertexes.Start = vTop;
+            RTLVX* temp = vTop; vTop = vMid; vMid = temp;
+        }
+
+        if (vBottom->XYZ.Y < vTop->XYZ.Y)
+        {
+            State.Vertexes.Start = vTop;
+            RTLVX* temp = vTop; vTop = vBottom; vBottom = temp;
+        }
+
+        if (vBottom->XYZ.Y < vMid->XYZ.Y)
+        {
+            State.Vertexes.Start = vMid;
+            RTLVX* temp = vMid; vMid = vBottom; vBottom = temp;
+        }
+
+        // -------------------------------------------------------------
+        // STEP 2: Compute Edge Slopes and Total Heights
+        // -------------------------------------------------------------
+
+        f32 totalHeight = vBottom->XYZ.Y - vTop->XYZ.Y;
+        f32 invHeightTotal = 1.0f / totalHeight;
+
+        f32 dyTopMid = vMid->XYZ.Y - vTop->XYZ.Y;
+        f32 invDyTopMid = 1.0f / dyTopMid;
+
+        f32 dxdyLong = (vBottom->XYZ.X - vTop->XYZ.X) * invHeightTotal;
+        f32 dxdyShortUpper = (vMid->XYZ.X - vTop->XYZ.X) * invDyTopMid;
+        f32 xLongAtMid = dxdyLong * dyTopMid + vTop->XYZ.X;
+
+        // -------------------------------------------------------------
+        // STEP 3: Y-Viewport Clipping & Scanline Range Setup
+        // -------------------------------------------------------------
+        s32 scanlineY = ADJUSTPIXELUP(vTop->XYZ.Y);
+        s32 scanlineMidY = ADJUSTPIXELDOWN(vMid->XYZ.Y);
+
+        if (vMid->XYZ.Y - (f32)scanlineMidY == 0.0f) { scanlineMidY--; }
+
+        if (scanlineY < State.ViewPort.Y0) { scanlineY = State.ViewPort.Y0; }
+        if (State.ViewPort.Y1 < scanlineMidY) { scanlineMidY = State.ViewPort.Y1; }
+
+        f32 yOffsetFromTop = (f32)scanlineY - vTop->XYZ.Y;
+        addr surface = (addr)State.Renderer.Surface.Surface + RendererSurfaceStride * scanlineY;
+
+        // -------------------------------------------------------------
+        // STEP 4: Texture UV Gradients Setup
+        // -------------------------------------------------------------
+        f32 du_dy = (vBottom->UV.X - vTop->UV.X) * invHeightTotal;
+        f32 dv_dy = (vBottom->UV.Y - vTop->UV.Y) * invHeightTotal;
+
+        f32 uAtMid = du_dy * dyTopMid + vTop->UV.X;
+        f32 vAtMid = dv_dy * dyTopMid + vTop->UV.Y;
+
+        f32 invDeltaX = 1.0f / (xLongAtMid - vMid->XYZ.X);
+        f32 xShortUpper = yOffsetFromTop * dxdyShortUpper + vTop->XYZ.X;
+        f32 xLong = yOffsetFromTop * dxdyLong + vTop->XYZ.X;
+
+        const f32 texWidth = State.Textures.Selected.WidthAsFloat;
+        const f32 texWidthSq = State.Textures.Selected.WidthSquaredAsFloat;
+
+        // Precompute texture gradient constants for span drawer
+        CALCULATE_WITH_206_158_430_208(State.Textures.U, (uAtMid - vMid->UV.X) * invDeltaX * texWidth);
+        CALCULATE_WITH_206_158_430_208(State.Textures.V, (vAtMid - vMid->UV.Y) * invDeltaX * texWidthSq);
+
+        // -------------------------------------------------------------
+        // STEP 5: PHASE 1 - Upper Half Rasterization (Top to Middle)
+        // -------------------------------------------------------------
+        if (xLongAtMid <= vMid->XYZ.X)
+        {
+            f32 scaledDuDy = du_dy * texWidth;
+            f32 scaledDvDy = dv_dy * texWidthSq;
+            f32 currentU = yOffsetFromTop * scaledDuDy + vTop->UV.X * texWidth;
+            f32 currentV = yOffsetFromTop * scaledDvDy + vTop->UV.Y * texWidthSq;
+
+            for (; scanlineY <= scanlineMidY; scanlineY++)
+            {
+                CALCULATE_WITH_103_079_215_104_UP(s32 spanStartX, xLong);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 spanEndX, xShortUpper);
+
+                // X Viewport Clipping
+                if (spanStartX < State.ViewPort.X0) { spanStartX = State.ViewPort.X0; }
+                if (State.ViewPort.X1 < spanEndX) { spanEndX = State.ViewPort.X1; }
+
+                // Draw horizontal pixel span with properly interpolated UVs
+                const addr ls = surface + spanStartX * sizeof(u16);
+                const addr le = surface + spanEndX * sizeof(u16);
+
+                CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
+                CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
+
+                DrawHorizontalLineTextureBlendColorMask3((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+
+                // Step edge interpolators and texture coordinates
+                xShortUpper += dxdyShortUpper;
+                xLong += dxdyLong;
+                currentU += scaledDuDy;
+                currentV += scaledDvDy;
+
+                surface += State.Renderer.Settings.Width * sizeof(u16);
+            }
+
+            // -------------------------------------------------------------
+            // STEP 6: PHASE 2 - Lower Half Rasterization (Middle to Bottom)
+            // -------------------------------------------------------------
+            f32 dyBottomMid = vBottom->XYZ.Y - vMid->XYZ.Y;
+            f32 dxdyShortLower = (dyBottomMid != 0.0f) ? (vBottom->XYZ.X - vMid->XYZ.X) / dyBottomMid : 0.0f;
+
+            scanlineY = ADJUSTPIXELUP(vMid->XYZ.Y);
+            s32 scanlineBottomY = ADJUSTPIXELDOWN(vBottom->XYZ.Y);
+
+            if (vBottom->XYZ.Y - (f32)scanlineBottomY == 0.0f) { scanlineBottomY--; }
+
+            if (scanlineY < State.ViewPort.Y0) { scanlineY = State.ViewPort.Y0; }
+            if (State.ViewPort.Y1 < scanlineBottomY) { scanlineBottomY = State.ViewPort.Y1; }
+
+            f32 dyFromMid = (f32)scanlineY - vMid->XYZ.Y;
+            f32 xShortLower = dyFromMid * dxdyShortLower + vMid->XYZ.X;
+
+            currentU = dyFromMid * scaledDuDy + uAtMid * texWidth;
+            currentV = dyFromMid * scaledDvDy + vAtMid * texWidthSq;
+
+            for (; scanlineY <= scanlineBottomY; scanlineY++)
+            {
+                CALCULATE_WITH_103_079_215_104_UP(s32 spanStartX, xLong);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 spanEndX, xShortLower);
+
+                // X Viewport Clipping
+                if (spanStartX < State.ViewPort.X0) { spanStartX = State.ViewPort.X0; }
+                if (State.ViewPort.X1 < spanEndX) { spanEndX = State.ViewPort.X1; }
+
+                // Draw horizontal pixel span with properly interpolated UVs
+                const addr ls = surface + spanStartX * sizeof(u16);
+                const addr le = surface + spanEndX * sizeof(u16);
+
+                CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
+                CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
+
+                DrawHorizontalLineTextureBlendColorMask3((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+
+                xShortLower += dxdyShortLower;
+                xLong += dxdyLong;
+                currentU += scaledDuDy;
+                currentV += scaledDvDy;
+
+                surface += State.Renderer.Settings.Width * sizeof(u16);
+            }
+        }
+        else
+        {
+            // --- Sub-case B: Short edge on left, Long edge on right (Alternate Orientation) ---
+            f32 du_dx_step = (vMid->UV.X - vTop->UV.X) * invDyTopMid * texWidth;
+            f32 dv_dx_step = (vMid->UV.Y - vTop->UV.Y) * invDyTopMid * texWidthSq;
+
+            f32 currentU = yOffsetFromTop * du_dx_step + vTop->UV.X * texWidth;
+            f32 currentV = yOffsetFromTop * dv_dx_step + vTop->UV.Y * texWidthSq;
+
+            for (; scanlineY <= scanlineMidY; scanlineY++)
+            {
+                CALCULATE_WITH_103_079_215_104_UP(s32 spanStartX, xShortUpper);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 spanEndX, xLong);
+
+                // X Viewport Clipping
+                if (spanStartX < State.ViewPort.X0) { spanStartX = State.ViewPort.X0; }
+                if (State.ViewPort.X1 < spanEndX) { spanEndX = State.ViewPort.X1; }
+
+                // Draw horizontal pixel span with properly interpolated UVs
+                const addr ls = surface + spanStartX * sizeof(u16);
+                const addr le = surface + spanEndX * sizeof(u16);
+
+                CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
+                CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
+
+                DrawHorizontalLineTextureBlendColorMask3((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+
+                xShortUpper += dxdyShortUpper;
+                xLong += dxdyLong;
+                currentU += du_dx_step;
+                currentV += dv_dx_step;
+
+                surface += State.Renderer.Settings.Width * sizeof(u16);
+            }
+
+            // --- PHASE 2 (Sub-case B): Middle to Bottom ---
+            f32 dyBottomMid = vBottom->XYZ.Y - vMid->XYZ.Y;
+            f32 invDyBottomMid = (dyBottomMid != 0.0f) ? (1.0f / dyBottomMid) : 0.0f;
+            f32 dxdyShortLower = (vBottom->XYZ.X - vMid->XYZ.X) * invDyBottomMid;
+
+            f32 du_lower_step = (vBottom->UV.X - vMid->UV.X) * invDyBottomMid * texWidth;
+            f32 dv_lower_step = (vBottom->UV.Y - vMid->UV.Y) * invDyBottomMid * texWidthSq;
+
+            scanlineY = ADJUSTPIXELUP(vMid->XYZ.Y);
+            s32 scanlineBottomY = ADJUSTPIXELDOWN(vBottom->XYZ.Y);
+
+            if (vBottom->XYZ.Y - (f32)scanlineBottomY == 0.0f) { scanlineBottomY--; }
+            if (scanlineY < State.ViewPort.Y0) { scanlineY = State.ViewPort.Y0; }
+            if (State.ViewPort.Y1 < scanlineBottomY) { scanlineBottomY = State.ViewPort.Y1; }
+
+            f32 dyFromMid = (f32)scanlineY - vMid->XYZ.Y;
+            f32 xShortLower = dyFromMid * dxdyShortLower + vMid->XYZ.X;
+
+            currentU = dyFromMid * du_lower_step + uAtMid * texWidth;
+            currentV = dyFromMid * dv_lower_step + vAtMid * texWidthSq;
+
+            for (; scanlineY <= scanlineBottomY; scanlineY++)
+            {
+                CALCULATE_WITH_103_079_215_104_UP(s32 spanStartX, xShortLower);
+                CALCULATE_WITH_103_079_215_104_DOWN(s32 spanEndX, xLong);
+
+                // X Viewport Clipping
+                if (spanStartX < State.ViewPort.X0) { spanStartX = State.ViewPort.X0; }
+                if (State.ViewPort.X1 < spanEndX) { spanEndX = State.ViewPort.X1; }
+
+                // Draw horizontal pixel span with properly interpolated UVs
+                const addr ls = surface + spanStartX * sizeof(u16);
+                const addr le = surface + spanEndX * sizeof(u16);
+
+                CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
+                CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
+
+                DrawHorizontalLineTextureBlendColorMask3((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+
+                xShortLower += dxdyShortLower;
+                xLong += dxdyLong;
+                currentU += du_lower_step;
+                currentV += dv_lower_step;
+
+                surface += State.Renderer.Settings.Width * sizeof(u16);
+            }
+        }
+    }
 
     // 0x60023050
     void DrawTriangleTextureBlendColorMask3(RTLVX* a, RTLVX* b, RTLVX* c)
