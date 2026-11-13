@@ -299,12 +299,13 @@ namespace RendererModule
     void DrawTriangleTextureBlendTransparentBlack3(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
     void DrawTriangleTextureBlendTransparentBlack4(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
 
-    void DrawTriangleTextureBlendColorMask1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
-    void DrawTriangleTextureBlendColorMask2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
-    void DrawTriangleTextureBlendColorMask3(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
-    void DrawTriangleTextureBlendColorMask4(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleTextureBlendColorMask1Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleTextureBlendColorMask2Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleTextureBlendColorMask3Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleTextureBlendColorMask4Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
 
     void DrawTriangleTextureBlendColorMask1Version2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
     void DrawTriangleTextureBlendColorMask2Version2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
     void DrawTriangleTextureBlendColorMask3Version2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleTextureBlendColorMask4Version2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
 }

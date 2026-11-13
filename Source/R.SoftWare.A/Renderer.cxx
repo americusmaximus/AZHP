@@ -694,22 +694,22 @@ namespace RendererModule
         else if (mode == 1) // TODO
         {
             State.Renderer.Lambdas.Lambdas[0][3].Lambdas[0] = DrawTriangleNone;
-            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[1] = DrawTriangleTextureBlendColorMask1Version2;
-            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[2] = DrawTriangleTextureBlendColorMask1Version2;
-            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[3] = DrawTriangleTextureBlendColorMask2Version2;
-            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[4] = DrawTriangleTextureBlendColorMask2Version2;
-            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[5] = DrawTriangleTextureBlendColorMask3Version2;
-            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[6] = DrawTriangleTextureBlendColorMask3Version2;
-            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[7] = FUN_60021030;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[1] = DrawTriangleTextureBlendColorMask1Version1;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[2] = DrawTriangleTextureBlendColorMask1Version1;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[3] = DrawTriangleTextureBlendColorMask2Version1;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[4] = DrawTriangleTextureBlendColorMask2Version1;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[5] = DrawTriangleTextureBlendColorMask3Version1;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[6] = DrawTriangleTextureBlendColorMask3Version1;
+            State.Renderer.Lambdas.Lambdas[0][3].Lambdas[7] = DrawTriangleTextureBlendColorMask4Version1;
 
             State.Renderer.Lambdas.Lambdas[1][3].Lambdas[0] = DrawTriangleNone;
-            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[1] = DrawTriangleTextureBlendColorMask1;
-            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[2] = DrawTriangleTextureBlendColorMask1;
-            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[3] = DrawTriangleTextureBlendColorMask2;
-            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[4] = DrawTriangleTextureBlendColorMask2;
-            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[5] = DrawTriangleTextureBlendColorMask3;
-            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[6] = DrawTriangleTextureBlendColorMask3;
-            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[7] = DrawTriangleTextureBlendColorMask4;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[1] = DrawTriangleTextureBlendColorMask1Version2;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[2] = DrawTriangleTextureBlendColorMask1Version2;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[3] = DrawTriangleTextureBlendColorMask2Version2;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[4] = DrawTriangleTextureBlendColorMask2Version2;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[5] = DrawTriangleTextureBlendColorMask3Version2;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[6] = DrawTriangleTextureBlendColorMask3Version2;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[7] = DrawTriangleTextureBlendColorMask4Version2;
         }
     }
 
