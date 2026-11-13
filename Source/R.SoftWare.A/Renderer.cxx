@@ -687,8 +687,8 @@ namespace RendererModule
             State.Renderer.Lambdas.Lambdas[1][3].Lambdas[2] = DrawTriangleTextureBlendTransparentBlack1Version2;
             State.Renderer.Lambdas.Lambdas[1][3].Lambdas[3] = DrawTriangleTextureBlendTransparentBlack2Version2;
             State.Renderer.Lambdas.Lambdas[1][3].Lambdas[4] = DrawTriangleTextureBlendTransparentBlack2Version2;
-            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[5] = FUN_6000e410;
-            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[6] = FUN_6000e410;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[5] = DrawTriangleTextureBlendTransparentBlack3Version2;
+            State.Renderer.Lambdas.Lambdas[1][3].Lambdas[6] = DrawTriangleTextureBlendTransparentBlack3Version2;
             State.Renderer.Lambdas.Lambdas[1][3].Lambdas[7] = FUN_6000cea0;
         }
         else if (mode == 1) // TODO
@@ -850,8 +850,8 @@ namespace RendererModule
         State.Renderer.Lambdas.Lambdas[1][3].Lambdas[2] = DrawTriangleTextureBlendTransparentBlack1Version2;
         State.Renderer.Lambdas.Lambdas[1][3].Lambdas[3] = DrawTriangleTextureBlendTransparentBlack2Version2;
         State.Renderer.Lambdas.Lambdas[1][3].Lambdas[4] = DrawTriangleTextureBlendTransparentBlack2Version2;
-        State.Renderer.Lambdas.Lambdas[1][3].Lambdas[5] = FUN_6000e410;
-        State.Renderer.Lambdas.Lambdas[1][3].Lambdas[6] = FUN_6000e410;
+        State.Renderer.Lambdas.Lambdas[1][3].Lambdas[5] = DrawTriangleTextureBlendTransparentBlack3Version2;
+        State.Renderer.Lambdas.Lambdas[1][3].Lambdas[6] = DrawTriangleTextureBlendTransparentBlack3Version2;
         State.Renderer.Lambdas.Lambdas[1][3].Lambdas[7] = FUN_6000cea0;
 
         State.Renderer.Lambdas.Lambdas[1][4].Lambdas[0] = DrawTriangleNone;
