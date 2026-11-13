@@ -739,8 +739,8 @@ namespace RendererModule
         else if (mode == 1) // TODO
         {
             State.Renderer.Lambdas.Lambdas[0][4].Lambdas[0] = DrawTriangleNone;
-            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[1] = FUN_6002a820;
-            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[2] = FUN_6002a820;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[1] = DrawTriangleTextureBlendColorMask1Version3;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[2] = DrawTriangleTextureBlendColorMask1Version3;
             State.Renderer.Lambdas.Lambdas[0][4].Lambdas[3] = FUN_60029270;
             State.Renderer.Lambdas.Lambdas[0][4].Lambdas[4] = FUN_60029270;
             State.Renderer.Lambdas.Lambdas[0][4].Lambdas[5] = FUN_60027cc0;
