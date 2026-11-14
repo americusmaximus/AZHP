@@ -71,7 +71,7 @@ namespace RendererModule
     }
 
     // 0x60008490
-    void DrawTriangleTextureBlend3(RTLVX* a, RTLVX* b, RTLVX* c)
+    void DrawTriangleTextureBlend3Version1(RTLVX* a, RTLVX* b, RTLVX* c)
     {
         // Local vertex pointers for sorting (Top, Mid, Bottom)
         RTLVX* vTop = a;
@@ -332,7 +332,7 @@ namespace RendererModule
     }
 
     // 0x600099d0
-    void DrawTriangleTextureBlend2(RTLVX* a, RTLVX* b, RTLVX* c)
+    void DrawTriangleTextureBlend2Version1(RTLVX* a, RTLVX* b, RTLVX* c)
     {
         // Local vertex pointers for sorting (Top, Mid, Bottom)
         RTLVX* vTop = a;
@@ -595,7 +595,7 @@ namespace RendererModule
     }
 
     // 0x6000af20
-    void DrawTriangleTextureBlend1(RTLVX* a, RTLVX* b, RTLVX* c)
+    void DrawTriangleTextureBlend1Version1(RTLVX* a, RTLVX* b, RTLVX* c)
     {
         // Local vertex pointers for sorting (Top, Mid, Bottom)
         RTLVX* vTop = a;

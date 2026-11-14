@@ -290,9 +290,9 @@ namespace RendererModule
     void DrawTriangleUnknownMask2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
     void DrawTriangleUnknownMask3(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
 
-    void DrawTriangleTextureBlend1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
-    void DrawTriangleTextureBlend2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
-    void DrawTriangleTextureBlend3(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleTextureBlend1Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleTextureBlend2Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleTextureBlend3Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
 
     void DrawTriangleTextureBlendTransparentBlack1Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
     void DrawTriangleTextureBlendTransparentBlack2Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
