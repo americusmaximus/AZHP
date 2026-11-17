@@ -725,7 +725,7 @@ namespace RendererModule
             State.Renderer.Lambdas.Lambdas[0][4].Lambdas[4] = DrawTriangleTextureBlend2Version1;
             State.Renderer.Lambdas.Lambdas[0][4].Lambdas[5] = DrawTriangleTextureBlend3Version1;
             State.Renderer.Lambdas.Lambdas[0][4].Lambdas[6] = DrawTriangleTextureBlend3Version1;
-            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = FUN_6002bce0;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = DrawTriangleTextureBlend4Version1;
 
             State.Renderer.Lambdas.Lambdas[1][4].Lambdas[0] = DrawTriangleNone;
             State.Renderer.Lambdas.Lambdas[1][4].Lambdas[1] = DrawTriangleTextureBlend1Version2;
@@ -807,7 +807,7 @@ namespace RendererModule
         State.Renderer.Lambdas.Lambdas[0][4].Lambdas[4] = DrawTriangleTextureBlend2Version1;
         State.Renderer.Lambdas.Lambdas[0][4].Lambdas[5] = DrawTriangleTextureBlend3Version1;
         State.Renderer.Lambdas.Lambdas[0][4].Lambdas[6] = DrawTriangleTextureBlend3Version1;
-        State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = FUN_6002bce0;
+        State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = DrawTriangleTextureBlend4Version1;
 
         State.Renderer.Lambdas.Lambdas[0][7].Lambdas[0] = FUN_6001e4f0;
         State.Renderer.Lambdas.Lambdas[0][7].Lambdas[1] = FUN_6001e4f0;
@@ -913,7 +913,7 @@ namespace RendererModule
             State.Renderer.Lambdas.Lambdas[0][0].Lambdas[7] = DrawTriangleVertexColor;
             State.Renderer.Lambdas.Lambdas[0][1].Lambdas[7] = FUN_6002e770;
             State.Renderer.Lambdas.Lambdas[0][2].Lambdas[7] = FUN_6002d1c0;
-            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = FUN_6002bce0;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = DrawTriangleTextureBlend4Version1;
 
             State.Renderer.Lambdas.Lambdas[1][0].Lambdas[7] = DrawTriangleVertexColor;
             State.Renderer.Lambdas.Lambdas[1][1].Lambdas[7] = FUN_600179e0;
