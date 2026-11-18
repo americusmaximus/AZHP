@@ -769,13 +769,13 @@ namespace RendererModule
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[6] = DrawTriangleUnknownMask1;
         State.Renderer.Lambdas.Lambdas[0][0].Lambdas[7] = DrawTriangleVertexColor;
 
-        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[0] = DrawTrianglePaletteTextureVersion1;
-        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[1] = DrawTrianglePaletteTextureVersion1;
-        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[2] = DrawTrianglePaletteTextureVersion1;
-        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[3] = DrawTrianglePaletteTextureVersion1;
-        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[4] = DrawTrianglePaletteTextureVersion1;
-        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[5] = DrawTrianglePaletteTextureVersion1;
-        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[6] = DrawTrianglePaletteTextureVersion1;
+        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[0] = DrawTrianglePaletteTextureNoLastIndexVersion1;
+        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[1] = DrawTrianglePaletteTextureNoLastIndexVersion1;
+        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[2] = DrawTrianglePaletteTextureNoLastIndexVersion1;
+        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[3] = DrawTrianglePaletteTextureNoLastIndexVersion1;
+        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[4] = DrawTrianglePaletteTextureNoLastIndexVersion1;
+        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[5] = DrawTrianglePaletteTextureNoLastIndexVersion1;
+        State.Renderer.Lambdas.Lambdas[0][1].Lambdas[6] = DrawTrianglePaletteTextureNoLastIndexVersion1;
         State.Renderer.Lambdas.Lambdas[0][1].Lambdas[7] = FUN_6002e770;
 
         State.Renderer.Lambdas.Lambdas[0][2].Lambdas[0] = FUN_60012ee0;
@@ -823,14 +823,14 @@ namespace RendererModule
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[6] = DrawTriangleUnknownMask1;
         State.Renderer.Lambdas.Lambdas[1][0].Lambdas[7] = DrawTriangleVertexColor;
 
-        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[0] = DrawTrianglePaletteTextureVersion2;
-        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[1] = DrawTrianglePaletteTextureVersion2;
-        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[2] = DrawTrianglePaletteTextureVersion2;
-        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[3] = DrawTrianglePaletteTextureVersion2;
-        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[4] = DrawTrianglePaletteTextureVersion2;
-        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[5] = DrawTrianglePaletteTextureVersion2;
-        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[6] = DrawTrianglePaletteTextureVersion2;
-        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[7] = DrawTrianglePaletteTextureVersion2;
+        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[0] = DrawTrianglePaletteTextureNoLastIndexVersion2;
+        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[1] = DrawTrianglePaletteTextureNoLastIndexVersion2;
+        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[2] = DrawTrianglePaletteTextureNoLastIndexVersion2;
+        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[3] = DrawTrianglePaletteTextureNoLastIndexVersion2;
+        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[4] = DrawTrianglePaletteTextureNoLastIndexVersion2;
+        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[5] = DrawTrianglePaletteTextureNoLastIndexVersion2;
+        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[6] = DrawTrianglePaletteTextureNoLastIndexVersion2;
+        State.Renderer.Lambdas.Lambdas[1][1].Lambdas[7] = DrawTrianglePaletteTextureNoLastIndexVersion2;
 
         State.Renderer.Lambdas.Lambdas[1][2].Lambdas[0] = FUN_60013940;
         State.Renderer.Lambdas.Lambdas[1][2].Lambdas[1] = FUN_60013940;
@@ -912,7 +912,7 @@ namespace RendererModule
             State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = DrawTriangleTextureBlend4Version1;
 
             State.Renderer.Lambdas.Lambdas[1][0].Lambdas[7] = DrawTriangleVertexColor;
-            State.Renderer.Lambdas.Lambdas[1][1].Lambdas[7] = DrawTrianglePaletteTextureVersion2;
+            State.Renderer.Lambdas.Lambdas[1][1].Lambdas[7] = DrawTrianglePaletteTextureNoLastIndexVersion2;
             State.Renderer.Lambdas.Lambdas[1][2].Lambdas[7] = FUN_6002dc20;
             State.Renderer.Lambdas.Lambdas[1][4].Lambdas[7] = DrawTriangleTextureBlend4Version2;
         }

@@ -3621,7 +3621,7 @@ namespace RendererModule
     }
 
     // 0x60016f10
-    void DrawHorizontalLinePaletteTexture(u16* start, const u16* end, u32 x0, u32 x1, u32 u, u32 v)
+    void DrawHorizontalLinePaletteTextureNoLastIndex(u16* start, const u16* end, u32 x0, u32 x1, u32 u, u32 v)
     {
         for (; start <= end; start = start + 1)
         {
@@ -3640,7 +3640,7 @@ namespace RendererModule
     }
 
     // 0x60016f80
-    void DrawTrianglePaletteTextureVersion1(RTLVX* a, RTLVX* b, RTLVX* c)
+    void DrawTrianglePaletteTextureNoLastIndexVersion1(RTLVX* a, RTLVX* b, RTLVX* c)
     {
         // Local vertex pointers for sorting (Top, Mid, Bottom)
         RTLVX* vTop = a;
@@ -3742,7 +3742,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureNoLastIndex((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 // Step edge interpolators and texture coordinates
                 xShortUpper += dxdyShortUpper;
@@ -3789,7 +3789,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureNoLastIndex((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortLower += dxdyShortLower;
                 xLong += dxdyLong;
@@ -3824,7 +3824,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureNoLastIndex((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortUpper += dxdyShortUpper;
                 xLong += dxdyLong;
@@ -3871,7 +3871,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureNoLastIndex((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortLower += dxdyShortLower;
                 xLong += dxdyLong;
@@ -3884,7 +3884,7 @@ namespace RendererModule
     }
 
     // 0x600179e0
-    void DrawTrianglePaletteTextureVersion2(RTLVX* a, RTLVX* b, RTLVX* c)
+    void DrawTrianglePaletteTextureNoLastIndexVersion2(RTLVX* a, RTLVX* b, RTLVX* c)
     {
         // Local vertex pointers for sorting (Top, Mid, Bottom)
         RTLVX* vTop = a;
@@ -3986,7 +3986,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureNoLastIndex((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 // Step edge interpolators and texture coordinates
                 xShortUpper += dxdyShortUpper;
@@ -4033,7 +4033,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureNoLastIndex((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortLower += dxdyShortLower;
                 xLong += dxdyLong;
@@ -4068,7 +4068,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureNoLastIndex((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortUpper += dxdyShortUpper;
                 xLong += dxdyLong;
@@ -4115,7 +4115,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureNoLastIndex((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortLower += dxdyShortLower;
                 xLong += dxdyLong;
