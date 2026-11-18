@@ -56,7 +56,7 @@ namespace RendererModuleValues
 
     extern u16 VertexColor;                 // 0x6003e118
 
-    extern u32 DAT_6003e124;                // 0x6003e124   // TODO
+    extern u32 PaletteAlphaIndex;           // 0x6003e124
     extern u32 DAT_6003e128;                // 0x6003e128   // TODO
 
     extern u32 Unknown32BitColors1[MAX_UNKNOWN_COLOR_ARRAY_COUNT];  // 0x6003e13c

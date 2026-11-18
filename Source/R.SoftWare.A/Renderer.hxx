@@ -42,7 +42,9 @@ SOFTWARE.
 #define MIN_DEVICE_AVAIABLE_VIDEO_MEMORY (16 * 1024 * 1024) /* ORIGINAL: 0x8000 (32 KB) */
 #define RENDERER_SURFACE_ALIGNMENT_MASK 0xFFFFFF00
 #define RENDERER_SURFACE_SIZE_MODIFIER 256
-#define RENDERER_PALETTE_COLOR_COUNT 256
+#define RENDERER_PALETTE_COLOR_COUNT            256
+#define RENDERER_MAX_PALETTE_COUNT              16
+#define RENDERER_MAX_PALETTE_INDEX              15
 
 #define RENDERER_CULL_MODE_CLOCK_WISE           0x00000000
 #define RENDERER_CULL_MODE_NONE                 0x00000001
@@ -339,4 +341,7 @@ namespace RendererModule
     void DrawTrianglePaletteTextureNoLastIndexVersion2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
     void DrawTrianglePaletteTextureNoLastIndexVersion3(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
     void DrawTrianglePaletteTextureNoLastIndexVersion4(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+
+    void DrawTrianglePaletteTextureBlendColorMask1Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTrianglePaletteTextureBlendColorMask1Version2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
 }

@@ -238,9 +238,9 @@ namespace RendererModule
 
             const u32 alpha = ((va->Color >> 24) + (vb->Color >> 24) + (vc->Color >> 24)) / 3;
 
-            const u32 todo = alpha >> 4; // TODO
-            DAT_6003e128 = 15 - todo;
-            DAT_6003e124 = todo  << 8;
+            const u32 indx = alpha >> 4; // TODO
+            DAT_6003e128 = RENDERER_MAX_PALETTE_INDEX - indx;
+            PaletteAlphaIndex = indx * RENDERER_PALETTE_COLOR_COUNT;
 
             State.Renderer.Lambdas.Active->Lambdas[alpha >> 5](va, vb, vc);
         }

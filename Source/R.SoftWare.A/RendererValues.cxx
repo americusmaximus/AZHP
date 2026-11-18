@@ -51,7 +51,7 @@ namespace RendererModuleValues
 
     u16 VertexColor = 0x000F;
 
-    u32 DAT_6003e124 = 15; // TODO
+    u32 PaletteAlphaIndex = RENDERER_MAX_PALETTE_INDEX;
     u32 DAT_6003e128 = 15; // TODO
 
     s32 UnknownArray06[MAX_UNKNOWN_COUNT] =
