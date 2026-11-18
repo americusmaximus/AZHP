@@ -337,4 +337,6 @@ namespace RendererModule
 
     void DrawTrianglePaletteTextureNoLastIndexVersion1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
     void DrawTrianglePaletteTextureNoLastIndexVersion2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTrianglePaletteTextureNoLastIndexVersion3(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTrianglePaletteTextureNoLastIndexVersion4(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
 }
