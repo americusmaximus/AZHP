@@ -3621,7 +3621,7 @@ namespace RendererModule
     }
 
     // 0x60012e80
-    void DrawHorizontalLinePaletteTexture(u16* start, const u16* end, u32 x0, u32 x1, u32 u, u32 v)
+    void DrawHorizontalLinePaletteTextureVersion1(u16* start, const u16* end, u32 x0, u32 x1, u32 u, u32 v)
     {
         for (; start <= end; start = start + 1)
         {
@@ -3740,7 +3740,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureVersion1((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 // Step edge interpolators and texture coordinates
                 xShortUpper += dxdyShortUpper;
@@ -3787,7 +3787,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureVersion1((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortLower += dxdyShortLower;
                 xLong += dxdyLong;
@@ -3822,7 +3822,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureVersion1((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortUpper += dxdyShortUpper;
                 xLong += dxdyLong;
@@ -3869,7 +3869,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureVersion1((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortLower += dxdyShortLower;
                 xLong += dxdyLong;
@@ -3984,7 +3984,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureVersion1((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 // Step edge interpolators and texture coordinates
                 xShortUpper += dxdyShortUpper;
@@ -4031,7 +4031,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureVersion1((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortLower += dxdyShortLower;
                 xLong += dxdyLong;
@@ -4066,7 +4066,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureVersion1((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortUpper += dxdyShortUpper;
                 xLong += dxdyLong;
@@ -4113,7 +4113,7 @@ namespace RendererModule
                 CALCULATE_WITH_206_158_430_208(u32 x0, currentU);
                 CALCULATE_WITH_206_158_430_208(u32 y0, currentV);
 
-                DrawHorizontalLinePaletteTexture((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
+                DrawHorizontalLinePaletteTextureVersion1((u16*)ls, (u16*)le, x0, y0, State.Textures.U, State.Textures.V);
 
                 xShortLower += dxdyShortLower;
                 xLong += dxdyLong;
