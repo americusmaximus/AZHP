@@ -644,23 +644,23 @@ namespace RendererModule
         }
         else if (mode == 1) // TODO
         {
-            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[0] = FUN_6001fa90;
-            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[1] = FUN_6001fa90;
-            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[2] = FUN_6001fa90;
-            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[3] = FUN_6001fa90;
-            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[4] = FUN_6001fa90;
-            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[5] = FUN_6001fa90;
-            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[6] = FUN_6001fa90;
-            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[7] = FUN_6001fa90;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[0] = DrawTriangleTextureBlendColorMask6Version1;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[1] = DrawTriangleTextureBlendColorMask6Version1;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[2] = DrawTriangleTextureBlendColorMask6Version1;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[3] = DrawTriangleTextureBlendColorMask6Version1;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[4] = DrawTriangleTextureBlendColorMask6Version1;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[5] = DrawTriangleTextureBlendColorMask6Version1;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[6] = DrawTriangleTextureBlendColorMask6Version1;
+            State.Renderer.Lambdas.Lambdas[0][7].Lambdas[7] = DrawTriangleTextureBlendColorMask6Version1;
 
-            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[0] = FUN_600204f0;
-            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[1] = FUN_600204f0;
-            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[2] = FUN_600204f0;
-            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[3] = FUN_600204f0;
-            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[4] = FUN_600204f0;
-            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[5] = FUN_600204f0;
-            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[6] = FUN_600204f0;
-            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[7] = FUN_600204f0;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[0] = DrawTriangleTextureBlendColorMask6Version2;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[1] = DrawTriangleTextureBlendColorMask6Version2;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[2] = DrawTriangleTextureBlendColorMask6Version2;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[3] = DrawTriangleTextureBlendColorMask6Version2;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[4] = DrawTriangleTextureBlendColorMask6Version2;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[5] = DrawTriangleTextureBlendColorMask6Version2;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[6] = DrawTriangleTextureBlendColorMask6Version2;
+            State.Renderer.Lambdas.Lambdas[1][7].Lambdas[7] = DrawTriangleTextureBlendColorMask6Version2;
         }
     }
 
