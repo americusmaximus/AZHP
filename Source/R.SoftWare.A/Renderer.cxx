@@ -560,10 +560,9 @@ namespace RendererModule
 
         for (u32 x = 0; x < tex->Size; x++)
         {
-            const u8 pixel = pixels[x];
-            dst[x] = pixel;
+            dst[x] = src[x];
 
-            if (pixel == 0xFF)
+            if (dst[x] == 0xFF)
             {
                 match = TRUE;
             }
@@ -586,15 +585,12 @@ namespace RendererModule
             {
                 for (u32 xx = 0; xx < RENDERER_PALETTE_COLOR_COUNT; xx++)
                 {
-                    const u32 c = AcquireWeightedColorValue(pal[xx], multiplier);
+                    const u32 c = AcquireWeightedColorValue(palette[xx], multiplier);
                     const u32 color = CalculateColor(c, c);
 
                     dst[xx] = color;
 
-                    if ((color & 0xFFFF) == 0)
-                    {
-                        dst[xx] = 1;
-                    }
+                    if ((color & 0xFFFF) == 0) { dst[xx] = 1; }
                 }
 
                 multiplier += 1.0f / (f32)tex->PaletteCount;
