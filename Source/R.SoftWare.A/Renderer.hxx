@@ -352,4 +352,7 @@ namespace RendererModule
 
     void DrawTriangleTextureBlendColorMask6Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
     void DrawTriangleTextureBlendColorMask6Version2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+
+    void DrawTriangleTextureBlendColorMask7Version1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
+    void DrawTriangleTextureBlendColorMask7Version2(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c);
 }

@@ -924,7 +924,7 @@ namespace RendererModule
 
             State.Renderer.Lambdas.Lambdas[0][1].Lambdas[7] = FUN_6001c9e0;
             State.Renderer.Lambdas.Lambdas[0][2].Lambdas[7] = FUN_6001afc0;
-            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = FUN_60006920;
+            State.Renderer.Lambdas.Lambdas[0][4].Lambdas[7] = DrawTriangleTextureBlendColorMask7Version1;
 
             State.Renderer.Lambdas.Lambdas[1][0].Lambdas[7] =
                 State.DX.Surfaces.Bits == GRAPHICS_BITS_PER_PIXEL_16
@@ -932,7 +932,7 @@ namespace RendererModule
 
             State.Renderer.Lambdas.Lambdas[1][1].Lambdas[7] = FUN_6001d670;
             State.Renderer.Lambdas.Lambdas[1][2].Lambdas[7] = FUN_6001bc50;
-            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[7] = FUN_60007620;
+            State.Renderer.Lambdas.Lambdas[1][4].Lambdas[7] = DrawTriangleTextureBlendColorMask7Version2;
         }
     }
 
