@@ -41,7 +41,7 @@ The renderer modules were implemented with minor changes, such as omission of wr
 
 #### DirectX 5
 The original game shipped with two DirectX 5 renderers with slightly different design and capabilities. I added all of them as well as the patched version from the modern patch for completeness.
-I had to make some changes in the code so that, on my environment, a failure to create 24-bit depth surface leads to the attempt to create 16-bit surface. This change prevented the crash of the game. My test environmnet doesn't support 8-bit palletized texture, thus I am unable to validate the renderer.
+I had to make some changes in the code so that, on my environment, a failure to create 24-bit depth surface leads to the attempt to create 16-bit surface. This change prevented the crash of the game. My test environment doesn't support 8-bit palletized texture, thus I am unable to validate the renderer.
 Having said all this, it is great that other renderers are available and do work. Here is the outline of DirectX 5 renderers:
 
 1. DirectX 5 3DS is a renderer based on the original unversioned file `d3da.dll` that came with the original game in 1998 and was located in `3dSetup` folder. Even though it was capable to render the game it was not intended to do so.
