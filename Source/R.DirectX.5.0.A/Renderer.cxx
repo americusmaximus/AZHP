@@ -492,7 +492,11 @@ namespace RendererModule
 
         State.Lambdas.SelectInstance(NULL);
 
-        State.DX.Instance->Release();
+        if (State.DX.Active.IsInit)
+        {
+            State.DX.Instance->Release();
+        }
+
         State.DX.Instance = NULL;
 
         SetEvent(State.Mutex);
@@ -931,7 +935,12 @@ namespace RendererModule
             ? DDSCAPS_ZBUFFER | DDSCAPS_VIDEOMEMORY
             : DDSCAPS_ZBUFFER | DDSCAPS_SYSTEMMEMORY;
 
-        State.DX.Active.Instance->CreateSurface(&desc, &State.DX.Active.Surfaces.Depth, NULL);
+        if (State.DX.Active.Instance->CreateSurface(&desc, &State.DX.Active.Surfaces.Depth, NULL) == E_NOTIMPL)
+        {
+            desc.dwZBufferBitDepth =
+                State.Device.Capabilities.DepthBits = GRAPHICS_BITS_PER_PIXEL_16;
+            State.DX.Active.Instance->CreateSurface(&desc, &State.DX.Active.Surfaces.Depth, NULL);
+        }
 
         {
             const HRESULT result = State.DX.Active.Surfaces.Depth->QueryInterface(IID_IDirectDrawSurface2, (void**)&State.DX.Active.Surfaces.Active.Depth);

@@ -40,7 +40,9 @@ One more thing regarding the callbacks, some are required to be called during th
 The renderer modules were implemented with minor changes, such as omission of write-only variables, making calls to functions when result is not used, as well as addition of configuration file and reading values from it, which is useful in a few cases.
 
 #### DirectX 5
-The original game shipped with two DirectX 5 renderers with slightly different design and capabilities. I added all of them as well as the patched version from the modern patch for completeness. Unfortunately DirectX 5 is so far away in the past that I was not able to make this renderer work without some tweaks here and there, and it will require major changes in the game itself so that 16-bit rendering is not used. On my test environments I ran into an error where SetDisplayMode fails to set resolution in 16-bit mode, this error leads to renderer not creating surfaces, which leads to inability to create a Direct3D device from which one cannot recover gracefully. Having said all this, it is great that other renderers are available and do work. Here is the outline of DirectX 5 renderers:
+The original game shipped with two DirectX 5 renderers with slightly different design and capabilities. I added all of them as well as the patched version from the modern patch for completeness.
+I had to make some changes in the code so that, on my environment, a failure to create 24-bit depth surface leads to the attempt to create 16-bit surface. This change prevented the crash of the game. My test environmnet doesn't support 8-bit palletized texture, thus I am unable to validate the renderer.
+Having said all this, it is great that other renderers are available and do work. Here is the outline of DirectX 5 renderers:
 
 1. DirectX 5 3DS is a renderer based on the original unversioned file `d3da.dll` that came with the original game in 1998 and was located in `3dSetup` folder. Even though it was capable to render the game it was not intended to do so.
 2. DirectX 5 A is a renderer based on the original file `d3da.dll` version: 1998.08.10.1148 (6552.8.16.4424) that came with the original game in 1998.
@@ -70,5 +72,6 @@ The original game had no DirectX 7 renderer, thus the one you see here is a rend
 1. This is not a complete game. Please purchase software you like!
 2. The source code in this repository is mostly produced by reverse engineering the original binaries. There are a couple of exceptions for reverse engineering under DMCA -- documentation, interoperability, fair use. See goals section for the interoperability and fair use cases. The documentation is needed to support those. Also please see an article about [software preservation](https://en.wikipedia.org/wiki/Digital_preservation).
 3. Need For Speed, Need For Speed: High Stakes, DirectX, OpenGL, Vulkan, and others are trademarks of their respective owners.
+
 
 
