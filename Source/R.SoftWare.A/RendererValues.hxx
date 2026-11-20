@@ -54,6 +54,8 @@ namespace RendererModuleValues
 
     extern f64 DrawTriangleValue;           // 0x60041360
 
+    extern u32 VertexColorIncrement;        // 0x60041378
+
     extern u16 VertexColor;                 // 0x6003e118
 
     extern u32 PaletteAlphaIndex;           // 0x6003e124

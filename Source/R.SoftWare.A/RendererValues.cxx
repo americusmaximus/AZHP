@@ -49,6 +49,8 @@ namespace RendererModuleValues
 
     f64 DrawTriangleValue;
 
+    u32 VertexColorIncrement;
+
     u16 VertexColor = 0x000F;
 
     u32 PaletteAlphaIndex = RENDERER_MAX_PALETTE_INDEX;
