@@ -226,10 +226,10 @@ namespace RendererModule
 
         struct
         {
-            Renderer::RTLVX* Start;   // 0x60041374
+            Renderer::RTLVX* Start;     // 0x60041374
         } Vertexes;
 
-        u32 UnknownQuadValue;   // 0x6003e0a8
+        u32 QuadDrawMode;               // 0x6003e0a8
 
         struct
         {

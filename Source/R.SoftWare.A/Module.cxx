@@ -210,7 +210,7 @@ namespace RendererModule
     // a.k.a. THRASH_drawquad
     DLLAPI void STDCALLAPI DrawQuad(RVX* a, RVX* b, RVX* c, RVX* d)
     {
-        if (State.UnknownQuadValue == 0)
+        if (State.QuadDrawMode == 0)
         {
             DrawTriangle(a, b, c);
             DrawTriangle(c, d, a);
@@ -223,11 +223,11 @@ namespace RendererModule
         {
             FUN_600336f0((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
         }
-        else if (State.UnknownQuadValue == 3)
+        else if (State.QuadDrawMode == 3)
         {
             FUN_60034c30();
         }
-        else if (State.UnknownQuadValue == 2)
+        else if (State.QuadDrawMode == 2)
         {
             FUN_600346c0();
         }
@@ -654,9 +654,9 @@ namespace RendererModule
 
             return RENDERER_MODULE_SUCCESS;
         }
-        case RENDERER_MODULE_STATE_703:
+        case RENDERER_MODULE_STATE_QUAD_DRAW_MODE:
         {
-            State.UnknownQuadValue = (u32)value;
+            State.QuadDrawMode = (u32)value;
 
             return RENDERER_MODULE_SUCCESS;
         }
