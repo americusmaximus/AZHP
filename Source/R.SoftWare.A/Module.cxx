@@ -210,7 +210,31 @@ namespace RendererModule
     // a.k.a. THRASH_drawquad
     DLLAPI void STDCALLAPI DrawQuad(RVX* a, RVX* b, RVX* c, RVX* d)
     {
-        // TODO NOT IMPLEMENTED
+        if (State.UnknownQuadValue == 0)
+        {
+            DrawTriangle(a, b, c);
+            DrawTriangle(c, d, a);
+        }
+        else if (State.Renderer.Lambdas.Index == 0)
+        {
+            FUN_60034890((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
+        }
+        else if (State.Renderer.Lambdas.Index == 7)
+        {
+            FUN_600336f0((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
+        }
+        else if (State.UnknownQuadValue == 3)
+        {
+            FUN_60034c30();
+        }
+        else if (State.UnknownQuadValue == 2)
+        {
+            FUN_600346c0();
+        }
+        else
+        {
+            FUN_60033500((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
+        }
     }
 
     // 0x60004f30
