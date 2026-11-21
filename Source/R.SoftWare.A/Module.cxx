@@ -223,13 +223,13 @@ namespace RendererModule
         {
             FUN_600336f0((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
         }
-        else if (State.QuadDrawMode == 3)
-        {
-            FUN_60034c30();
-        }
         else if (State.QuadDrawMode == 2)
         {
             FUN_600346c0();
+        }
+        else if (State.QuadDrawMode == 3)
+        {
+            FUN_60034c30((RTLVX*)a, (RTLVX*)c);
         }
         else
         {

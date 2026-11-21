@@ -6276,11 +6276,16 @@ namespace RendererModule
             x0 += u;
             x1 += v;
 
-            u32 pix = ((u32*)State.Textures.Selected.Pixels)[(m1 + m2) >> 15];
-
-            u32 indx = pix >> 16;
-
             // BUG. This function has a bug. The index can go over 15.
+            
+            //u32 pix = ((u32*)State.Textures.Selected.Pixels)[(m1 + m2) >> 15];
+            
+            //u32 indx = pix >> 16;
+
+            u32 pix = State.Textures.Selected.Pixels[(m1 + m2) >> 15];
+
+            u32 indx = pix >> 20;
+            // END BUG
 
             if (indx == 15) { break; }
 
@@ -6805,7 +6810,11 @@ namespace RendererModule
             // BUG. This function should produce 2x density of texture, however
             // this leads to reads after the alocated texture data.
 
-            u32 tex = State.Textures.Selected.Pixels[2 * ((m1 + m2) >> 15)];
+            //u32 tex = State.Textures.Selected.Pixels[2 * ((m1 + m2) >> 15)];
+
+            u32 tex = State.Textures.Selected.Pixels[(m1 + m2) >> 15];
+
+            // END BUG
 
             u32 r = (tex & RedRendererColorMask) + (pix & RedRendererColorMask);
 
