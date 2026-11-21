@@ -13806,4 +13806,122 @@ namespace RendererModule
     {
         UnknownFunction = lambda;
     }
+
+    // 0x60034890
+    void DrawQuadVertexColor(RTLVX* a, RTLVX* b, RTLVX* c, RTLVX* d)
+    {
+        s32 x0 = (s32)a->XYZ.X;
+        s32 y0 = (s32)a->XYZ.Y;
+        s32 w = (s32)(c->XYZ.X - a->XYZ.X);
+        s32 h = (s32)(c->XYZ.Y - a->XYZ.Y);
+
+        if (w >= 0 && h >= 0 && x0 <= State.ViewPort.X1 && y0 <= State.ViewPort.Y1)
+        {
+            s32 x1 = w + x0;
+            s32 y1 = h + y0;
+
+            if (State.ViewPort.X0 <= x1 && State.ViewPort.Y0 <= y1)
+            {
+                s32 width = w;
+
+                if (x0 < State.ViewPort.X0)
+                {
+                    x0 = 0;
+                    width = x1;
+                }
+
+                s32 height = h;
+
+                if (y0 < State.ViewPort.Y0)
+                {
+                    height = h + y0;
+                    y0 = 0;
+                }
+
+                if (State.ViewPort.X1 < x0 + width)
+                {
+                    width = width - ((x0 + width) - State.ViewPort.X1);
+                }
+
+                if (State.ViewPort.Y1 < height + y0)
+                {
+                    height = height - ((height + y0) - State.ViewPort.Y1);
+                }
+
+                addr surface = (addr)State.Renderer.Surface.Surface
+                    + x0 * sizeof(u16) + RendererSurfaceStride * y0;
+
+                u32 ar = a->Color & 0x00FF0000;
+                u32 ag = a->Color & 0x0000FF00;
+                u32 ab = a->Color & 0x000000FF;
+
+                u32 agm = ag * 0x100;
+                u32 abm = ab * 0x10000;
+
+                u32 br = b->Color & 0x00FF0000;
+                u32 bg = b->Color & 0x0000FF00;
+                u32 bb = b->Color & 0x000000FF;
+
+                s32 bgm = bg * 0x100;
+                u32 bbm = bb * 0x10000;
+
+                u32 cr = c->Color & 0x00FF0000;
+                u32 cg = c->Color & 0x0000FF00;
+                u32 cb = c->Color & 0x000000FF;
+
+                u32 cgm = cg * 0x100;
+                u32 cbm = cb * 0x10000;
+
+                u32 dr = d->Color & 0x00FF0000;
+                u32 dg = d->Color & 0x0000FF00;
+                u32 db = d->Color & 0x000000FF;
+
+                u32 dgm = dg * 0x100;
+                u32 dbm = db * 0x10000;
+
+                s32 delta_ad_red = (d->Color & 0x00FF0000) - ar;
+                s32 delta_cb_red = (c->Color & 0x00FF0000) - br;
+
+                for (s32 y = 0; y < height; y++, surface += RendererSurfaceStride)
+                {
+                    u16* pixels = (u16*)surface;
+
+                    u32 current_red = ar;
+                    u32 current_green_modifier = agm;
+                    u32 current_blue_modifier = abm;
+
+                    for (s32 x = 0; x < width; x++, pixels++)
+                    {
+                        u16 red = 0, green = 0;
+                        if (State.DX.Surfaces.Bits == GRAPHICS_BITS_PER_PIXEL_16)
+                        {
+                            red = (u16)((current_red >> 19) << 11);
+                            green = (u16)((current_green_modifier >> 19) << 6);
+                        }
+                        else
+                        {
+                            red = (u16)((current_red >> 19) << 10);
+                            green = (u16)((current_green_modifier >> 19) << 5);
+                        }
+
+                        *pixels = red | green | (u16)(current_blue_modifier >> 19);
+
+                        current_red += (s32)(br - ar) / w;
+                        current_green_modifier += (s32)(bgm - agm) / w;
+                        current_blue_modifier += (s32)(bbm - abm) / w;
+                    }
+
+                    ar += delta_ad_red / h;
+
+                    agm += (s32)(dgm - ag * 0x100) / h;
+                    abm += (s32)(dbm - ab * 0x10000) / h;
+
+                    br += delta_cb_red / h;
+
+                    bgm += (s32)(cgm - bg * 0x100) / h;
+                    bbm += (s32)(cbm - bb * 0x10000) / h;
+                }
+            }
+        }
+    }
 }

@@ -217,7 +217,7 @@ namespace RendererModule
         }
         else if (State.Renderer.Lambdas.Index == 0)
         {
-            FUN_60034890((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
+            DrawQuadVertexColor((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
         }
         else if (State.Renderer.Lambdas.Index == 7)
         {
