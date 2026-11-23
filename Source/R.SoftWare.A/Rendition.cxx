@@ -14050,4 +14050,97 @@ namespace RendererModule
             }
         }
     }
+
+    // 0x60034c30
+    void DrawQuadTextureDiagonal(RTLVX* a, RTLVX* c)
+    {
+        addr texture = (addr)State.Textures.Selected.Pixels;
+
+        s32 x0 = (s32)(a->XYZ.X);
+        s32 y0 = (s32)(a->XYZ.Y);
+        s32 w = (s32)(c->XYZ.X) - x0;
+        s32 h = (s32)(c->XYZ.Y) - y0;
+
+        if ((w & 1) != 0)
+        {
+            w = w + 1;
+        }
+
+        if ((h & 1) != 0)
+        {
+            h = h + 1;
+        }
+
+        if (w > 0 && h > 0
+            && x0 <= State.ViewPort.X1
+            && y0 <= State.ViewPort.Y1
+            && State.ViewPort.X0 <= (x0 + w)
+            && State.ViewPort.Y0 <= (y0 + h))
+        {
+            s32 uStep = (s32)((State.Textures.Selected.Width * (c->UV.X - a->UV.X) / (f32)w) * 65535.0f);
+            s32 vStep = (s32)((State.Textures.Selected.Height * (c->UV.Y - a->UV.Y) / (f32)h) * 65535.0f);
+
+            if (x0 < State.ViewPort.X0)
+            {
+                w += x0;
+                x0 = 0;
+            }
+
+            if (y0 < State.ViewPort.Y0)
+            {
+                h += y0;
+                y0 = 0;
+            }
+
+            if (State.ViewPort.X1 + 1 < (w + x0))
+            {
+                w = w - ((w + x0) - State.ViewPort.X1);
+            }
+
+            if (State.ViewPort.Y1 + 1 < (h + y0))
+            {
+                h = h - ((h + y0) - State.ViewPort.Y1);
+            }
+
+            s32 modifier = 0;
+            addr surface = (addr)State.Renderer.Surface.Surface
+                + RendererSurfaceStride * y0 + x0 * sizeof(u16);
+
+            for (s32 y = 0; y < h; y++, surface += RendererSurfaceStride)
+            {
+                s32 u = 0;
+                u16* pixels = (u16*)surface;
+
+                for (s32 x = 0; x < w / 2; x++, pixels += 2)
+                {
+                    s32 cu = u + uStep;
+                    u16 tex = *(u16*)(texture + (u >> 16) * sizeof(u16));
+
+                    u = cu + uStep;
+                    u16 pix = *(u16*)(texture + (cu >> 16) * sizeof(u16));
+
+                    if (pix == 0x00)
+                    {
+                        if (tex != 0x00)
+                        {
+                            pixels[0] = tex;
+                        }
+                    }
+                    else if (tex == 0x00)
+                    {
+                        pixels[1] = pix;
+                    }
+                    else
+                    {
+                        *(u32*)pixels = (((u32)pix) << 16) | (u32)tex;
+                    }
+                }
+
+                s32 md = (modifier + vStep) >> 16;
+                modifier += vStep - md * 0x10000;
+
+                texture += State.Textures.Selected.Width * md * sizeof(u16);
+            }
+        }
+    }
 }

@@ -229,7 +229,7 @@ namespace RendererModule
         }
         else if (State.QuadDrawMode == 3)
         {
-            FUN_60034c30((RTLVX*)a, (RTLVX*)c);
+            DrawQuadTextureDiagonal((RTLVX*)a, (RTLVX*)c);
         }
         else
         {
