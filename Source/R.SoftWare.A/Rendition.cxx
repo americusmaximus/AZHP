@@ -13816,6 +13816,123 @@ namespace RendererModule
         UnknownFunction = lambda;
     }
 
+    // 0x600336f0
+    void DrawQuadColorMask1(RTLVX* a, RTLVX* b, RTLVX* c, RTLVX* d)
+    {
+        /* 1. Verify all 4 vertices fall within horizontal viewport bounds [X0, X1]
+            and vertical viewport bounds [Y0, Y1] before rasterizing. */
+
+        f32 x0 = (f32)State.ViewPort.X0;
+        f32 x1 = (f32)State.ViewPort.X1;
+        f32 y0 = (f32)State.ViewPort.Y0;
+        f32 y1 = (f32)State.ViewPort.Y1;
+
+        if (x0 <= a->XYZ.X && a->XYZ.X <= x1
+            && x0 <= b->XYZ.X && b->XYZ.X <= x1
+            && x0 <= c->XYZ.X && c->XYZ.X <= x1
+            && x0 <= d->XYZ.X && d->XYZ.X <= x1
+            && y0 <= a->XYZ.Y && a->XYZ.Y <= y1
+            && y0 <= b->XYZ.Y && b->XYZ.Y <= y1
+            && y0 <= c->XYZ.Y && c->XYZ.Y <= y1
+            && y0 <= d->XYZ.Y && d->XYZ.Y <= y1)
+        {
+            /* 2. Order/select reference vertices by Y and X */
+
+            RTLVX* points[4] = { a, b, c, d };
+
+            /* Sort all 4 vertices left-to-right by X, breaking ties by Y */
+            for (s32 i = 0; i < 3; )
+            {
+                if (points[i + 1]->XYZ.X < points[i]->XYZ.X
+                    || (points[i + 1]->XYZ.X == points[i]->XYZ.X
+                        && points[i + 1]->XYZ.Y < points[i]->XYZ.Y))
+                {
+                    RTLVX* temp = points[i];
+                    points[i] = points[i + 1];
+                    points[i + 1] = temp;
+
+                    if (i > 0) { --i; }
+                }
+                else { i++; }
+            }
+
+            /* Order the left pair (points[0], points[1]) top-to-bottom by Y (+Y down) */
+            if (points[1]->XYZ.Y < points[0]->XYZ.Y)
+            {
+                RTLVX* temp = points[0];
+                points[0] = points[1];
+                points[1] = temp;
+            }
+
+            /* Order the right pair (points[2], points[3]) top-to-bottom by Y (+Y down) */
+            if (points[3]->XYZ.Y < points[2]->XYZ.Y)
+            {
+                RTLVX* temp = points[2];
+                points[2] = points[3];
+                points[3] = temp;
+            }
+
+            /* Left pair (points[0], points[1]): smaller Y is top-left, larger Y is bottom-left */
+            /* Right pair (points[2], points[3]): smaller Y is top-right, larger Y is bottom-right */
+
+            /* 3. Compute Y and X spans and 15-bit fixed-point (32768.0) UV step deltas. */
+
+            f32 h = points[3]->XYZ.Y - points[0]->XYZ.Y;
+            f32 w = points[2]->XYZ.X - points[0]->XYZ.X;
+
+            s32 uStep = (s32)(((points[2]->UV.X - points[0]->UV.X) / w)
+                * State.Textures.Selected.WidthAsFloat * 32768.0f);
+            s32 vStep = (s32)(((points[3]->UV.Y - points[0]->UV.Y) / h)
+                * State.Textures.Selected.WidthSquaredAsFloat * 32768.0f);
+
+            /* 4. Initialize starting fixed-point V coordinate and framebuffer row pointer. */
+            s32 vFixed = (s32)(points[0]->UV.Y * State.Textures.Selected.WidthSquaredAsFloat * 32768.0f);
+
+            addr surface = (addr)State.Renderer.Surface.Surface
+                + RendererSurfaceStride * (s32)points[0]->XYZ.Y + (s32)points[0]->XYZ.X * sizeof(u16);
+
+            s32 height = (s32)h - 1;
+            s32 width = (s32)w - 1;
+
+            /* 5. Outer scanline loop over vertical span. */
+            for (s32 y = 0; y < height; y++, vFixed += vStep)
+            {
+                u16* pixels = (u16*)surface;
+                s32 uFixed = (s32)(points[0]->UV.X * State.Textures.Selected.WidthAsFloat * 32768.0f);
+
+                /* 6. Inner horizontal pixel loop across current scanline. */
+                for (s32 x = 0; x < width; x++, uFixed += uStep, pixels++)
+                {
+                    u32 m1 = State.Textures.Selected.WidthOffset & uFixed;
+                    u32 m2 = State.Textures.Selected.UnknownSize & vFixed;
+
+                    u32 texel = ((u32*)State.Textures.Selected.Pixels)[(m1 + m2) >> 15];
+
+
+                    // BUG. The index calculation is wrong. The original code doesn't work either.
+                    u32 indx = texel >> 16;
+                    u16 tex = (u16)texel;
+
+                    if (indx == 0)
+                    {
+                        *pixels = tex;
+                    }
+                    else if (indx != 15)
+                    {
+                        u16 pix = ((u16*)surface)[0];
+                        *pixels = tex
+                            + (pix >> 1 & (u16)State.Renderer.Colors.Unknown1[indx])
+                            + (pix >> 2 & (u16)State.Renderer.Colors.Unknown3[indx])
+                            + (pix >> 3 & (u16)State.Renderer.Colors.Unknown2[indx])
+                            + (pix >> 4 & (u16)State.Renderer.Colors.Unknown4[indx]);
+                    }
+                }
+
+                surface += RendererSurfaceStride;
+            }
+        }
+    }
+
     // 0x60034890
     void DrawQuadVertexColor(RTLVX* a, RTLVX* b, RTLVX* c, RTLVX* d)
     {

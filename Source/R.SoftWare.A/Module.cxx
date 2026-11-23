@@ -221,7 +221,7 @@ namespace RendererModule
         }
         else if (State.Renderer.Lambdas.Index == 7)
         {
-            FUN_600336f0((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
+            DrawQuadColorMask1((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
         }
         else if (State.QuadDrawMode == 2)
         {
