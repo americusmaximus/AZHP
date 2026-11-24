@@ -359,4 +359,5 @@ namespace RendererModule
     void DrawQuadVertexColor(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c, Renderer::RTLVX* d);
     void DrawQuadColorMask1(Renderer::RTLVX* a, Renderer::RTLVX* b, Renderer::RTLVX* c, Renderer::RTLVX* d);
     void DrawQuadTextureDiagonal(Renderer::RTLVX* a, Renderer::RTLVX* c);
+    void DrawQuadViewPortTexture(Renderer::RTLVX* vertex);
 }

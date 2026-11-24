@@ -225,7 +225,7 @@ namespace RendererModule
         }
         else if (State.QuadDrawMode == 2)
         {
-            FUN_600346c0();
+            DrawQuadViewPortTexture((RTLVX*)a);
         }
         else if (State.QuadDrawMode == 3)
         {

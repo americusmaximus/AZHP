@@ -13933,6 +13933,92 @@ namespace RendererModule
         }
     }
 
+    // 0x600346c0
+    void DrawQuadViewPortTexture(RTLVX* vertex)
+    {
+        s32 x0 = (s32)(vertex->XYZ.X);
+        s32 y0 = (s32)(vertex->XYZ.Y);
+
+        s32 sx = x0 < State.ViewPort.X0 ? State.ViewPort.X0 : x0;
+        s32 sy = y0 < State.ViewPort.Y0 ? State.ViewPort.Y0 : y0;
+
+        s32 tsx = State.Textures.Selected.Width + x0;
+
+        if (State.ViewPort.X1 + 1 < (s32)State.Textures.Selected.Width + x0)
+        {
+            tsx = State.ViewPort.X1 + 1;
+        }
+
+        s32 tsy = State.ViewPort.Y1 + 1;
+
+        if ((s32)State.Textures.Selected.Width + y0 <= State.ViewPort.Y1 + 1)
+        {
+            tsy = State.Textures.Selected.Width + y0;
+        }
+
+        if (sx < (State.ViewPort.X1 + 1) && sy < (State.ViewPort.Y1 + 1)
+            && State.ViewPort.X0 <= tsx && State.ViewPort.Y0 <= tsy)
+        {
+            s32 dx = tsx - sx;
+            s32 tlx = (s32)State.Textures.Selected.Width - dx;
+
+            addr texture = (addr)State.Textures.Selected.Pixels
+                + (State.Textures.Selected.Width * (sy - y0) + (sx - x0)) * sizeof(u16);
+            addr surface = (addr)State.Renderer.Surface.Surface + RendererSurfaceStride * sy + sx * sizeof(u16);
+
+            s32 heigth = tsy - sy;
+            s32 width = dx / sizeof(u16);
+
+            for (s32 y = 0; y < heigth; y++, texture += tlx * 2)
+            {
+                u32* pixels = (u32*)surface;
+                u32* texels = (u32*)texture;
+
+                if (dx != 0)
+                {
+                    for (s32 x = 0; x < width; x++, pixels++, texels++)
+                    {
+                        u32 tex = texels[0];
+                        if (tex != 0x00)
+                        {
+                            if ((tex & 0xFFFF0000) == 0)
+                            {
+                                *(u16*)pixels = (u16)tex;
+                            }
+                            else
+                            {
+                                if ((tex & 0xFFFF) != 0)
+                                {
+                                    *pixels = tex;
+                                }
+                                else
+                                {
+                                    *(u16*)((addr)pixels + sizeof(u16)) = (u16)(tex >> 16);
+                                }
+                            }
+                        }
+                    }
+
+                    texture += dx * 2;
+                    surface += dx * 2;
+                }
+
+                if ((dx & 1) != 0)
+                {
+                    if (*(u16*)texture != 0x00)
+                    {
+                        *(u16*)surface = *(u16*)texture;
+                    }
+
+                    surface += 2 * sizeof(u16);
+                    texture += 2 * sizeof(u16);
+                }
+
+                surface += 4 * ((s32)RendererSurfaceStride / 2 - dx) / 2;
+            }
+        }
+    }
+
     // 0x60034890
     void DrawQuadVertexColor(RTLVX* a, RTLVX* b, RTLVX* c, RTLVX* d)
     {
