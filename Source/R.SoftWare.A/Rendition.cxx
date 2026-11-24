@@ -13816,6 +13816,38 @@ namespace RendererModule
         UnknownFunction = lambda;
     }
 
+    // 0x60033440
+    void CalculateQuadColor(u32 color, u32 fallback)
+    {
+        u32 calc = CalculateColor(color, fallback);
+
+        if (calc != State.Quad.Color)
+        {
+            State.Quad.Color = calc;
+
+            State.Quad.Colors[12] = calc;
+            State.Quad.Colors[13] = calc;
+            State.Quad.Colors[14] = calc;
+            State.Quad.Colors[15] = calc;
+
+            State.Quad.Colors[3] = (u16)State.Renderer.Colors.Unknown3[4] & (u16)((calc & 0xFFFF) >> 2);
+            State.Quad.Colors[4] = State.Quad.Colors[3];
+            State.Quad.Colors[5] = State.Quad.Colors[3];
+
+            State.Quad.Colors[6] = (u16)State.Renderer.Colors.Unknown1[8] & (u16)((calc & 0xFFFF) >> 1);
+            State.Quad.Colors[7] = State.Quad.Colors[6];
+            State.Quad.Colors[8] = State.Quad.Colors[6];
+
+            State.Quad.Colors[0] = 0;
+            State.Quad.Colors[1] = 0;
+            State.Quad.Colors[2] = 0;
+
+            State.Quad.Colors[9] = State.Quad.Colors[3] + State.Quad.Colors[6];
+            State.Quad.Colors[10] = State.Quad.Colors[9];
+            State.Quad.Colors[11] = State.Quad.Colors[9];
+        }
+    }
+
     // 0x600336f0
     void DrawQuadColorMask1(RTLVX* a, RTLVX* b, RTLVX* c, RTLVX* d)
     {
