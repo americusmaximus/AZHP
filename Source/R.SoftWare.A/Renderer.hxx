@@ -229,7 +229,14 @@ namespace RendererModule
             Renderer::RTLVX* Start;     // 0x60041374
         } Vertexes;
 
-        u32 QuadDrawMode;               // 0x6003e0a8
+        struct
+        {
+            u16 Color;                  // 0x6003e358
+
+            u32 DrawMode;               // 0x6003e0a8
+
+            u16 Colors[16];             // 0x60041394
+        } Quad;
 
         struct
         {
