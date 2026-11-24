@@ -233,7 +233,7 @@ namespace RendererModule
         }
         else
         {
-            FUN_60033500((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
+            DrawQuadColorMask2((RTLVX*)a, (RTLVX*)b, (RTLVX*)c, (RTLVX*)d);
         }
     }
 
